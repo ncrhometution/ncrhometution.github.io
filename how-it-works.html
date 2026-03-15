@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>How It Works | Home Tutor Site</title>
+
+<title>How It Works | NCR Home Tuition</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -96,7 +98,7 @@ body { font-family: 'Poppins', sans-serif; background:#f8f9fa; }
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
   <div class="container">
     <a href="index.html" class="navbar-brand fw-bold" href="#">
-      <i class="fa-solid fa-house-chimney"></i> HomeTutor
+      <i class="fa-solid fa-house-chimney"></i> NCRhometuition
     </a>
 
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
@@ -122,7 +124,6 @@ body { font-family: 'Poppins', sans-serif; background:#f8f9fa; }
 </nav>
 <div class="container my-5">
 
-  <!-- Tabs -->
   <ul class="nav nav-tabs justify-content-center mb-4">
     <li class="nav-item">
       <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#students">Students</button>
@@ -134,7 +135,6 @@ body { font-family: 'Poppins', sans-serif; background:#f8f9fa; }
 
   <div class="tab-content">
 
-    <!-- ================= STUDENTS ================= -->
     <div class="tab-pane fade show active" id="students">
 
       <h2 class="text-center page-title mb-5">How It Works For Students</h2>
@@ -220,7 +220,6 @@ body { font-family: 'Poppins', sans-serif; background:#f8f9fa; }
 
   </div>
 
-  <!-- ================= CTA ================= -->
   <div class="cta-section my-5 text-center">
     <div class="row">
       <div class="col-md-6 mb-3">
@@ -234,9 +233,11 @@ body { font-family: 'Poppins', sans-serif; background:#f8f9fa; }
     </div>
   </div>
 
+
+  
+
 </div>
 
-<!-- ================= FOOTER GRID ================= -->
 <section class="footer-grid">
   <div class="container">
     <div class="row">
@@ -274,6 +275,10 @@ body { font-family: 'Poppins', sans-serif; background:#f8f9fa; }
   </div>
 </section>
 
+<footer class="text-center py-3 bg-dark text-white">
+  © 2023 NCRhometuition
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -283,7 +288,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const authBox = document.getElementById("authButtons");
 
   if (token) {
-    // 🔁 Replace Login with Logout
     authBox.innerHTML = `
       <button class="btn btn-danger btn-sm" id="logoutBtn">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
