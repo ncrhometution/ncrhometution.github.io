@@ -471,6 +471,14 @@ document.getElementById("studentForm").addEventListener("submit", async function
   const formData = new FormData(form);
 
   const payload = Object.fromEntries(formData.entries());
+  
+if (payload.subject) {
+  payload.subject = payload.subject
+    .split(",")
+    .map(s => s.trim())
+    .join(", ");
+}
+
 
   Swal.fire({
     title: "Submitting Request...",
@@ -479,14 +487,15 @@ document.getElementById("studentForm").addEventListener("submit", async function
     didOpen: () => Swal.showLoading()
   });
 
-  try {
-    const res = await fetch("https://ncrhomr.vercel.app/student", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+
+try {
+  const res = await fetch("https://ncrhomr.vercel.app/student", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
 
     const data = await res.json();
 
