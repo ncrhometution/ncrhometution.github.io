@@ -267,8 +267,7 @@ body{
     <!-- Logo -->
     <div class="logo-area">
       <!-- replace src with your logo -->
-      <img src="logo.png" alt="NCR home tuition">
-      <div class="site-name">NCR home tuition</div>
+      <div class="site-name">      <img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR home tuition"> NCR home tuition</div>
       <div class="site-tagline">Learn &amp; Achieve!!</div>
       <div class="site-subline">
         We Help Students and Tutors Find Each Other
@@ -442,9 +441,7 @@ body{
         </button>
       </div>
 
-      <p class="text-center mt-3 note">
-        Already a member? <a href="#">Login</a>
-      </p>
+      
 
     </form>
   </div>
@@ -467,9 +464,8 @@ body{
 
     <!-- Logo -->
     <div class="logo-area">
-      <!-- replace src with your logo -->
-      <img src="logo.png" alt="NCR home tuition">
-      <div class="site-name">NCR home tuition</div>
+            <div class="site-name"><img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR home tuition"> NCR home tuition</div>
+
       <div class="site-tagline">Learn &amp; Achieve!!</div>
       <div class="site-subline">
         We Help Students and Tutors Find Each Other
@@ -559,7 +555,6 @@ document.getElementById("tutorForm").addEventListener("submit", async function(e
     timezone: "Asia/Kolkata"
   };
 
-  // 🔍 Validation
   if (!data.name || !data.mobile_no || !data.email) {
     Swal.fire({
       icon: "warning",
@@ -591,21 +586,64 @@ document.getElementById("tutorForm").addEventListener("submit", async function(e
     Swal.close();
 
     if (res.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "You're Added as a Teacher 🎉",
-        html: `
-          <b>Name:</b> ${data.name}<br>
-          <b>Course:</b> ${data.course}<br>
-          <b>Subject:</b> ${data.subject}<br><br>
-          Our team will contact you soon for a <b>FREE DEMO</b> 💖
-        `,
-        confirmButtonText: "Awesome!",
-        confirmButtonColor: "#ff6b00"
-      });
 
-      document.getElementById("tutorForm").reset();
-    } else {
+  const enrollNo = result.id || result.teacher_id || "Don't fill";
+
+  const message = `🌸NCR HOME TUITIONS 🌸
+Cont: 9205067275
+      6386672447
+
+*Teachers Enrollment No :* ${enrollNo}
+
+*Teaching Location*: ${data.city}
+
+*Classes-* ${data.course}
+
+*Subjects-* ${data.subject}
+
+*School taught-* ${data.experience}
+
+*Expected Payment /M-* ${data.fees || "N/A"}
+
+*Days in Week-* ${data.days || "N/A"}
+
+*Teachers Name-* ${data.name}
+
+*Contact no -* ${data.mobile_no}
+
+*After joining the first months of 50% consultancy fee compulsory*
+`;
+
+  Swal.fire({
+    icon: "success",
+    title: "Registration Successful 🎉",
+    html: `
+      <div style="text-align:left;font-size:14px;white-space:pre-line">
+        ${message}
+      </div>
+      <br>
+      <b>Do you want to contact NCR Home Tuition Help Center?</b>
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Yes, Contact on WhatsApp",
+    cancelButtonText: "No",
+    confirmButtonColor: "#25D366",
+    cancelButtonColor: "#6c757d"
+  }).then((resultBtn) => {
+    if (resultBtn.isConfirmed) {
+
+      const encodedMsg = encodeURIComponent(message);
+
+      window.open(
+        `https://wa.me/919205067275?text=${encodedMsg}`,
+        "_blank"
+      );
+    }
+  });
+
+  document.getElementById("tutorForm").reset();
+}
+     else {
       Swal.fire({
         icon: "error",
         title: "Registration Failed ❌",

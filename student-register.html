@@ -266,8 +266,7 @@ body, html {
     </div>
 
     <div class="logo-area">
-      <img src="logo.png" alt="NCR home tuition">
-      <div class="site-name">NCR home tuition</div>
+      <div class="site-name">      <img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR home tuition"> NCR home tuition</div>
       <div class="site-tagline">Learn &amp; Achieve!!</div>
       <div class="site-subline">
         We Help Students and Tutors Find Each Other
@@ -438,8 +437,7 @@ body, html {
     </div>
 
     <div class="logo-area">
-      <img src="logo.png" alt="NCR home tuition">
-      <div class="site-name">NCR home tuition</div>
+      <div class="site-name">      <img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR home tuition"> NCR home tuition</div>
       <div class="site-tagline">Learn &amp; Achieve!!</div>
       <div class="site-subline">
         We Help Students and Tutors Find Each Other
@@ -493,27 +491,67 @@ document.getElementById("studentForm").addEventListener("submit", async function
     const data = await res.json();
 
     Swal.close();
-
     if (res.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Request Submitted 🎉",
-        html: `
-          <div style="text-align:left;font-size:14px">
-            <b>Name:</b> ${payload.name}<br>
-            <b>City:</b> ${payload.city}<br>
-            <b>Course:</b> ${payload.course}<br>
-            <b>Subject:</b> ${payload.subject}<br>
-            <br>
-            Our team will contact you shortly!
-          </div>
-        `,
-        confirmButtonText: "Done",
-        confirmButtonColor: "#ff6b00"
-      });
 
-      form.reset();
-    } else {
+  const queryNo = data.id || data.query_no || "N/A"; // depends on API response
+
+  const message = `🌸NCR HOME TUITIONS 🌸
+Contact: 9205067275
+         6386672447
+
+*Query No-* ${queryNo}
+
+*Location-* ${payload.city}
+
+*Address-* ${payload.city}
+
+*Class-* ${payload.course}
+
+*Subjects-* ${payload.subject}
+
+*School-* ${payload.school || "N/A"}
+
+*Payment /M-* ${payload.fees || "N/A"}
+
+*Days in Week-* ${payload.days || "N/A"}
+
+*Parents Name-* ${payload.name}
+
+*Contact no -* ${payload.mobile_no}
+`;
+
+  Swal.fire({
+    icon: "success",
+    title: "Request Submitted 🎉",
+    html: `
+      <div style="text-align:left;font-size:14px;white-space:pre-line">
+        ${message}
+      </div>
+      <br>
+      <b>Do you want to contact NCR Home Tuition Help Center?</b>
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Yes, Contact on WhatsApp",
+    cancelButtonText: "No",
+    confirmButtonColor: "#25D366",
+    cancelButtonColor: "#6c757d"
+  }).then((result) => {
+    if (result.isConfirmed) {
+
+      // encode message for WhatsApp
+      const encodedMsg = encodeURIComponent(message);
+
+      window.open(
+        `https://wa.me/919205067275?text=${encodedMsg}`,
+        "_blank"
+      );
+    }
+  });
+
+  form.reset();
+}
+
+     else {
       throw new Error(data.detail || "Failed to submit");
     }
 
