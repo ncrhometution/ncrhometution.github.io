@@ -206,27 +206,19 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="container d-flex align-items-center gap-3">
 
     <div class="logo">
-      <img src="logo.png" alt="NCR Home Tuition">
+      <img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR Home Tuition">
     </div>
 
     <div class="search-box flex-grow-1">
-      <select class="form-select" style="max-width:150px">
-        <option>Select City</option>
-        <option>Delhi</option>
-        <option>Mumbai</option>
-        <option>Bangalore</option>
+      
+      <select class="form-select" id="typeSelect" style="max-width:130px">
+        <option value="tutor">find Teacher</option>
+        <option value="student">find Students</option>
       </select>
 
-      <select class="form-select" style="max-width:130px">
-        <option>find Tutors</option>
-        <option>find Students</option>
-      </select>
-
-      <input type="text" class="form-control" placeholder="Enter Course or Subject Keywords to Search">
-      <button class="search-btn"><i class="fa fa-search"></i></button>
+      <input type="text" id="queryInput" class="form-control" placeholder="Enter Course or Subject Keywords to Search">
+      <button class="search-btn" onclick="doSearch()"><i class="fa fa-search"></i></button>
     </div>
-
-    <a href="#" class="text-decoration-none">Join Us</a>
   </div>
 </div>
 
@@ -255,6 +247,26 @@ document.addEventListener("DOMContentLoaded", () => {
 </div>
 
 <script>
+function doSearch() {
+  // const city = document.getElementById("citySelect").value;
+  const q    = document.getElementById("queryInput").value.trim();
+  const type = document.getElementById("typeSelect")?.value || "tutor";
+
+
+  const params = new URLSearchParams();
+
+  // if (city) params.append("city", city);
+  if (q)    params.append("q", q);
+  params.append("type", type); 
+
+  window.location.href = `search.html?${params.toString()}`;
+}
+
+
+
+</script>
+
+<script>
 function validateProfile(){
   const input = document.getElementById("profileId");
   const error = document.getElementById("errorTip");
@@ -262,11 +274,16 @@ function validateProfile(){
   if(input.value.trim() === ""){
     error.style.display = "block";
     input.focus();
-  }else{
-    error.style.display = "none";
-    alert("Fetch profile: " + input.value);
-    // redirect or API call here
+    return;
   }
+
+  error.style.display = "none";
+
+  const profileId = input.value.trim();
+
+  const type = "student";
+
+  window.location.href = `data.html?id=${profileId}&type=${type}`;
 }
 </script>
 
