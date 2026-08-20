@@ -1,258 +1,294 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NCR HOME TUITION</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NCR Home Tuition</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styleindex.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
 </head>
-
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
-    <a href="index.html" class="navbar-brand fw-bold" href="#">
-      <i class="fa-solid fa-house-chimney"></i> NCRhometuition
+    <a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      NCR Home Tuition
     </a>
-
-  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link" href="student-register.html">Ragister as Student</a></li>
-        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join As Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor By Id</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition By Id</a></li>      </ul>
-       <div class="d-flex gap-2" id="authButtons">
-  <a href="login.html" class="btn btn-outline-light btn-sm" id="loginBtn">Login</a>
-  <a href="ragister.html" class="btn btn-warning btn-sm" id="signupBtn">Sign Up</a>
-</div>
-
+        <li class="nav-item"><a class="nav-link" href="student-register.html">I Need a Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
+      </ul>
+      <div class="auth-actions" id="authButtons">
+        <a href="login.html" class="btn-nav-login" id="loginBtn">Login</a>
+        <a href="student-register.html" class="btn-nav-signup" id="signupBtn">Sign Up Free</a>
+      </div>
     </div>
   </div>
 </nav>
 
-<section class="hero text-center">
+<!-- Hero -->
+<section class="hero-section">
   <div class="container">
-    <h1 class="fw-bold">We Help Students & Tutors Find Each Other</h1>
-    <p class="lead">please share screenshot of student /teacher profile you need on given WhatsApp number <a href="https://wa.link/yufbkl">@6386672447</a> </p>
-
-   <div class="search-box shadow">
-    <div class="row g-2">
-      <div class="col-md-3">
-        <select class="form-select" id="citySelect">
-          <option value="">Select City</option>
-        </select>
+    <div class="row align-items-center">
+      <div class="col-lg-6 hero-content">
+        <div class="section-badge"><i class="fa-solid fa-bolt"></i> India's Home Tuition Network</div>
+        <h1 class="hero-title">Find the <span class="highlight">Perfect Tutor</span> for Your Child</h1>
+        <p class="hero-text">Connect with verified home tutors and students across India. Free registration, free demo classes, and personalized learning at your doorstep.</p>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="student-register.html" class="btn btn-accent-custom btn-lg">
+            <i class="fa-solid fa-search"></i> Find a Tutor
+          </a>
+          <a href="tutor-register.html" class="btn btn-outline-custom btn-lg">
+            <i class="fa-solid fa-chalkboard-teacher"></i> Become a Tutor
+          </a>
+        </div>
       </div>
-
-      <div class="col-md-3">
-        <select class="form-select" id="typeSelect">
-          <option value="tutor">Looking For Teacher(Tutors)</option>
-          <option value="student">Looking For Students</option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <input class="form-control" id="queryInput" placeholder="Course or Subject">
-      </div>
-
-      <div class="col-md-2 d-grid">
-        <button class="btn btn-orange" onclick="doSearch()">Search</button>
+      <div class="col-lg-6 text-center hero-image-wrapper d-none d-lg-block">
+        <img src="https://i.postimg.cc/52Sypgbn/png-transparent-course-credit-education-academic-degree-student-student-angle-people-university-remo.png" alt="Home Tutor Illustration">
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Search Box -->
+<div class="container">
+  <div class="search-box-hero">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">City</label>
+        <select class="form-select" id="citySelect">
+          <option value="">All Cities</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">Looking For</label>
+        <select class="form-select" id="typeSelect">
+          <option value="tutor">Teacher (Tutors)</option>
+          <option value="student">Students</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">Course or Subject</label>
+        <input class="form-control" id="queryInput" placeholder="e.g. Mathematics, Science, Class 10...">
+      </div>
+      <div class="col-md-2 d-grid">
+        <button class="btn btn-accent-custom" onclick="doSearch()" style="height:48px">
+          <i class="fa-solid fa-search"></i> Search
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
-
-    <div class="stats mt-5">
-      <div><h3>All India</h3><p>Coverage</p></div>
-      <div><h3>8,00,000+</h3><p>Home Tutors</p></div>
-      <div><h3>6,00,000+</h3><p>Tuition Jobs</p></div>
+<!-- Stats -->
+<div class="container">
+  <div class="stats-bar">
+    <div class="stat-item animate-in">
+      <div class="stat-number">All India</div>
+      <div class="stat-label">Coverage</div>
+    </div>
+    <div class="stat-item animate-in" style="animation-delay:0.1s">
+      <div class="stat-number">8,00,000+</div>
+      <div class="stat-label">Home Tutors</div>
+    </div>
+    <div class="stat-item animate-in" style="animation-delay:0.2s">
+      <div class="stat-number">6,00,000+</div>
+      <div class="stat-label">Tuition Jobs</div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="container my-5">
-  <div class="row g-4">
-    
-    <div class="col-md-6">
-      <div class="card h-100 text-center shadow-sm p-4">
-        <h4>Looking for tuition?</h4>
-        <p>Create profile → Get Teacher → get free demo</p>
-        <a href="student-register.html" class="btn btn-primary mt-2">Ragister As Student</a>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card h-100 text-center shadow-sm p-4">
-        <h4>Join As Teacher?</h4>
-        <p>Create profile - get tuition job - start earning </p>
-        <a href="tutor-register.html" class="btn btn-orange mt-2">Join as a Teacher</a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section class="section bg-light">
+<!-- Features -->
+<section class="py-5">
   <div class="container">
-    <h2 class="section-title">Why Home Tuition?</h2>
+    <div class="text-center mb-5">
+      <div class="section-badge"><i class="fa-solid fa-star"></i> Why Choose Us</div>
+      <h2 class="section-title">Why Home Tuition?</h2>
+      <p class="section-subtitle">Personalized learning that brings results. Here is why thousands trust NCR Home Tuition.</p>
+    </div>
     <div class="row g-4">
-      <div class="col-md-6">
-        <h5>Students / Parents</h5>
-        <ul class="list-check">
-          <li>Personalized one-to-one attention</li>
-          <li>Better grades & concept clarity</li>
-          <li>Expert guidance at home</li>
-        </ul>
+      <div class="col-md-4">
+        <div class="card-modern feature-card">
+          <div class="feature-icon blue"><i class="fa-solid fa-user-graduate"></i></div>
+          <h5>Students & Parents</h5>
+          <ul style="list-style:none;padding:0;margin:0;text-align:left">
+            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Personalized one-to-one attention
+            </li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Better grades & concept clarity
+            </li>
+            <li style="padding:8px 0;font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Expert guidance at home
+            </li>
+          </ul>
+          <a href="student-register.html" class="btn btn-primary-custom mt-3" style="width:100%;justify-content:center">Register as Student</a>
+        </div>
       </div>
-      <div class="col-md-6">
-        <h5>Tutors</h5>
-        <ul class="list-check">
-          <li>Be your own boss</li>
-          <li>Flexible timings</li>
-          <li>Extra monthly income</li>
-        </ul>
+      <div class="col-md-4">
+        <div class="card-modern feature-card">
+          <div class="feature-icon orange"><i class="fa-solid fa-chalkboard-user"></i></div>
+          <h5>Home Tutors</h5>
+          <ul style="list-style:none;padding:0;margin:0;text-align:left">
+            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Be your own boss
+            </li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Flexible timings & earnings
+            </li>
+            <li style="padding:8px 0;font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Extra monthly income
+            </li>
+          </ul>
+          <a href="tutor-register.html" class="btn btn-accent-custom mt-3" style="width:100%;justify-content:center">Join as Tutor</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card-modern feature-card">
+          <div class="feature-icon green"><i class="fa-solid fa-handshake"></i></div>
+          <h5>Trusted Process</h5>
+          <ul style="list-style:none;padding:0;margin:0;text-align:left">
+            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Free demo before joining
+            </li>
+            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Verified profiles
+            </li>
+            <li style="padding:8px 0;font-size:14px;color:var(--text-secondary)">
+              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Secure & private contact
+            </li>
+          </ul>
+          <a href="how-it-works.html" class="btn btn-outline-custom mt-3" style="width:100%;justify-content:center">Learn More</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section">
+<!-- How It Works Section -->
+<section class="py-5" style="background:var(--bg-white)">
   <div class="container">
-    <h2 class="section-title">How It Works</h2>
-    <div class="row g-4">
-      <div class="col-md-6">
-        <h5>Students / Parents</h5>
-        <ol>
-          <li>Post tuition requirement</li>
-          <li>Get free demo class</li>
-          <li>Confirm tutor</li>
-          <li>Go premium if needed</li>
-        </ol>
+    <div class="text-center mb-5">
+      <div class="section-badge"><i class="fa-solid fa-route"></i> Simple Process</div>
+      <h2 class="section-title">How It Works</h2>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4 mb-4">
+        <div class="step-number-circle">1</div>
+        <h5 style="font-weight:700">Register Free</h5>
+        <p style="color:var(--text-secondary);font-size:14px;max-width:260px;margin:0 auto">Create your profile as a student or tutor in under 2 minutes</p>
       </div>
-      <div class="col-md-6">
-        <h5>Tutors</h5>
-        <ol>
-          <li>Create profile</li>
-          <li>Apply to tuition jobs</li>
-          <li>Take demo class</li>
-          <li>Start earning</li>
-        </ol>
+      <div class="col-md-4 mb-4">
+        <div class="step-number-circle">2</div>
+        <h5 style="font-weight:700">Get Free Demo</h5>
+        <p style="color:var(--text-secondary);font-size:14px;max-width:260px;margin:0 auto">Browse matches, request a demo class, and find your perfect fit</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="step-number-circle">3</div>
+        <h5 style="font-weight:700">Start Learning</h5>
+        <p style="color:var(--text-secondary);font-size:14px;max-width:260px;margin:0 auto">Confirm your tutor and begin your journey to academic excellence</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- CTA -->
+<section class="py-5">
+  <div class="container">
+    <div class="cta-section text-center" style="position:relative;z-index:2">
+      <h2 style="font-size:32px;font-weight:800;margin-bottom:16px">Ready to Get Started?</h2>
+      <p style="font-size:16px;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto">
+        Join thousands of students and tutors who are already benefiting from NCR Home Tuition.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="student-register.html" class="btn btn-accent-custom btn-lg">
+          <i class="fa-solid fa-user-plus"></i> I Need a Tutor
+        </a>
+        <a href="tutor-register.html" class="btn btn-primary-custom btn-lg" style="background:rgba(255,255,255,0.15);box-shadow:none">
+          <i class="fa-solid fa-chalkboard-teacher"></i> Join as Tutor
+        </a>
+      </div>
+      <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,0.4)">
+        Need help? WhatsApp us at <a href="https://wa.link/yufbkl" style="color:var(--accent)">6386672447</a>
+      </p>
+    </div>
+  </div>
+</section>
 
-
-<footer class="text-center py-3 bg-dark text-white">
-  © 2023 NCRhometuition
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3">
+        <h6>Tuitions By City</h6>
+        <a href="#">Mumbai</a><a href="#">Delhi</a><a href="#">Bengaluru</a><a href="#">Hyderabad</a><a href="#">Chennai</a>
+      </div>
+      <div class="col-md-3">
+        <h6>By Category</h6>
+        <a href="#">Nursery / Kindergarten</a><a href="#">Class 1 to 5</a><a href="#">Class 6 to 10</a><a href="#">Class 11 & 12</a><a href="#">Engineering / Degree</a>
+      </div>
+      <div class="col-md-3">
+        <h6>By Subject</h6>
+        <a href="#">Maths</a><a href="#">Physics</a><a href="#">Chemistry</a><a href="#">Biology</a><a href="#">English</a>
+      </div>
+      <div class="col-md-3">
+        <h6>Quick Links</h6>
+        <a href="how-it-works.html">How It Works</a><a href="login.html">Admin Login</a><a href="findbyidtutor.html">Find Tutor By ID</a><a href="findbyidtution.html">Find Tuition By ID</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 NCR Home Tuition. All rights reserved. | Built with care for students & tutors.
+    </div>
+  </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Load cities
 document.addEventListener("DOMContentLoaded", function () {
   fetch("https://ncrhomr.vercel.app/cities")
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
       const citySelect = document.getElementById("citySelect");
-
-      citySelect.innerHTML = '<option value="">Select City</option>';
-
+      citySelect.innerHTML = '<option value="">All Cities</option>';
       data.cities.forEach(city => {
         if (city && city.trim() !== "") {
-          const option = document.createElement("option");
-          option.value = city;
-          option.textContent = city;
-          citySelect.appendChild(option);
+          const opt = document.createElement("option");
+          opt.value = city;
+          opt.textContent = city;
+          citySelect.appendChild(opt);
         }
       });
     })
-    .catch(error => {
-      console.error("Error loading cities:", error);
-    });
+    .catch(e => console.error("Error loading cities:", e));
 });
-</script>
 
-<script>
+// Search
 function doSearch() {
   const city = document.getElementById("citySelect").value;
-  const q    = document.getElementById("queryInput").value.trim();
+  const q = document.getElementById("queryInput").value.trim();
   const type = document.getElementById("typeSelect")?.value || "tutor";
-
-
   const params = new URLSearchParams();
-
   if (city) params.append("city", city);
-  if (q)    params.append("q", q);
-  params.append("type", type); 
-
-  window.location.href = `search.html?${params.toString()}`;
+  if (q) params.append("q", q);
+  params.append("type", type);
+  window.location.href = "search.html?" + params.toString();
 }
 
-
-
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("admin_token");
-
-  const authBox = document.getElementById("authButtons");
-
-  if (token) {
-    // 🔁 Replace Login with Logout
-    authBox.innerHTML = `
-      <button class="btn btn-danger btn-sm" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    `;
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      Swal.fire({
-        title: "Logout?",
-        text: "You will be logged out of admin session",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#dc3545",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Yes, Logout"
-      }).then(result => {
-        if (result.isConfirmed) {
-          localStorage.removeItem("admin_token");
-
-          Swal.fire({
-            icon: "success",
-            title: "Logged Out 👋",
-            text: "Session ended successfully",
-            timer: 1500,
-            showConfirmButton: false
-          });
-
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
-      });
-    });
-  }
-});
-</script>
-
-
-
+renderAuthButtons("authButtons");</script>
 </body>
 </html>

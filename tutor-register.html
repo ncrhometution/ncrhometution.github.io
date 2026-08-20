@@ -1,545 +1,247 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>NCR Home Tuition</title>
+  <meta charset="UTF-8">
+  <title>Register as Tutor | NCR Home Tuition</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-body{
-  font-family: 'Poppins', sans-serif;
-  background:#f4f6f9;
-}
-
-.register-box{
-  max-width: 520px;
-  margin: 40px auto;
-  background:#fff;
-  border-radius:14px;
-  border:3px solid #0d6efd;
-  padding:20px;
-}
-
-.register-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-.register-header h5{
-  margin:0;
-  font-weight:700;
-}
-
-.badge-free{
-  background:#0d6efd;
-  color:#fff;
-  padding:4px 10px;
-  border-radius:6px;
-  font-size:12px;
-}
-
-.input-group-text{
-  background:#f1f3f5;
-}
-
-.form-control, .form-select{
-  height:42px;
-  font-size:14px;
-}
-
-.btn-orange{
-  background:#ff6b00;
-  color:#fff;
-  font-weight:600;
-}
-.btn-orange:hover{background:#e65a00;}
-
-.note{
-  font-size:12px;
-  color:#6c757d;
-}
-</style>
-
-<style>
-
-    .hero-left{
-  text-align:center;
-  padding:20px 10px;
-}
-
-.hero-title{
-  color:#0b4f6c;
-  font-size:22px;
-  font-weight:600;
-  margin-bottom:20px;
-}
-
-.steps-row{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  margin-bottom:20px;
-}
-
-.step-box{
-  background:#fff;
-  width:150px;
-  padding:14px 10px;
-  border-radius:4px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-}
-
-.step-text{
-  font-size:14px;
-  line-height:18px;
-}
-
-.step-text span{
-  color:#ff6a00;
-  font-weight:700;
-}
-
-.step-number{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  border:2px solid #1e88b5;
-  color:#1e88b5;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:10px auto 0;
-  font-size:14px;
-}
-
-.step-arrow{
-  font-size:26px;
-  color:#c0c0c0;
-}
-
-.hero-image img{
-  max-width:280px;
-  margin:20px auto;
-}
-
-.hero-tagline{
-  background:#ffffff;
-  color:#6b8e23;
-  padding:10px;
-  font-size:14px;
-  font-weight:600;
-  border-radius:2px;
-}
-
-
-.top-section{
-  background:#f7f7f7;
-  padding:20px 0 10px;
-}
-
-.top-wrapper{
-  max-width:1100px;
-  margin:auto;
-  display:grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items:center;
-}
-
-.contact-left,
-.contact-right{
-  font-size:15px;
-  font-weight:600;
-  color:#ff6a00;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.contact-left{
-  justify-content:flex-start;
-}
-
-.contact-right{
-  justify-content:flex-end;
-}
-
-.contact-left i{
-  color:#25D366;
-  font-size:20px;
-}
-
-.contact-right i{
-  color:#0b4f6c;
-  font-size:18px;
-}
-
-.logo-area{
-  text-align:center;
-}
-
-.logo-area img{
-  height:50px;
-}
-
-.site-name{
-  font-size:28px;
-  font-weight:600;
-  color:#1e88b5;
-}
-
-.site-tagline{
-  font-size:14px;
-  color:#ff6a00;
-  margin-top:-2px;
-}
-
-.site-subline{
-  font-size:18px;
-  color:#6b8e23;
-  font-style:italic;
-  margin-top:4px;
-}
-
-/* Mobile */
-@media(max-width:768px){
-  .top-wrapper{
-    grid-template-columns:1fr;
-    gap:10px;
-  }
-  .contact-left,
-  .contact-right{
-    justify-content:center;
-  }
-}
-</style>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .reg-hero {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      padding: 40px 0 30px;
+    }
+    .reg-form-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 40px;
+      margin-top: -20px;
+      position: relative;
+      z-index: 5;
+    }
+    .form-row-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .reg-sidebar { padding: 30px; }
+    .reg-sidebar h4 { font-weight: 800; margin-bottom: 12px; }
+    .reg-sidebar .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .reg-sidebar .benefit-item:last-child { border: none; }
+    .reg-sidebar .benefit-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .whatsapp-strip {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #fff;
+      padding: 12px 0;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .whatsapp-strip a { color: #fff; text-decoration: underline; }
+    @media (max-width: 768px) {
+      .form-row-pair { grid-template-columns: 1fr; }
+      .reg-form-card { padding: 24px; }
+    }
+  </style>
 </head>
-
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
-    <a href="index.html" class="navbar-brand fw-bold" href="#">
-      <i class="fa-solid fa-house-chimney"></i> NCRhometuition
+    <a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      NCR Home Tuition
     </a>
-
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
-        <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link" href="student-register.html">Ragister as Student</a></li>  
-        <li class="nav-item"><a class="nav-link active" href="tutor-register.html">Join As Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor By Id</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition By Id</a></li>
+        <li class="nav-item"><a class="nav-link" href="student-register.html">I Need a Tutor</a></li>
+        <li class="nav-item"><a class="nav-link active" href="tutor-register.html">Join as Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
       </ul>
-     <div class="d-flex gap-2" id="authButtons">
-      <a href="login.html" class="btn btn-outline-light btn-sm" id="loginBtn">Login</a>
-      <a href="ragister.html" class="btn btn-warning btn-sm" id="signupBtn">Sign Up</a>
-    </div>
-
+      <div class="auth-actions" id="authButtons">
+        <a href="login.html" class="btn-nav-login">Login</a>
+        <a href="student-register.html" class="btn-nav-signup">Sign Up Free</a>
+      </div>
     </div>
   </div>
 </nav>
 
-<section class="top-section">
-  <div class="top-wrapper">
-
-    <!-- WhatsApp -->
-    <div class="contact-left">
-      <i class="fab fa-whatsapp"></i>
-      <span><a href="https://wa.link/83x7vd">9205067275</a> </span>
-    </div>
-
-    <!-- Logo -->
-    <div class="logo-area">
-      <div class="site-name">      <img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR home tuition"> NCR home tuition</div>
-      <div class="site-tagline">Learn &amp; Achieve!!</div>
-      <div class="site-subline">
-        We Help Students and Tutors Find Each Other
-      </div>
-    </div>
-
-    <!-- Call -->
-    <div class="contact-right">
-      <i class="fa fa-phone"></i>
-      <span><a href="https://wa.link/09tyol">6386672447</a></span>
-    </div>
-
+<section class="reg-hero">
+  <div class="container text-center">
+    <h3 style="font-weight:800;margin-bottom:8px">Join as a Tutor</h3>
+    <p style="color:var(--text-secondary);max-width:500px;margin:0 auto">Create your profile, get matched with students, and start earning. It is completely free!</p>
   </div>
 </section>
 
-<div class="container">
-  <div class="row align-items-center">
-
-    <div class="col-md-7">
-
-<div class="hero-left">
-
-  <h2 class="hero-title">
-    Find Best Home Tutors / Online Tutors.
-  </h2>
-
-  <div class="steps-row">
-
-    <div class="step-box">
-      <div class="step-text">Tell us Your<br><span>NEEDS</span></div>
-      <div class="step-number">1</div>
-    </div>
-
-    <div class="step-arrow">»</div>
-
-    <div class="step-box">
-      <div class="step-text">Get A Free<br><span>DEMO</span></div>
-      <div class="step-number">2</div>
-    </div>
-
-    <div class="step-arrow">»</div>
-
-    <div class="step-box">
-      <div class="step-text">Confirm if You<br><span>LIKE</span></div>
-      <div class="step-number">3</div>
-    </div>
-
-  </div>
-
-  <!-- Illustration -->
-  <div class="hero-image">
-
-    <img src="https://i.ibb.co/M5gNCKFJ/teacher-child-class-text-thumbnail-removebg-preview.png" alt="Home Tutor Illustration">
-  </div>
-
-  <!-- Tagline -->
-  <div class="hero-tagline">
-    Home Tuition is the #1 secret of <b>ACADEMIC EXCELLENCE</b>
-  </div>
-
-</div>       
-    </div>
-
-    <div class="col-md-5">
-
-        <div class="register-box">
-
-    <div class="register-header">
-      <h5>I am a Tutor</h5>
-      <span class="badge-free">FREE Registration</span>
-    </div>
-
-    <form id="tutorForm">
-
-      <!-- ROW 1 -->
-      <div class="row g-2 mb-2">
-        <div class="col-md-6">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fa fa-user"></i></span>
-            <input type="text" id="name" class="form-control" placeholder="Full Name" required>
-
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fa fa-phone"></i></span>
-            <input type="tel" id="mobile" class="form-control" placeholder="Mobile Number" required>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- ROW 2 -->
-      <div class="row g-2 mb-2">
-        <div class="col-md-6">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-            <input type="email" id="email" class="form-control" placeholder="Email Address" required>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <input type="text" id="qualification" class="form-control" placeholder="Qualification bsc,b.tECH" required>
-        </div>
-      </div>
-
-      <!-- ROW 3 -->
-      <div class="row g-2 mb-2">
-        <div class="col-md-6">
-          <input type="text" id="course" class="form-control" placeholder="Course (eg. Mathematics)" required>
-        </div>
-
-        <div class="col-md-6">
-          <input type="text" id="subject" class="form-control" placeholder="Subject (eg. Algebra)" required>
-        </div>
-      </div>
-
-      <!-- ROW 4 -->
-      <div class="row g-2 mb-2">
-        <div class="col-md-6">
-          <input type="text" id="experience" class="form-control" placeholder="Experience of teacher" required>
-        </div>
-
-        <div class="col-md-6">
-          <select id="mode" class="form-select" required>
-            <option value="">Preferred Mode</option>
-            <option>Online</option>
-            <option>Offline</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- ROW 5 -->
-      <div class="row g-2 mb-2">
-        <div class="col-md-6">
-          <select id="language" class="form-select" required>
-            <option value="">Language</option>
-            <option>English</option>
-            <option>Hindi</option>
-            <option>Tamil</option>
-            <option>Telugu</option>
-            <option>Kannada</option>
-            <option>Malayalam</option>
-            <option>Marathi</option>
-            <option>Bengali</option>
-            <option>Gujarati</option>
-            <option>Punjabi</option>
-          </select>
-        </div>
-
-        <div class="col-md-6">
-          <input id="city" type="text" class="form-control" placeholder="address (eg. Kewata ka pura s Jaunpur U.P)" required>
-        </div>
-      </div>
-
-      <!-- ROW 6 (AUTO FIELDS) -->
-      <div class="row g-2 mb-3">
-        <div class="col-md-6">
-          <input type="text" class="form-control" value="India" readonly>
-        </div>
-        <div class="col-md-6">
-          <input type="text" class="form-control" value="Asia/Kolkata" readonly>
-        </div>
-      </div>
-
-      <div class="note mb-2">We don’t misuse your phone number or email</div>
-
-      <div class="d-grid">
-        <button class="btn btn-orange">
-          JOIN AS TUTOR FOR FREE
-        </button>
-      </div>
-
-      
-
-    </form>
-  </div>
-
-      </div>
-
-        </div>
+<div class="whatsapp-strip">
+  <i class="fa-brands fa-whatsapp"></i>
+  Questions? Chat with us: <a href="https://wa.link/83x7vd">9205067275</a> | <a href="https://wa.link/09tyol">6386672447</a>
 </div>
 
+<section class="py-5" style="background:var(--bg)">
+  <div class="container">
+    <div class="row align-items-start g-4">
+      <div class="col-lg-7">
+        <div class="reg-form-card animate-in">
+          <div class="text-center mb-4">
+            <div style="width:56px;height:56px;background:var(--accent-light);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;color:var(--accent);margin-bottom:12px">
+              <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+            <h4 style="font-weight:800">I am a Tutor</h4>
+            <p style="color:var(--text-muted);font-size:14px">Register for free and start earning from home tuition</p>
+          </div>
 
-
-<section class="top-section">
-  <div class="top-wrapper">
-
-    <!-- WhatsApp -->
-    <div class="contact-left">
-      <i class="fab fa-whatsapp"></i>
-      <span><a href="https://wa.link/83x7vd">9205067275</a> </span>
-    </div>
-
-    <!-- Logo -->
-    <div class="logo-area">
-            <div class="site-name"><img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR home tuition"> NCR home tuition</div>
-
-      <div class="site-tagline">Learn &amp; Achieve!!</div>
-      <div class="site-subline">
-        We Help Students and Tutors Find Each Other
+          <form id="tutorForm">
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" class="form-control" placeholder="e.g. Rajesh Kumar" required>
+              </div>
+              <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="mobile" class="form-control" placeholder="e.g. 9876543210" required>
+              </div>
+            </div>
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="e.g. rajesh@email.com" required>
+              </div>
+              <div class="form-group">
+                <label>Qualification</label>
+                <input type="text" id="qualification" class="form-control" placeholder="e.g. B.Sc, B.Tech" required>
+              </div>
+            </div>
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Course</label>
+                <input type="text" id="course" class="form-control" placeholder="e.g. Class 1-10" required>
+              </div>
+              <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="subject" class="form-control" placeholder="e.g. Maths, Science" required>
+              </div>
+            </div>
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Experience</label>
+                <input type="text" id="experience" class="form-control" placeholder="e.g. 3 years" required>
+              </div>
+              <div class="form-group">
+                <label>Preferred Mode</label>
+                <select id="mode" class="form-control" required>
+                  <option value="">Select mode</option>
+                  <option>Online</option>
+                  <option>Offline</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Language</label>
+                <select id="language" class="form-control" required>
+                  <option value="">Select language</option>
+                  <option>English</option><option>Hindi</option><option>Tamil</option>
+                  <option>Telugu</option><option>Kannada</option><option>Malayalam</option>
+                  <option>Marathi</option><option>Bengali</option><option>Gujarati</option>
+                  <option>Punjabi</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Address / City</label>
+                <input type="text" id="city" class="form-control" placeholder="e.g. Sector 75, Faridabad" required>
+              </div>
+            </div>
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Country</label>
+                <input type="text" class="form-control" value="India" readonly>
+              </div>
+              <div class="form-group">
+                <label>Timezone</label>
+                <input type="text" class="form-control" value="Asia/Kolkata" readonly>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-accent-custom w-100 justify-content-center mt-2" style="height:50px;font-size:16px">
+              <i class="fa-solid fa-user-plus"></i> Join as Tutor for Free
+            </button>
+            <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px">
+              <i class="fa-solid fa-shield-halved"></i> Your information is safe with us. We never misuse your data.
+            </p>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="reg-sidebar">
+          <h4>Benefits of Joining</h4>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div><strong>Earn Extra Income</strong><br><span style="font-size:13px;color:var(--text-secondary)">Flexible home tuition jobs on your schedule</span></div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fa-solid fa-users"></i></div>
+            <div><strong>Get Students</strong><br><span style="font-size:13px;color:var(--text-secondary)">We match you with students in your area</span></div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fa-solid fa-clock"></i></div>
+            <div><strong>Flexible Hours</strong><br><span style="font-size:13px;color:var(--text-secondary)">Teach at times that work for you</span></div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon"><i class="fa-solid fa-certificate"></i></div>
+            <div><strong>Verified Profile</strong><br><span style="font-size:13px;color:var(--text-secondary)">Build trust with a verified tutor badge</span></div>
+          </div>
+          <div style="background:var(--primary-light);border-radius:var(--radius-md);padding:20px;margin-top:24px">
+            <p style="font-size:13px;color:var(--primary-dark);font-weight:600;margin:0">
+              <i class="fa-solid fa-info-circle"></i> After joining, the first month includes a 50% consultancy fee.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Call -->
-    <div class="contact-right">
-      <i class="fa fa-phone"></i>
-      <span><a href="https://wa.link/09tyol">6386672447</a></span>
-    </div>
-
   </div>
 </section>
 
-
-
-<footer class="text-center py-3 bg-dark text-white">
-  © 2023 NCRhometuition
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div>
+  </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("admin_token");
-
-  const authBox = document.getElementById("authButtons");
-
-  if (token) {
-    // 🔁 Replace Login with Logout
-    authBox.innerHTML = `
-      <button class="btn btn-danger btn-sm" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    `;
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      Swal.fire({
-        title: "Logout?",
-        text: "You will be logged out of admin session",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#dc3545",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Yes, Logout"
-      }).then(result => {
-        if (result.isConfirmed) {
-          localStorage.removeItem("admin_token");
-
-          Swal.fire({
-            icon: "success",
-            title: "Logged Out 👋",
-            text: "Session ended successfully",
-            timer: 1500,
-            showConfirmButton: false
-          });
-
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
-      });
-    });
-  }
-});
-</script>
-
-
 <script>
 document.getElementById("tutorForm").addEventListener("submit", async function(e) {
   e.preventDefault();
-
   const data = {
     name: document.getElementById("name").value.trim(),
     mobile_no: document.getElementById("mobile").value.trim(),
@@ -556,118 +258,73 @@ document.getElementById("tutorForm").addEventListener("submit", async function(e
   };
 
   if (!data.name || !data.mobile_no || !data.email) {
-    Swal.fire({
-      icon: "warning",
-      title: "Missing Fields",
-      text: "Please fill all required fields",
-      confirmButtonColor: "#ff6b00"
-    });
+    Swal.fire({ icon: "warning", title: "Missing Fields", text: "Please fill all required fields", confirmButtonColor: "#ff6d00" });
     return;
   }
 
-  // 🔄 Loader
-  Swal.fire({
-    title: "Registering You...",
-    text: "Please wait while we add you as a tutor",
-    allowOutsideClick: false,
-    didOpen: () => Swal.showLoading()
-  });
+  Swal.fire({ title: "Registering...", text: "Please wait while we add you as a tutor", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
   try {
     const res = await fetch("https://ncrhomr.vercel.app/tutor", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
-
     const result = await res.json();
     Swal.close();
 
     if (res.ok) {
+      const enrollNo = result.id || result.teacher_id || "N/A";
+      const message = "*NCR HOME TUITIONS*\nCont: 9205067275 / 6386672447\n\n*Enrollment No:* " + enrollNo + "\n*Location:* " + data.city + "\n*Classes:* " + data.course + "\n*Subjects:* " + data.subject + "\n*Experience:* " + data.experience + "\n*Name:* " + data.name + "\n*Contact:* " + data.mobile_no + "\n\nAfter joining, first month 50% consultancy fee applies.";
 
-  const enrollNo = result.id || result.teacher_id || "Don't fill";
-
-  const message = `🌸NCR HOME TUITIONS 🌸
-Cont: 9205067275
-      6386672447
-
-*Teachers Enrollment No :* ${enrollNo}
-
-*Teaching Location*: ${data.city}
-
-*Classes-* ${data.course}
-
-*Subjects-* ${data.subject}
-
-*School taught-* ${data.experience}
-
-*Expected Payment /M-* ${data.fees || "N/A"}
-
-*Days in Week-* ${data.days || "N/A"}
-
-*Teachers Name-* ${data.name}
-
-*Contact no -* ${data.mobile_no}
-
-*After joining the first months of 50% consultancy fee compulsory*
-`;
-
-  Swal.fire({
-    icon: "success",
-    title: "Registration Successful 🎉",
-    html: `
-      <div style="text-align:left;font-size:14px;white-space:pre-line">
-        ${message}
-      </div>
-      <br>
-      <b>Do you want to contact NCR Home Tuition Help Center?</b>
-    `,
-    showCancelButton: true,
-    confirmButtonText: "Yes, Contact on WhatsApp",
-    cancelButtonText: "No",
-    confirmButtonColor: "#25D366",
-    cancelButtonColor: "#6c757d"
-  }).then((resultBtn) => {
-    if (resultBtn.isConfirmed) {
-
-      const encodedMsg = encodeURIComponent(message);
-
-      window.open(
-        `https://wa.me/919205067275?text=${encodedMsg}`,
-        "_blank"
-      );
-    }
-  });
-
-  document.getElementById("tutorForm").reset();
-}
-     else {
       Swal.fire({
-        icon: "error",
-        title: "Registration Failed ❌",
-        text: result.detail || "Something went wrong",
-        confirmButtonColor: "#dc3545"
+        icon: "success",
+        title: "Registration Successful!",
+        html: '<div style="text-align:left;font-size:14px;white-space:pre-line">' + message + '</div><br><b>Contact NCR Home Tuition on WhatsApp?</b>',
+        showCancelButton: true,
+        confirmButtonText: "Yes, WhatsApp",
+        cancelButtonText: "No",
+        confirmButtonColor: "#25D366",
+        cancelButtonColor: "#6c757d"
+      }).then((r) => {
+        if (r.isConfirmed) {
+          window.open("https://wa.me/919205067275?text=" + encodeURIComponent(message), "_blank");
+        }
       });
+      document.getElementById("tutorForm").reset();
+    } else {
+      Swal.fire({ icon: "error", title: "Registration Failed", text: result.detail || "Something went wrong", confirmButtonColor: "#dc3545" });
     }
-
   } catch (err) {
     Swal.close();
-    Swal.fire({
-      icon: "error",
-      title: "Server Error ⚠️",
-      text: "Could not connect to server",
-      confirmButtonColor: "#dc3545"
+    Swal.fire({ icon: "error", title: "Server Error", text: "Could not connect to server", confirmButtonColor: "#dc3545" });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("admin_token");
+  const authBox = document.getElementById("authButtons");
+  if (token) {
+    authBox.innerHTML = '<button class="btn-nav-login" id="logoutBtn" style="background:var(--danger-light);color:var(--danger);border-color:var(--danger)"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>';
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("admin_token");
+      window.location.href = "index.html";
     });
   }
 });
 </script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const profile = getProfile();
+  if (profile) {
+    const nameInput = document.getElementById("name");
+    const mobileInput = document.getElementById("mobile");
+    const emailInput = document.getElementById("email");
+    if (nameInput && profile.displayName) nameInput.value = profile.displayName;
+    if (mobileInput && profile.mobile_no) { mobileInput.value = profile.mobile_no; mobileInput.readOnly = true; mobileInput.style.background = "#f8f9fa"; }
+    if (emailInput && profile.email) { emailInput.value = profile.email; emailInput.readOnly = true; emailInput.style.background = "#f8f9fa"; }
+  }
+});
+</script>
 </body>
 </html>

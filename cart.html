@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cart - Buy Leads | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .cart-page { padding: 40px 0 60px; background: var(--bg); min-height: calc(100vh - 64px); }
+    .wallet-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .wallet-card::after {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(255,109,0,0.2), transparent 70%);
+      border-radius: 50%;
+    }
+    .wallet-leads {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), #ff9800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .package-card {
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      border: 2px solid var(--border-light);
+      padding: 32px 24px;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .package-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-xl);
+    }
+    .package-card.popular {
+      border-color: var(--accent);
+      box-shadow: 0 8px 30px rgba(255,109,0,0.15);
+    }
+    .package-card.popular::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--accent), #ff9800);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px;
+      letter-spacing: 1px;
+    }
+    .package-card .lead-count {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .package-card .lead-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .package-card .price {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .package-card .price span {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    .package-card .per-lead {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .package-card .savings-badge {
+      display: inline-block;
+      background: var(--success-light);
+      color: var(--success);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .package-card .features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+      text-align: left;
+    }
+    .package-card .features li {
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .package-card .features li:last-child { border: none; }
+    .package-card .features li i {
+      color: var(--success);
+      margin-right: 8px;
+    }
+
+    .btn-add-cart {
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 14px;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-add-cart.primary {
+      background: linear-gradient(135deg, var(--primary), #2979ff);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(26,115,232,0.3);
+    }
+    .btn-add-cart.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,115,232,0.4);
+    }
+    .btn-add-cart.accent {
+      background: linear-gradient(135deg, var(--accent), #ff9800);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(255,109,0,0.3);
+    }
+    .btn-add-cart.accent:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255,109,0,0.4);
+    }
+
+    /* Cart sidebar */
+    .cart-sidebar {
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 28px;
+      position: sticky;
+      top: 80px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .cart-item:last-child { border: none; }
+    .cart-item .item-name { font-weight: 600; font-size: 14px; }
+    .cart-item .item-price { font-weight: 700; color: var(--accent); }
+    .cart-item .remove-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 0 0;
+      border-top: 2px solid var(--border);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+    }
+
+    .how-it-works-box {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .hiw-step {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+    }
+    .hiw-step .num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-modern">
+  <div class="container">
+    <a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      NCR Home Tuition
+    </a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
+        <li class="nav-item"><a class="nav-link" href="student-register.html">I Need a Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="search.html?type=tutor">Find Tutor</a></li>
+      </ul>
+      <div class="auth-actions" id="authButtons"></div>
+    </div>
+  </div>
+</nav>
+
+<section class="cart-page">
+  <div class="container">
+    <!-- Wallet -->
+    <div class="wallet-card animate-in">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <p style="margin:0;font-size:14px;opacity:0.7">Your Lead Wallet</p>
+          <div class="wallet-leads" id="walletLeads">0</div>
+          <p style="margin:0;font-size:13px;opacity:0.5">Leads available</p>
+        </div>
+        <div style="text-align:right">
+          <p style="margin:0;font-size:13px;opacity:0.6">View student/tutor contact info by spending leads</p>
+          <a href="search.html?type=tutor" style="color:var(--accent);font-size:13px;font-weight:600">
+            <i class="fa-solid fa-magnifying-glass"></i> Browse profiles
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Packages -->
+      <div class="col-lg-8">
+        <h4 style="font-weight:800;margin-bottom:4px">Buy Lead Credits</h4>
+        <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px">Choose a package to unlock student and tutor contact information</p>
+
+        <div class="row g-4" id="packages">
+          <!-- Filled by JS -->
+        </div>
+
+        <!-- How it works -->
+        <div class="how-it-works-box">
+          <h6 style="font-weight:700;margin-bottom:12px"><i class="fa-solid fa-circle-question" style="color:var(--primary);margin-right:8px"></i> How Lead Credits Work</h6>
+          <div class="hiw-step">
+            <div class="num">1</div>
+            <div><strong style="font-size:13px">Browse Profiles</strong><br><span style="font-size:12px;color:var(--text-secondary)">Search for tutors or students matching your needs</span></div>
+          </div>
+          <div class="hiw-step">
+            <div class="num">2</div>
+            <div><strong style="font-size:13px">Spend 1 Lead</strong><br><span style="font-size:12px;color:var(--text-secondary)">Each profile view costs 1 lead credit to reveal contact info</span></div>
+          </div>
+          <div class="hiw-step">
+            <div class="num">3</div>
+            <div><strong style="font-size:13px">Connect Directly</strong><br><span style="font-size:12px;color:var(--text-secondary)">Get phone number and email to contact the tutor/student</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Sidebar -->
+      <div class="col-lg-4">
+        <div class="cart-sidebar">
+          <h6 style="font-weight:700;margin-bottom:16px"><i class="fa-solid fa-shopping-cart" style="margin-right:8px"></i> Your Cart</h6>
+          <div id="cartItems">
+            <div class="empty-cart">
+              <i class="fa-solid fa-cart-shopping" style="font-size:32px;color:var(--border);margin-bottom:8px"></i>
+              <p style="font-size:13px;margin:0">Your cart is empty</p>
+            </div>
+          </div>
+          <div id="cartFooter" style="display:none">
+            <div class="cart-total-row">
+              <span>Total</span>
+              <span id="cartTotal" style="color:var(--accent)">&#8377;0</span>
+            </div>
+            <button class="btn-add-cart accent mt-3" onclick="checkout()" style="font-size:15px">
+              <i class="fa-solid fa-lock"></i>&nbsp; Proceed to Pay
+            </button>
+            <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:8px">
+              <i class="fa-solid fa-shield-halved"></i> Secure payment powered by Razorpay
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/auth.js"></script>
+<script>
+renderAuthButtons("authButtons");
+
+// Redirect if not logged in
+if (!isLoggedIn()) {
+  Swal.fire({
+    icon: "info",
+    title: "Login Required",
+    text: "Please login to buy lead credits",
+    confirmButtonText: "Login",
+    confirmButtonColor: "#1a73e8"
+  }).then(() => { window.location.href = "login.html"; });
+}
+
+// Render packages
+function renderPackages() {
+  const container = document.getElementById("packages");
+  container.innerHTML = "";
+  LEAD_PACKAGES.forEach(pkg => {
+    const perLead = Math.round(pkg.price / pkg.leads);
+    const isPopular = pkg.leads === 5;
+    container.innerHTML += '<div class="col-md-4">' +
+      '<div class="package-card' + (isPopular ? ' popular' : '') + '">' +
+        (isPopular ? '' : '') +
+        '<div class="lead-count">' + pkg.leads + '</div>' +
+        '<div class="lead-label">' + pkg.label + '</div>' +
+        (pkg.savings ? '<div class="savings-badge">Save ' + pkg.savings + '</div>' : '<div style="height:28px"></div>') +
+        '<div class="price">&#8377;' + pkg.price + ' <span>one-time</span></div>' +
+        '<div class="per-lead">&#8377;' + perLead + '/lead</div>' +
+        '<ul class="features">' +
+          '<li><i class="fa-solid fa-check"></i> ' + pkg.leads + ' student/tutor contacts</li>' +
+          '<li><i class="fa-solid fa-check"></i> Phone + Email access</li>' +
+          '<li><i class="fa-solid fa-check"></i> ' + (pkg.leads >= 5 ? 'Priority support' : 'Standard access') + '</li>' +
+          '<li><i class="fa-solid fa-check"></i> Valid for 30 days</li>' +
+        '</ul>' +
+        '<button class="btn-add-cart ' + (isPopular ? 'accent' : 'primary') + '" onclick="addToCartAction(\'' + pkg.id + '\')">' +
+          '<i class="fa-solid fa-cart-plus"></i>&nbsp; Add to Cart' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  });
+}
+
+function addToCartAction(pkgId) {
+  if (!isLoggedIn()) {
+    window.location.href = "login.html";
+    return;
+  }
+  const added = addToCart(pkgId);
+  if (added) {
+    renderCart();
+    Swal.fire({
+      icon: "success",
+      title: "Added to Cart!",
+      timer: 1200,
+      showConfirmButton: false
+    });
+  }
+}
+
+function renderCart() {
+  const cart = getCart();
+  const itemsDiv = document.getElementById("cartItems");
+  const footerDiv = document.getElementById("cartFooter");
+
+  if (cart.length === 0) {
+    itemsDiv.innerHTML = '<div class="empty-cart"><i class="fa-solid fa-cart-shopping" style="font-size:32px;color:var(--border);margin-bottom:8px"></i><p style="font-size:13px;margin:0">Your cart is empty</p></div>';
+    footerDiv.style.display = "none";
+    return;
+  }
+
+  let html = "";
+  let total = 0;
+  cart.forEach(item => {
+    const lineTotal = item.price * item.qty;
+    total += lineTotal;
+    html += '<div class="cart-item">' +
+      '<div><div class="item-name">' + item.label + (item.qty > 1 ? ' x' + item.qty : '') + '</div></div>' +
+      '<div class="item-price">&#8377;' + lineTotal + '</div>' +
+      '<button class="remove-btn" onclick="removeItem(\'' + item.id + '\')"><i class="fa-solid fa-trash"></i></button>' +
+    '</div>';
+  });
+  itemsDiv.innerHTML = html;
+  document.getElementById("cartTotal").innerHTML = "&#8377;" + total;
+  footerDiv.style.display = "block";
+}
+
+function removeItem(pkgId) {
+  removeFromCart(pkgId);
+  renderCart();
+}
+
+function checkout() {
+  if (!isLoggedIn()) { window.location.href = "login.html"; return; }
+  const cart = getCart();
+  if (cart.length === 0) { Swal.fire({ icon: "warning", title: "Cart is empty" }); return; }
+
+  const total = getCartTotal();
+  const leadCount = getCartLeadCount();
+
+  Swal.fire({
+    title: "Confirm Purchase",
+    html: '<div style="text-align:left;font-size:14px">' +
+      '<p>You are purchasing <strong>' + leadCount + ' lead credits</strong></p>' +
+      '<p>Total: <strong style="color:var(--accent);font-size:18px">&#8377;' + total + '</strong></p>' +
+      '<hr>' +
+      '<p style="font-size:12px;color:var(--text-muted)">' +
+        '<i class="fa-solid fa-info-circle"></i> Razorpay payment integration coming soon. For now, leads will be added directly for testing.' +
+      '</p>' +
+    '</div>',
+    showCancelButton: true,
+    confirmButtonText: "Confirm & Pay &#8377;" + total,
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#ff6d00",
+    cancelButtonColor: "#6c757d"
+  }).then(result => {
+    if (result.isConfirmed) {
+      // Add leads to wallet
+      addLeads(leadCount);
+      // Clear cart
+      saveCart([]);
+      renderCart();
+      document.getElementById("walletLeads").textContent = getLeads();
+
+      Swal.fire({
+        icon: "success",
+        title: "Payment Successful!",
+        html: '<p><strong>' + leadCount + ' lead credits</strong> have been added to your wallet.</p><p style="font-size:13px;color:var(--text-muted)">You can now view contact details of any tutor or student profile.</p>',
+        confirmButtonText: "Start Browsing",
+        confirmButtonColor: "#0d9e6c"
+      }).then(() => {
+        window.location.href = "search.html?type=tutor";
+      });
+    }
+  });
+}
+
+renderPackages();
+renderCart();
+document.getElementById("walletLeads").textContent = getLeads();
+</script>
+</body>
+</html>

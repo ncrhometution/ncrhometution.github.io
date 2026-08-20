@@ -1,297 +1,146 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>NCR Home Tuition</title>
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-
-<style>
-body{
-  background:#f4f4f4;
-  font-family: Arial, sans-serif;
-}
-
-/* ---------- Top Bar ---------- */
-.top-bar{
-  background:#fff;
-  border-bottom:1px solid #ddd;
-  padding:8px 0;
-}
-
-.breadcrumb-text{
-  font-size:13px;
-  color:#0d6efd;
-}
-
-.missed-call{
-  font-size:14px;
-  font-weight:600;
-  color:#0d6efd;
-}
-
-/* ---------- Header Search ---------- */
-.header-search{
-  background:#fff;
-  padding:15px 0;
-}
-
-.logo img{
-  height:45px;
-}
-
-.search-box{
-  display:flex;
-  gap:8px;
-}
-
-.search-box input,
-.search-box select{
-  height:38px;
-  font-size:14px;
-}
-
-.search-btn{
-  background:#ff6a00;
-  border:none;
-  color:#fff;
-  padding:0 14px;
-}
-
-/* ---------- Find Profile Card ---------- */
-.find-profile-title{
-  text-align:center;
-  font-size:20px;
-  font-weight:600;
-  color:#ff6a00;
-  margin:20px 0;
-}
-
-.profile-card{
-  background:#fff;
-  border-radius:6px;
-  padding:30px;
-  max-width:500px;
-  margin:0 auto 40px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-.profile-input{
-  max-width:300px;
-  margin:0 auto;
-  position:relative;
-}
-
-.profile-input input{
-  height:40px;
-}
-
-.error-tooltip{
-  position:absolute;
-  top:-30px;
-  right:0;
-  background:#e53935;
-  color:#fff;
-  padding:4px 8px;
-  font-size:12px;
-  border-radius:4px;
-  display:none;
-}
-
-.error-tooltip::after{
-  content:"";
-  position:absolute;
-  bottom:-6px;
-  right:10px;
-  border-width:6px;
-  border-style:solid;
-  border-color:#e53935 transparent transparent transparent;
-}
-
-.details-btn{
-  background:#ff6a00;
-  border:none;
-  color:#fff;
-  padding:6px 18px;
-  font-size:14px;
-  margin-top:20px;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <title>Find Tuition | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .find-page { padding: 60px 0; background: var(--bg); min-height: calc(100vh - 64px); }
+    .find-card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 48px 40px;
+      text-align: center;
+    }
+    .find-card .icon-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--accent), #ff9800);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 20px;
+      box-shadow: 0 6px 20px rgba(255,109,0,0.3);
+    }
+    .search-header {
+      background: var(--bg-white);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+  </style>
 </head>
-
 <body>
 
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
-    <a href="index.html" class="navbar-brand fw-bold" href="#">
-      <i class="fa-solid fa-house-chimney"></i> NCRhometuition
+    <a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      NCR Home Tuition
     </a>
-
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
-        <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link" href="student-register.html">Join As Student</a></li>
-        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join As Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor By Id</a></li>
-        <li class="nav-item"><a class="nav-link active" href="findbyidtution.html">Find Tuition By Id</a></li>
+        <li class="nav-item"><a class="nav-link" href="student-register.html">I Need a Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
+        <li class="nav-item"><a class="nav-link active" href="findbyidtution.html">Find Tuition</a></li>
       </ul>
-       <div class="d-flex gap-2" id="authButtons">
-        <a href="login.html" class="btn btn-outline-light btn-sm" id="loginBtn">Login</a>
-        <a href="ragister.html" class="btn btn-warning btn-sm" id="signupBtn">Sign Up</a>
+      <div class="auth-actions" id="authButtons">
+        <a href="login.html" class="btn-nav-login">Login</a>
+        <a href="student-register.html" class="btn-nav-signup">Sign Up Free</a>
       </div>
     </div>
   </div>
 </nav>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("admin_token");
-
-  const authBox = document.getElementById("authButtons");
-
-  if (token) {
-    // 🔁 Replace Login with Logout
-    authBox.innerHTML = `
-      <button class="btn btn-danger btn-sm" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    `;
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      Swal.fire({
-        title: "Logout?",
-        text: "You will be logged out of admin session",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#dc3545",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Yes, Logout"
-      }).then(result => {
-        if (result.isConfirmed) {
-          localStorage.removeItem("admin_token");
-
-          Swal.fire({
-            icon: "success",
-            title: "Logged Out 👋",
-            text: "Session ended successfully",
-            timer: 1500,
-            showConfirmButton: false
-          });
-
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
-      });
-    });
-  }
-});
-</script>
-
-<div class="header-search">
+<div class="search-header">
   <div class="container d-flex align-items-center gap-3">
-
-    <div class="logo">
-      <img src="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png" alt="NCR Home Tuition">
-    </div>
-
-    <div class="search-box flex-grow-1">
-      
-      <select class="form-select" id="typeSelect" style="max-width:130px">
-        <option value="tutor">find Teacher</option>
-        <option value="student">find Students</option>
-      </select>
-
-      <input type="text" id="queryInput" class="form-control" placeholder="Enter Course or Subject Keywords to Search">
-      <button class="search-btn" onclick="doSearch()"><i class="fa fa-search"></i></button>
-    </div>
-  </div>
-</div>
-
-<!-- Find Profile -->
-<div class="container">
-
-  <div class="hero-image">
-    <img src="https://i.postimg.cc/52Sypgbn/png-transparent-course-credit-education-academic-degree-student-student-angle-people-university-remo.png" width="370px" alt="Home Tutor Illustration">
-  </div>
-
-
-
-  <div class="find-profile-title">Find Student Profile</div>
-
-  <div class="profile-card text-center">
-
-    <div class="profile-input">
-      <div class="error-tooltip" id="errorTip">* This field is required</div>
-
-      <label class="form-label fw-bold">
-        Enter Profile Id* :
-      </label>
-      <input type="text" id="profileId" class="form-control" placeholder="Enter Profile Id">
-    </div>
-
-    <button class="details-btn" onclick="validateProfile()">
-      DETAILS
+    <select class="form-select" id="typeSelect" style="max-width:150px;height:40px;border-radius:var(--radius-md);font-size:13px">
+      <option value="tutor">Find Teacher</option>
+      <option value="student">Find Students</option>
+    </select>
+    <input type="text" id="queryInput" class="form-control" placeholder="Search by course or subject..." style="height:40px;border-radius:var(--radius-md);font-size:13px">
+    <button class="btn btn-accent-custom btn-sm" onclick="doSearch()" style="height:40px;padding:0 18px">
+      <i class="fa-solid fa-search"></i>
     </button>
-
   </div>
-
 </div>
 
+<section class="find-page">
+  <div class="find-card animate-in">
+    <div class="icon-circle"><i class="fa-solid fa-book-open"></i></div>
+    <h4 style="font-weight:800;margin-bottom:4px">Find Tuition by ID</h4>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px">Enter the tuition/post ID to view full details</p>
+
+    <div style="position:relative;max-width:320px;margin:0 auto">
+      <input type="text" id="profileId" class="form-control" placeholder="Enter Tuition ID" style="height:48px;border-radius:var(--radius-md);font-size:14px;text-align:center">
+      <div id="errorTip" style="display:none;position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:var(--danger);color:#fff;padding:4px 12px;border-radius:var(--radius-sm);font-size:12px;white-space:nowrap">
+        * This field is required
+      </div>
+    </div>
+
+    <button class="btn btn-accent-custom mt-4" onclick="validateProfile()" style="width:100%;justify-content:center;height:48px">
+      <i class="fa-solid fa-magnifying-glass"></i> View Details
+    </button>
+  </div>
+</section>
+
+<footer class="footer" style="margin-top:auto">
+  <div class="container">
+    <div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function doSearch() {
-  // const city = document.getElementById("citySelect").value;
-  const q    = document.getElementById("queryInput").value.trim();
+  const q = document.getElementById("queryInput").value.trim();
   const type = document.getElementById("typeSelect")?.value || "tutor";
-
-
   const params = new URLSearchParams();
-
-  // if (city) params.append("city", city);
-  if (q)    params.append("q", q);
-  params.append("type", type); 
-
-  window.location.href = `search.html?${params.toString()}`;
+  if (q) params.append("q", q);
+  params.append("type", type);
+  window.location.href = "search.html?" + params.toString();
 }
 
-
-
-</script>
-
-<script>
-function validateProfile(){
+function validateProfile() {
   const input = document.getElementById("profileId");
   const error = document.getElementById("errorTip");
-
-  if(input.value.trim() === ""){
+  if (input.value.trim() === "") {
     error.style.display = "block";
     input.focus();
     return;
   }
-
   error.style.display = "none";
-
-  const profileId = input.value.trim();
-
-  const type = "student";
-
-  window.location.href = `data.html?id=${profileId}&type=${type}`;
+  window.location.href = "data.html?id=" + input.value.trim() + "&type=student";
 }
-</script>
 
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("admin_token");
+  const authBox = document.getElementById("authButtons");
+  if (token) {
+    authBox.innerHTML = '<button class="btn-nav-login" id="logoutBtn" style="background:var(--danger-light);color:var(--danger);border-color:var(--danger)"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>';
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("admin_token");
+      window.location.href = "index.html";
+    });
+  }
+});
+</script>
 </body>
 </html>

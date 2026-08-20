@@ -1,398 +1,326 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <title>NCR Home Tuition</title>
-    <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
-
-
+  <title>Profile | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-
-.blurred {
-  filter: blur(6px);
-  user-select: none;
-  pointer-events: none;
-}
-
-
-
-</style>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="header.css">
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .blurred { filter: blur(6px); user-select: none; pointer-events: none; }
+    .profile-page { padding: 40px 0 60px; background: var(--bg); min-height: calc(100vh - 64px); }
+    .profile-header {
+      background: linear-gradient(135deg, var(--primary), #2979ff);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      color: #fff;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-header::after {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      backdrop-filter: blur(8px);
+    }
+    .detail-card {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .detail-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border-light);
+      padding: 0 24px;
+    }
+    .detail-tab {
+      padding: 14px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: var(--transition);
+    }
+    .detail-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .info-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+      align-items: center;
+    }
+    .info-row:last-child { border: none; }
+    .info-row .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-row .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .contact-sidebar {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 28px;
+      text-align: center;
+    }
+    .contact-sidebar h6 {
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .contact-info {
+      padding: 16px;
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .contact-info p {
+      margin: 4px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+  </style>
 </head>
-<header class="main-header">
-  
-  <nav class="navbar navbar-expand-lg navbar-dark container">
-    
-    <a href="index.html" class="navbar-brand fw-bold" href="#">
-      <i class="bi bi-house-door-fill"></i> Home
-    </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="mainNav">
-      
-      <ul class="navbar-nav mx-auto gap-lg-3">
-        <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Explainer Videos</a></li>
-        <li class="nav-item"><a class="nav-link" href="student-register.html">I Need A Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join As Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor By Id</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition By Id</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            More
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Blog</a></li>
-            <li><a class="dropdown-item" href="#">FAQs</a></li>
-            <li><a class="dropdown-item" href="#">Contact</a></li>
-          </ul>
-        </li>
-      </ul>
-
-      <div class="d-flex auth-links" id="authButtons">
-        <a href="login.html" id="loginBtn" class="nav-link">
-          <i class="bi bi-box-arrow-in-right"></i> Log in
-        </a>
-        <a href="ragister.html" id="signupBtn" class="nav-link signup">
-          <i class="bi bi-person-plus-fill"></i> Sign Up
-        </a>
-      </div>
-
-    </div>
-  </nav>
-
-
-
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<nav class="navbar navbar-expand-lg navbar-modern">
+  <div class="container">
+    <a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      NCR Home Tuition
+    </a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
+        <li class="nav-item"><a class="nav-link" href="student-register.html">I Need a Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
+      </ul>
+      <div class="auth-actions" id="authButtons">
+        <a href="login.html" class="btn-nav-login">Login</a>
+        <a href="student-register.html" class="btn-nav-signup">Sign Up Free</a>
+      </div>
+    </div>
+  </div>
+</nav>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("admin_token");
-
-  const authBox = document.getElementById("authButtons");
-
-  if (token) {
-    // 🔁 Replace Login with Logout
-    authBox.innerHTML = `
-      <button class="btn btn-danger btn-sm" id="logoutBtn">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    `;
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      Swal.fire({
-        title: "Logout?",
-        text: "You will be logged out of admin session",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#dc3545",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Yes, Logout"
-      }).then(result => {
-        if (result.isConfirmed) {
-          localStorage.removeItem("admin_token");
-
-          Swal.fire({
-            icon: "success",
-            title: "Logged Out 👋",
-            text: "Session ended successfully",
-            timer: 1500,
-            showConfirmButton: false
-          });
-
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
-      });
-    });
-  }
-});
-</script>
-    
-<div class="container my-5">
-
-  <div class="tuition-header d-flex justify-content-between align-items-start">
-    <div>
-      <h4 class="fw-bold">
-        Wanted home tutor for Grade 9 CBSE – Physics, Chemistry, Biology
-      </h4>
-      <small class="text-muted">Tuition ID: <b><span id="id_number"></span></b> </small>
+<section class="profile-page">
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header animate-in" id="profileHeader" style="display:none">
+      <div class="d-flex align-items-center gap-3">
+        <div class="profile-avatar" id="avatarLetter">N</div>
+        <div>
+          <h4 style="margin:0;font-weight:800;color:#fff" id="profileName">Loading...</h4>
+          <span style="font-size:13px;opacity:0.8" id="profileType">Tutor Profile</span>
+        </div>
+        <div class="ms-auto">
+          <span style="background:rgba(255,255,255,0.2);padding:6px 14px;border-radius:var(--radius-full);font-size:12px;font-weight:600" id="profileBadge">ID: ---</span>
+        </div>
+      </div>
     </div>
 
-    <button class="btn btn-warning px-4 fw-semibold">
-      APPLY TUITION
-    </button>
-  </div>
-
-  <!-- Card -->
-  <div class="card shadow-sm mt-4">
-
-    <!-- Tabs -->
-    <ul class="nav nav-tabs px-3 pt-3">
-      <li class="nav-item">
-        <a class="nav-link active" href="#">Details</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Updates</a>
-      </li>
-    </ul>
-
-    <div class="card-body">
-      <div class="row">
-
-        <!-- LEFT -->
-        <div class="col-md-8">
-
-          <h6 class="section-title">Course Details</h6>
-
-
-
-
-
-
-
-
-          
-          <div class="row info-row">
-            <div class="col-sm-4 label">Course</div>
-            <div class="col-sm-8" id="course"></div>
-
-            <div class="col-sm-4 label">Subjects</div>
-            <div class="col-sm-8" id="subject"></div>
-
-            <div class="col-sm-4 label">Tuition Type</div>
-            <div class="col-sm-8" id="tuitionType"></div>
-
-            <div class="col-sm-4 label">City</div>
-            <div class="col-sm-8" id="city"></div>
-
-            <div class="col-sm-4 label">Location</div>
-            <div class="col-sm-8" id="location"></div>
-
-            <div class="col-sm-4 label">Pincode</div>
-            <div class="col-sm-8" id="pincode"></div>
+    <div class="row g-4">
+      <!-- Details -->
+      <div class="col-lg-8">
+        <div class="detail-card">
+          <div class="detail-tabs">
+            <div class="detail-tab active">Details</div>
+            <div class="detail-tab">Updates</div>
           </div>
-
-          <hr>
-
-          <h6 class="section-title">Preferences</h6>
-
-          
-          <div class="row info-row">
-            <div class="col-sm-4 label">Gender</div>
-            <div class="col-sm-8" id="gender"></div>
-
-            <div class="col-sm-4 label">Preferred Time</div>
-            <div class="col-sm-8" id="preferredTime"></div>
-
-            <div class="col-sm-4 label">Hourly Fee</div>
-            <div class="col-sm-8" id="hourlyFee"></div>
-          </div>
-
-          <hr>
-
-          <h6 class="section-title">Tuition Description</h6>
-          <p class="text-muted" id="description">
-            Wanted home tutor for Grade 9 CBSE, Physics, Chemistry and Biology.
-          </p>
-
-        </div>
-
-        <!-- RIGHT -->
-        <div class="col-md-4">
-
-          <div class="contact-card text-center">
-            <h6 class="mb-3">
-              <i class="bi bi-lock-fill"></i> Contact Info
+          <div class="p-4">
+            <h6 style="font-weight:700;color:var(--primary);margin-bottom:16px">
+              <i class="fa-solid fa-book"></i> Course Details
             </h6>
-
-            <div class="blur-box" id="contactBox">
-              <p>📞 XXXXXXXX89</p>
-              <p>📧 xxxxx@gmail.com</p>
-              <p>🏠 XXXXXXXX</p>
+            <div id="detailsSection">
+              <div class="info-row"><div class="label">Course</div><div class="value" id="course">--</div></div>
+              <div class="info-row"><div class="label">Subjects</div><div class="value" id="subject">--</div></div>
+              <div class="info-row"><div class="label">Mode</div><div class="value" id="tuitionType">--</div></div>
+              <div class="info-row"><div class="label">City</div><div class="value" id="city">--</div></div>
+              <div class="info-row"><div class="label">Location</div><div class="value" id="location">--</div></div>
+              <div class="info-row"><div class="label">Pincode</div><div class="value" id="pincode">--</div></div>
             </div>
 
-           <a href="login.html"><button class="btn btn-primary w-100 mb-2" id="loginBtn">
-              LOGIN TO VIEW
-            </button> </a>
+            <hr style="margin:20px 0;border-color:var(--border-light)">
+            <h6 style="font-weight:700;color:var(--accent);margin-bottom:16px">
+              <i class="fa-solid fa-sliders"></i> Preferences
+            </h6>
+            <div id="prefSection">
+              <div class="info-row"><div class="label">Gender</div><div class="value" id="gender">--</div></div>
+              <div class="info-row"><div class="label">Preferred Time</div><div class="value" id="preferredTime">--</div></div>
+              <div class="info-row"><div class="label">Hourly Fee</div><div class="value" id="hourlyFee">--</div></div>
+            </div>
 
-           <a href="tutor-register.html"><button class="btn btn-outline-warning w-100" id="joinBtn" >
-              JOIN AS TUTOR – FREE
-            </button> </a>
-
+            <hr style="margin:20px 0;border-color:var(--border-light)">
+            <h6 style="font-weight:700;color:var(--success);margin-bottom:8px">
+              <i class="fa-solid fa-align-left"></i> Description
+            </h6>
+            <p style="color:var(--text-secondary);font-size:14px" id="description">Loading...</p>
           </div>
-
         </div>
-
-
-
       </div>
 
-      
-
+      <!-- Contact Sidebar -->
+      <div class="col-lg-4">
+        <div class="contact-sidebar">
+          <h6><i class="fa-solid fa-lock" style="color:var(--text-muted)"></i> Contact Information</h6>
+          <div class="contact-info blurred" id="contactBox">
+            <p><i class="fa-solid fa-phone"></i> XXXXXXXX89</p>
+            <p><i class="fa-solid fa-envelope"></i> xxxxx@gmail.com</p>
+            <p><i class="fa-solid fa-location-dot"></i> XXXXXXXX</p>
+          </div>
+          <a href="login.html" class="btn btn-primary-custom w-100 justify-content-center mb-2" id="loginBtn">
+            <i class="fa-solid fa-right-to-bracket"></i> Login to View
+          </a>
+          <a href="tutor-register.html" class="btn btn-outline-custom w-100 justify-content-center" id="joinBtn" style="font-size:13px">
+            <i class="fa-solid fa-user-plus"></i> Join as Tutor Free
+          </a>
+        </div>
+      </div>
     </div>
   </div>
+</section>
 
-</div>
-
-        <footer class="text-center py-3 bg-dark text-white">
-  © 2023 NCRhometuition
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div>
+  </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
-  const type = params.get("type"); // student | tutor
+  const type = params.get("type");
 
   if (!id || !type) {
-    Swal.fire({
-      icon: "error",
-      title: "Invalid Link",
-      text: "Profile ID or type is missing",
-      confirmButtonColor: "#dc3545"
-    });
+    Swal.fire({ icon: "error", title: "Invalid Link", text: "Profile ID or type is missing", confirmButtonColor: "#dc3545" });
     return;
   }
 
   const adminToken = localStorage.getItem("admin_token");
 
-  Swal.fire({
-    title: "Loading Profile...",
-    text: "Please wait",
-    allowOutsideClick: false,
-    didOpen: () => Swal.showLoading()
-  });
+  Swal.fire({ title: "Loading Profile...", text: "Please wait", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-  fetch(`https://ncrhomr.vercel.app/${type}/${id}`, {
+  fetch("https://ncrhomr.vercel.app/" + type + "/" + id, {
     headers: adminToken ? { "X-Admin-Token": adminToken } : {}
   })
-  .then(res => {
-    if (!res.ok) throw new Error("Profile not found");
-    return res.json();
-  })
+  .then(res => { if (!res.ok) throw new Error("Profile not found"); return res.json(); })
   .then(data => {
     Swal.close();
-    showProfileFound(data);
+    document.getElementById("profileHeader").style.display = "block";
+    Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#ff6d00" });
     fillData(data);
   })
   .catch(() => {
-    Swal.fire({
-      icon: "error",
-      title: "Profile Not Found",
-      text: "Invalid Profile ID or profile does not exist",
-      confirmButtonColor: "#dc3545"
-    });
+    Swal.fire({ icon: "error", title: "Profile Not Found", text: "Invalid Profile ID or profile does not exist", confirmButtonColor: "#dc3545" });
   });
 
-  function showProfileFound(data) {
-    Swal.fire({
-      icon: "success",
-      title: "Profile Found 🎉",
-      html: `
-        <div style="text-align:left;font-size:14px">
-          <b>Name:</b> ${data.name}<br>
-          <b>Type:</b> ${data.type.toUpperCase()}<br>
-          <b>Course:</b> ${data.course}<br>
-          <b>Subject:</b> ${data.subject}<br>
-          <b>City:</b> ${data.city || "N/A"}
-        </div>
-      `,
-      confirmButtonText: "View Details",
-      confirmButtonColor: "#ff7a00"
-    });
-  }
-
   function fillData(data) {
-    console.log("Rendering profile:", data);
-
-    setText("course", data.course);
-    setText("subject", data.subject);
-    setText("tuitionType", data.preferred_mode);
-    setText("city", data.city);
-    setText("location", data.city);
-    setText("pincode", data.pincode);
-
-    document.getElementById("id_number").innerText = data.id;
-
-
-    setText("gender", data.gender || "Any");
-    setText("preferredTime", data.preferred_time || "Flexible");
-    setText("hourlyFee", data.hourly_fee || "Negotiable");
-
-    setText(
-      "description",
-      `${data.type === "student" ? "Wanted" : "Available"} tutor for ${data.course}, ${data.subject}`
-    );
+    document.getElementById("avatarLetter").textContent = (data.name||"N").charAt(0).toUpperCase();
+    document.getElementById("profileName").textContent = data.name || "Unknown";
+    document.getElementById("profileType").textContent = ((data.type||type).toUpperCase()) + " Profile";
+    document.getElementById("profileBadge").textContent = "ID: " + (data.id || id);
+    document.getElementById("course").textContent = data.course || "N/A";
+    document.getElementById("subject").textContent = data.subject || "N/A";
+    document.getElementById("tuitionType").textContent = data.preferred_mode || "N/A";
+    document.getElementById("city").textContent = data.city || "N/A";
+    document.getElementById("location").textContent = data.city || "N/A";
+    document.getElementById("pincode").textContent = data.pincode || "N/A";
+    document.getElementById("gender").textContent = data.gender || "Any";
+    document.getElementById("preferredTime").textContent = data.preferred_time || "Flexible";
+    document.getElementById("hourlyFee").textContent = data.hourly_fee || "Negotiable";
+    document.getElementById("description").textContent = (data.type === "student" ? "Wanted" : "Available") + " tutor for " + (data.course||"") + ", " + (data.subject||"");
 
     const contactBox = document.getElementById("contactBox");
-
-    const isAdmin =
-      !!adminToken &&
-      typeof data.email === "string" &&
-      typeof data.mobile_no === "string";
-
-    console.log("ADMIN CHECK:", isAdmin);
+    const isAdmin = !!adminToken && typeof data.email === "string" && typeof data.mobile_no === "string";
 
     if (isAdmin) {
-      contactBox.classList.remove("blurred"); // admin
-      
-
-
-
-      contactBox.innerHTML = `
-        <p>📞 ${data.mobile_no}</p>
-        <p>📧 ${data.email}</p>
-        <p>🌍 ${data.city}, ${data.country}</p>
-      `;
-
-      hide("loginBtn");
-      hide("joinBtn");
-
+      contactBox.classList.remove("blurred");
+      contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + data.mobile_no + '</p><p><i class="fa-solid fa-envelope"></i> ' + data.email + '</p><p><i class="fa-solid fa-location-dot"></i> ' + data.city + ', ' + (data.country||'') + '</p>';
+      document.getElementById("loginBtn").style.display = "none";
+      document.getElementById("joinBtn").style.display = "none";
     } else {
-      contactBox.classList.add("blurred");    // public
+      contactBox.classList.add("blurred");
     }
   }
+});
 
-  function setText(id, value) {
-    const el = document.getElementById(id);
-    if (!el) {
-      console.warn(`Missing element: ${id}`);
-      return;
-    }
-    el.innerText = value || "N/A";
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("admin_token");
+  const authBox = document.getElementById("authButtons");
+  if (token) {
+    authBox.innerHTML = '<button class="btn-nav-login" id="logoutBtn" style="background:var(--danger-light);color:var(--danger);border-color:var(--danger)"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>';
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("admin_token");
+      window.location.href = "index.html";
+    });
   }
-
-  function hide(id) {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-  }
-
 });
 </script>
-
-
-
-
+<script>
+// Lead-gated contact info
+function revealContact() {
+  if (!isLoggedIn()) {
+    Swal.fire({ icon: "info", title: "Login Required", text: "Please login to view contact details", confirmButtonText: "Login", confirmButtonColor: "#1a73e8" })
+      .then(() => { window.location.href = "login.html"; });
+    return;
+  }
+  if (getLeads() <= 0) {
+    Swal.fire({ icon: "warning", title: "No Leads Left", text: "Buy lead credits to view contact information", confirmButtonText: "Buy Leads", confirmButtonColor: "#ff6d00", showCancelButton: true, cancelButtonText: "Cancel" })
+      .then(r => { if (r.isConfirmed) window.location.href = "cart.html"; });
+    return;
+  }
+  // Use 1 lead
+  if (useLead()) {
+    document.getElementById("contactBox").classList.remove("blurred");
+    document.getElementById("loginBtn").style.display = "none";
+    document.getElementById("contactBox").innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (currentData?.mobile_no || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (currentData?.email || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (currentData?.city || "N/A") + '</p>';
+    document.getElementById("leadsLeft").textContent = getLeads() + " leads remaining";
+  }
+}
+var currentData = null;
+</script>
 </body>
 </html>
