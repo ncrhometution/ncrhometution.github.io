@@ -516,6 +516,183 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(255,255,255,0.35);
 }
 
+/* ---------- Enhanced Cart & Lead Cards ---------- */
+.pkg-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-xl);
+  border: 2px solid transparent;
+  transition: var(--transition);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+}
+.pkg-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary);
+}
+.pkg-card.popular {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+.pkg-card.popular::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--accent), #ff9800);
+  z-index: -1;
+}
+.pkg-badge {
+  position: absolute;
+  top: 12px;
+  right: -30px;
+  background: linear-gradient(135deg, var(--accent), #ff9800);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 40px;
+  transform: rotate(45deg);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(255,109,0,0.3);
+}
+.pkg-top {
+  padding: 32px 28px 24px;
+  text-align: center;
+  position: relative;
+}
+.pkg-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 16px;
+  transition: var(--transition);
+}
+.pkg-card:hover .pkg-icon {
+  transform: scale(1.1);
+}
+.pkg-card.blue .pkg-icon {
+  background: linear-gradient(135deg, var(--primary-light), #d4e4ff);
+  color: var(--primary);
+  box-shadow: 0 4px 14px rgba(26,115,232,0.15);
+}
+.pkg-card.orange .pkg-icon {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  color: var(--accent);
+  box-shadow: 0 4px 14px rgba(255,109,0,0.15);
+}
+.pkg-card.green .pkg-icon {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  color: var(--success);
+  box-shadow: 0 4px 14px rgba(16,158,108,0.15);
+}
+.pkg-leads {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.pkg-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.pkg-price-wrap {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px dashed var(--border);
+}
+.pkg-price {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.pkg-per {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.pkg-savings {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  color: #1b5e20;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+.pkg-bottom {
+  padding: 24px 28px 28px;
+  margin-top: auto;
+}
+.pkg-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 20px;
+}
+.btn-add-cart {
+  width: 100%;
+  height: 56px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.3px;
+}
+.pkg-card.blue .btn-add-cart {
+  background: linear-gradient(135deg, var(--primary), #2979ff);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(26,115,232,0.3);
+}
+.pkg-card.blue .btn-add-cart:hover {
+  background: linear-gradient(135deg, var(--primary-dark), #1565c0);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(26,115,232,0.4);
+}
+.pkg-card.orange .btn-add-cart {
+  background: linear-gradient(135deg, var(--accent), #ff9800);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255,109,0,0.3);
+}
+.pkg-card.orange .btn-add-cart:hover {
+  background: linear-gradient(135deg, var(--accent-dark), #e65100);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,109,0,0.4);
+}
+.pkg-card.green .btn-add-cart {
+  background: linear-gradient(135deg, var(--success), #10a36a);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(16,158,108,0.3);
+}
+.pkg-card.green .btn-add-cart:hover {
+  background: linear-gradient(135deg, #087a50, #066d44);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16,158,108,0.4);
+}
+.btn-add-cart:active {
+  transform: translateY(0);
+}
+
 /* ---------- Profile Card (data.html) ---------- */
 .profile-detail-card {
   background: var(--bg-white);

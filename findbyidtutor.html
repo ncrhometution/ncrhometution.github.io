@@ -107,21 +107,26 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/auth.js"></script>
+<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+renderAuthButtons("authButtons");
 function doSearch() {
-  const q = document.getElementById("queryInput").value.trim();
-  const type = document.getElementById("typeSelect")?.value || "tutor";
-  const params = new URLSearchParams();
+  var q = document.getElementById("queryInput").value.trim();
+  var type = document.getElementById("typeSelect") ? document.getElementById("typeSelect").value : "tutor";
+  var params = new URLSearchParams();
   if (q) params.append("q", q);
   params.append("type", type);
   window.location.href = "search.html?" + params.toString();
 }
-
 function validateProfile() {
-  const input = document.getElementById("profileId");
-  const error = document.getElementById("errorTip");
+  var input = document.getElementById("profileId");
+  var error = document.getElementById("errorTip");
   if (input.value.trim() === "") {
     error.style.display = "block";
     input.focus();
@@ -130,18 +135,6 @@ function validateProfile() {
   error.style.display = "none";
   window.location.href = "data.html?id=" + input.value.trim() + "&type=tutor";
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("admin_token");
-  const authBox = document.getElementById("authButtons");
-  if (token) {
-    authBox.innerHTML = '<button class="btn-nav-login" id="logoutBtn" style="background:var(--danger-light);color:var(--danger);border-color:var(--danger)"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>';
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem("admin_token");
-      window.location.href = "index.html";
-    });
-  }
-});
 </script>
 </body>
 </html>

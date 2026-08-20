@@ -304,11 +304,33 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/auth.js"></script>
+<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
 <script>
+// Require login on page load
+document.addEventListener("DOMContentLoaded", function() {
+  renderAuthButtons("authButtons");
+  if (!requireAuth("student-register.html")) return;
+  // Auto-fill from profile
+  var profile = getProfile();
+  if (profile) {
+    var nameInput = document.querySelector('#studentForm input[name="name"]');
+    var mobileInput = document.querySelector('#studentForm input[name="mobile_no"]');
+    var emailInput = document.querySelector('#studentForm input[name="email"]');
+    if (nameInput && profile.displayName) nameInput.value = profile.displayName;
+    if (mobileInput && profile.mobile_no) { mobileInput.value = profile.mobile_no; mobileInput.readOnly = true; mobileInput.style.background = "#f8f9fa"; }
+    if (emailInput && profile.email) { emailInput.value = profile.email; emailInput.readOnly = true; emailInput.style.background = "#f8f9fa"; }
+  }
+});
+
 document.getElementById("studentForm").addEventListener("submit", async function(e) {
   e.preventDefault();
+  if (!requireAuth()) return;
   const form = e.target;
   const formData = new FormData(form);
   const payload = Object.fromEntries(formData.entries());
@@ -354,22 +376,5 @@ document.getElementById("studentForm").addEventListener("submit", async function
 });
 
 renderAuthButtons("authButtons");</script>
-<script>
-// Auto-fill from profile
-document.addEventListener("DOMContentLoaded", function() {
-  const profile = getProfile();
-  if (profile) {
-    const nameInput = document.querySelector('#studentForm input[name="name"]');
-    const mobileInput = document.querySelector('#studentForm input[name="mobile_no"]');
-    const emailInput = document.querySelector('#studentForm input[name="email"]');
-    if (nameInput && profile.displayName) nameInput.value = profile.displayName;
-    if (mobileInput && profile.mobile_no) mobileInput.value = profile.mobile_no;
-    if (emailInput && profile.email) emailInput.value = profile.email;
-    // Disable auto-filled fields
-    if (mobileInput && profile.mobile_no) { mobileInput.readOnly = true; mobileInput.style.background = "#f8f9fa"; }
-    if (emailInput && profile.email) { emailInput.readOnly = true; emailInput.style.background = "#f8f9fa"; }
-  }
-});
-</script>
 </body>
 </html>

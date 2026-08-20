@@ -255,40 +255,44 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>`n<script src="js/auth.js"></script>`n<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/auth.js"></script>
+<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+renderAuthButtons("authButtons");
+
 // Load cities
 document.addEventListener("DOMContentLoaded", function () {
   fetch("https://ncrhomr.vercel.app/cities")
-    .then(r => r.json())
-    .then(data => {
-      const citySelect = document.getElementById("citySelect");
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var citySelect = document.getElementById("citySelect");
       citySelect.innerHTML = '<option value="">All Cities</option>';
-      data.cities.forEach(city => {
+      data.cities.forEach(function(city) {
         if (city && city.trim() !== "") {
-          const opt = document.createElement("option");
+          var opt = document.createElement("option");
           opt.value = city;
           opt.textContent = city;
           citySelect.appendChild(opt);
         }
       });
     })
-    .catch(e => console.error("Error loading cities:", e));
+    .catch(function(e) { console.error("Error loading cities:", e); });
 });
 
-// Search
 function doSearch() {
-  const city = document.getElementById("citySelect").value;
-  const q = document.getElementById("queryInput").value.trim();
-  const type = document.getElementById("typeSelect")?.value || "tutor";
-  const params = new URLSearchParams();
+  var city = document.getElementById("citySelect").value;
+  var q = document.getElementById("queryInput").value.trim();
+  var type = document.getElementById("typeSelect") ? document.getElementById("typeSelect").value : "tutor";
+  var params = new URLSearchParams();
   if (city) params.append("city", city);
   if (q) params.append("q", q);
   params.append("type", type);
   window.location.href = "search.html?" + params.toString();
-}
-
-renderAuthButtons("authButtons");</script>
+}</script>
 </body>
 </html>
