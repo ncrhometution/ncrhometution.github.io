@@ -215,6 +215,7 @@
           <a href="tutor-register.html" class="btn btn-outline-custom w-100 justify-content-center" id="joinBtn" style="font-size:13px">
             <i class="fa-solid fa-user-plus"></i> Join as Tutor Free
           </a>
+          <p id="leadsLeft" style="font-size:12px;color:var(--text-muted);margin:8px 0 0;display:none"></p>
         </div>
       </div>
     </div>
@@ -260,8 +261,9 @@ document.addEventListener("DOMContentLoaded", function() {
     Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#ff6d00" });
     fillData(data);
   })
-  .catch(() => {
-    Swal.fire({ icon: "error", title: "Profile Not Found", text: "Invalid Profile ID or profile does not exist", confirmButtonColor: "#dc3545" });
+  .catch(function(e) {
+    console.error("Profile load error:", e);
+    Swal.fire({ icon: "error", title: "Profile Not Found", text: "Could not load profile. Please try again.", confirmButtonColor: "#dc3545" });
   });
 
   function fillData(data) {
@@ -295,11 +297,16 @@ document.addEventListener("DOMContentLoaded", function() {
       if(isLoggedIn()){
         var leadsLeft = getLeads();
         var existingBtn = document.getElementById("loginBtn");
+        var leadsLeftEl = document.getElementById("leadsLeft");
         if(leadsLeft > 0){
           existingBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Reveal Contact (1 lead)';
           existingBtn.setAttribute("onclick", "revealContact()");
+          existingBtn.href = "javascript:void(0)";
         }
-        document.getElementById("leadsLeft").textContent = leadsLeft + " leads remaining";
+        if(leadsLeftEl){
+          leadsLeftEl.style.display = 'block';
+          leadsLeftEl.textContent = leadsLeft + " leads remaining";
+        }
       }
     }
   }
@@ -323,7 +330,8 @@ function revealContact() {
     document.getElementById("contactBox").classList.remove("blurred");
     document.getElementById("loginBtn").style.display = "none";
     document.getElementById("contactBox").innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (currentData?.mobile_no || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (currentData?.email || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (currentData?.city || "N/A") + '</p>';
-    document.getElementById("leadsLeft").textContent = getLeads() + " leads remaining";
+    var leadsLeftEl = document.getElementById("leadsLeft");
+    if(leadsLeftEl) leadsLeftEl.textContent = getLeads() + " leads remaining";
   }
 }
 var currentData = null;
