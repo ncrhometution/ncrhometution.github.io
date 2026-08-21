@@ -293,7 +293,7 @@ function completeProfile() {
   syncProfileToFirestore();
 
   Swal.fire({ icon: "success", title: "Welcome to NCR Home Tuition!", text: "Your profile is ready", confirmButtonColor: "#0d9e6c" })
-    .then(() => { window.location.href = "index.html"; });
+    .then(() => { window.location.href = "index.html?welcome=1"; });
 }
 
 // ---- Step navigation ----

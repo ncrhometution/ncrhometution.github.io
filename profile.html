@@ -32,45 +32,50 @@
     .quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}
     .qa-btn{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-white);text-decoration:none;color:var(--text-primary);font-weight:600;font-size:14px;transition:var(--transition)}
     .qa-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-md)}
-    .qa-btn i{font-size:16px}
     .btn-logout{width:100%;margin-top:20px;padding:12px;border-radius:var(--radius-md);border:2px solid var(--danger);background:transparent;color:var(--danger);font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition)}
     .btn-logout:hover{background:var(--danger);color:#fff}
+    .btn-edit{position:absolute;top:20px;right:20px;padding:6px 14px;border-radius:var(--radius-full);border:1.5px solid var(--primary);background:transparent;color:var(--primary);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:6px}
+    .btn-edit:hover{background:var(--primary);color:#fff}
+    .saved-section{margin-top:24px}
+    .saved-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px;background:var(--bg)}
+    .saved-item .si-info{display:flex;align-items:center;gap:10px;min-width:0}
+    .saved-item .si-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+    .saved-item .si-avatar.tutor{background:var(--primary)}
+    .saved-item .si-avatar.student{background:var(--success)}
+    .saved-item .si-name{font-weight:600;font-size:14px}
+    .saved-item .si-meta{font-size:12px;color:var(--text-muted)}
+    .saved-item .si-actions{display:flex;gap:6px}
+    .saved-item .si-actions a,.saved-item .si-actions button{height:32px;padding:0 10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:var(--transition);text-decoration:none;display:flex;align-items:center;justify-content:center}
+    .saved-item .si-actions a{background:var(--primary);color:#fff}
+    .saved-item .si-actions button{background:var(--danger);color:#fff}
     @media(max-width:576px){.profile-stats{grid-template-columns:1fr}.quick-actions{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div id="navbar-placeholder"></div>
-
   <div class="profile-page">
     <div class="container">
-      <div class="profile-card animate-in" id="profileCard">
+      <div class="profile-card animate-in" style="position:relative" id="profileCard">
+        <button class="btn-edit" onclick="openEditModal()"><i class="fa-solid fa-pen"></i> Edit Profile</button>
         <div class="profile-hero">
           <div class="profile-avatar" id="avatar">U</div>
           <h2 id="userName">Guest</h2>
           <p id="userEmail">Not logged in</p>
         </div>
-        <div class="profile-stats" id="profileStats">
-          <div class="stat-box">
-            <div class="stat-icon blue"><i class="fa-solid fa-bolt"></i></div>
-            <div class="stat-value" id="statLeads">0</div>
-            <div class="stat-label">Leads</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-icon orange"><i class="fa-solid fa-shopping-cart"></i></div>
-            <div class="stat-value" id="statCart">0</div>
-            <div class="stat-label">In Cart</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-icon green"><i class="fa-solid fa-shield"></i></div>
-            <div class="stat-value" id="statRole">-</div>
-            <div class="stat-label">Role</div>
-          </div>
+        <div class="profile-stats">
+          <div class="stat-box"><div class="stat-icon blue"><i class="fa-solid fa-bolt"></i></div><div class="stat-value" id="statLeads">0</div><div class="stat-label">Leads</div></div>
+          <div class="stat-box"><div class="stat-icon orange"><i class="fa-solid fa-shopping-cart"></i></div><div class="stat-value" id="statCart">0</div><div class="stat-label">In Cart</div></div>
+          <div class="stat-box"><div class="stat-icon green"><i class="fa-solid fa-shield"></i></div><div class="stat-value" id="statRole">-</div><div class="stat-label">Role</div></div>
         </div>
         <h3 style="font-weight:700;font-size:16px;margin-bottom:12px"><i class="fa-solid fa-user"></i> Personal Info</h3>
         <div id="infoSection">
           <div class="info-row"><div class="info-icon"><i class="fa-solid fa-user"></i></div><div><div class="info-label">Name</div><div class="info-value" id="infoName">-</div></div></div>
           <div class="info-row"><div class="info-icon"><i class="fa-solid fa-envelope"></i></div><div><div class="info-label">Email</div><div class="info-value" id="infoEmail">-</div></div></div>
           <div class="info-row"><div class="info-icon"><i class="fa-solid fa-phone"></i></div><div><div class="info-label">Mobile</div><div class="info-value" id="infoMobile">-</div></div></div>
+        </div>
+        <div class="saved-section">
+          <h3 style="font-weight:700;font-size:16px;margin-bottom:12px"><i class="fa-solid fa-bookmark"></i> Saved Profiles</h3>
+          <div id="savedList"><p style="font-size:13px;color:var(--text-muted)">No saved profiles yet. Browse search results and save profiles to view them here.</p></div>
         </div>
         <div class="quick-actions">
           <a href="cart.html" class="qa-btn"><i class="fa-solid fa-shopping-cart" style="color:var(--accent)"></i> Buy Leads</a>
@@ -82,9 +87,7 @@
       </div>
     </div>
   </div>
-
   <footer class="footer"><div class="container"><div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div></div></footer>
-
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -92,23 +95,76 @@
   <script src="js/auth.js"></script>
   <script>
     firebase.initializeApp(FIREBASE_CONFIG);
-    document.getElementById('navbar-placeholder').innerHTML = getNavHTML('');
-    renderAuthButtons('authButtons');
+    document.getElementById("navbar-placeholder").innerHTML = getNavHTML("");
+    renderAuthButtons("authButtons");
 
-    if (!isLoggedIn()) {
-      window.location.href = 'login.html';
-    } else {
-      var profile = getProfile();
-      var initial = (profile.displayName || profile.email || 'U').charAt(0).toUpperCase();
-      document.getElementById('avatar').textContent = initial;
-      document.getElementById('userName').textContent = profile.displayName || 'User';
-      document.getElementById('userEmail').textContent = profile.email || '';
-      document.getElementById('statLeads').textContent = getLeads();
-      document.getElementById('statCart').textContent = getCartItemCount();
-      document.getElementById('statRole').textContent = profile.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : '-';
-      document.getElementById('infoName').textContent = profile.displayName || '-';
-      document.getElementById('infoEmail').textContent = profile.email || '-';
-      document.getElementById('infoMobile').textContent = profile.mobile_no || '-';
+    if(!isLoggedIn()){window.location.href="login.html";}
+    else{
+      loadCartFromFirestore().then(function(){renderProfile();renderSaved();renderAuthButtons("authButtons");});
+    }
+
+    function renderProfile(){
+      var p=getProfile();if(!p)return;
+      var i=(p.displayName||p.email||"U").charAt(0).toUpperCase();
+      document.getElementById("avatar").textContent=i;
+      document.getElementById("userName").textContent=p.displayName||"User";
+      document.getElementById("userEmail").textContent=p.email||"";
+      document.getElementById("statLeads").textContent=getLeads();
+      document.getElementById("statCart").textContent=getCartItemCount();
+      document.getElementById("statRole").textContent=p.role?p.role.charAt(0).toUpperCase()+p.role.slice(1):"-";
+      document.getElementById("infoName").textContent=p.displayName||"-";
+      document.getElementById("infoEmail").textContent=p.email||"-";
+      document.getElementById("infoMobile").textContent=p.mobile_no||"-";
+    }
+
+    function renderSaved(){
+      var list=getSavedProfiles();var el=document.getElementById("savedList");
+      if(!list||list.length===0){el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">No saved profiles yet.</p>';return;}
+      el.innerHTML=list.map(function(s){
+        var isTutor=s.type==="tutor";
+        return '<div class="saved-item"><div class="si-info"><div class="si-avatar '+(isTutor?"tutor":"student")+'">'+(s.name||"N").charAt(0).toUpperCase()+'</div><div><div class="si-name">'+(s.name||"Unknown")+'</div><div class="si-meta">'+(s.city||"")+(s.course?" - "+s.course:"")+'</div></div></div><div class="si-actions"><a href="data.html?id='+s.id+'&type='+s.type+'"><i class="fa-solid fa-eye"></i></a><button onclick="removeSaved(\''+s.id+'\',\''+s.type+'\')"><i class="fa-solid fa-trash"></i></button></div></div>';
+      }).join("");
+    }
+
+    function removeSaved(id,type){removeSavedProfile(id,type);renderSaved();}
+
+    function openEditModal(){
+      var p=getProfile();
+      Swal.fire({
+        title:"Edit Profile",
+        html:'<div style="text-align:left">'+
+          '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Full Name</label>'+
+          '<input id="editName" class="swal2-input" style="width:100%;height:42px;font-size:14px;margin-bottom:12px" value="'+(p.displayName||"")+'">'+
+          '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Mobile Number</label>'+
+          '<input id="editMobile" class="swal2-input" style="width:100%;height:42px;font-size:14px;margin-bottom:12px" value="'+(p.mobile_no||"")+'" maxlength="10" placeholder="10-digit mobile number">'+
+          '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Role</label>'+
+          '<select id="editRole" class="swal2-select" style="width:100%;height:42px;font-size:14px">'+
+            '<option value="">Select</option>'+
+            '<option value="student" '+(p.role==="student"?"selected":"")+'>Student / Parent</option>'+
+            '<option value="tutor" '+(p.role==="tutor"?"selected":"")+'>Home Tutor</option>'+
+            '<option value="both" '+(p.role==="both"?"selected":"")+'>Both</option>'+
+          '</select></div>',
+        showCancelButton:true,
+        confirmButtonText:"Save Changes",
+        confirmButtonColor:"#1a73e8",
+        cancelButtonText:"Cancel",
+        focusConfirm:false,
+        preConfirm:function(){
+          var name=document.getElementById("editName").value.trim();
+          var mobile=document.getElementById("editMobile").value.trim();
+          var role=document.getElementById("editRole").value;
+          if(!name){Swal.showValidationMessage("Name is required");return false;}
+          if(mobile && (mobile.length!==10||!/^\d+$/.test(mobile))){Swal.showValidationMessage("Enter valid 10-digit mobile");return false;}
+          return {name:name,mobile:mobile,role:role};
+        }
+      }).then(function(result){
+        if(result.isConfirmed){
+          updateProfile({displayName:result.value.name,mobile_no:result.value.mobile,role:result.value.role});
+          renderProfile();
+          renderAuthButtons("authButtons");
+          Swal.fire({icon:"success",title:"Profile Updated!",timer:1500,showConfirmButton:false});
+        }
+      });
     }
   </script>
 </body>

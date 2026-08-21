@@ -264,6 +264,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 renderAuthButtons("authButtons");
+checkWelcomeToast();
+loadCartFromFirestore().then(function() { renderAuthButtons("authButtons"); });
 
 // Load cities
 document.addEventListener("DOMContentLoaded", function () {

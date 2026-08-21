@@ -9,148 +9,11 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
-  <style>
-    .search-page { padding: 30px 0 60px; background: var(--bg); min-height: calc(100vh - 64px); }
-    .filter-panel {
-      background: var(--bg-white);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border-light);
-      position: sticky;
-      top: 80px;
-    }
-    .filter-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .result-count {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-    .tutor-card {
-      background: var(--bg-white);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-light);
-      padding: 20px;
-      transition: var(--transition);
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-    .tutor-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: transparent;
-    }
-    .tutor-card .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #2979ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    .tutor-card .card-name {
-      font-weight: 700;
-      font-size: 15px;
-      color: var(--text-primary);
-    }
-    .tutor-card .card-location {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .tutor-card .badge-type {
-      background: var(--accent-light);
-      color: var(--accent);
-      padding: 3px 10px;
-      border-radius: var(--radius-full);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    .tutor-card .info-item {
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-    }
-    .tutor-card .info-item i {
-      width: 16px;
-      color: var(--text-muted);
-      margin-right: 6px;
-    }
-    .view-profile-btn {
-      background: linear-gradient(135deg, var(--primary), #2979ff);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-full);
-      padding: 8px 20px;
-      font-size: 13px;
-      font-weight: 600;
-      transition: var(--transition);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .view-profile-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(26,115,232,0.3);
-      color: #fff;
-    }
-    .demo-btn {
-      background: transparent;
-      border: 1.5px solid var(--accent);
-      color: var(--accent);
-      border-radius: var(--radius-full);
-      padding: 8px 20px;
-      font-size: 13px;
-      font-weight: 600;
-      transition: var(--transition);
-      cursor: pointer;
-    }
-    .demo-btn:hover {
-      background: var(--accent);
-      color: #fff;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in { animation: fadeUp 0.4s ease forwards; }
-    .search-header-bar {
-      background: var(--bg-white);
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border-light);
-    }
-  </style>
 </head>
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-modern">
+<body><nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
-    <a href="index.html" class="navbar-brand">
-      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
-      NCR Home Tuition
-    </a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
@@ -158,93 +21,81 @@
         <li class="nav-item"><a class="nav-link" href="student-register.html">I Need a Tutor</a></li>
         <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
         <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
       </ul>
-      <div class="auth-actions" id="authButtons">
-        <a href="login.html" class="btn-nav-login">Login</a>
-        <a href="student-register.html" class="btn-nav-signup">Sign Up Free</a>
-      </div>
+      <div class="auth-actions" id="authButtons"></div>
     </div>
   </div>
 </nav>
-
 <div class="search-header-bar">
   <div class="container d-flex align-items-center gap-3">
     <select class="form-select" id="typeSelect" style="max-width:150px;height:40px;border-radius:var(--radius-md);font-size:13px">
       <option value="tutor">Find Teacher</option>
       <option value="student">Find Students</option>
     </select>
-    <input type="text" id="queryInput" class="form-control" placeholder="Search by course or subject..." style="height:40px;border-radius:var(--radius-md);font-size:13px">
-    <button class="btn btn-accent-custom btn-sm" onclick="doSearch()" style="height:40px;padding:0 18px">
-      <i class="fa-solid fa-search"></i>
-    </button>
+    <input type="text" id="queryInput" class="form-control" placeholder="Search by course or subject..." style="height:40px;border-radius:var(--radius-md);font-size:13px;flex:1">
+    <button class="btn btn-accent-custom btn-sm" onclick="doSearch()" style="height:40px;padding:0 18px"><i class="fa-solid fa-search"></i></button>
   </div>
 </div>
-
+<style>
+    .search-page{padding:30px 0 60px;background:var(--bg);min-height:calc(100vh - 64px)}
+    .filter-panel{background:var(--bg-white);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);position:sticky;top:80px}
+    .filter-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+    .result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .result-count{font-size:14px;color:var(--text-secondary)}
+    .tutor-card{background:var(--bg-white);border-radius:var(--radius-lg);border:1.5px solid var(--border-light);padding:0;transition:var(--transition);height:100%;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:var(--shadow-sm)}
+    .tutor-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
+    .tc-header{display:flex;align-items:center;gap:14px;padding:20px 20px 0}
+    .tc-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;flex-shrink:0}
+    .tc-avatar.tutor{background:linear-gradient(135deg,var(--primary),#2979ff)}
+    .tc-avatar.student{background:linear-gradient(135deg,var(--success),#10a36a)}
+    .tc-name{font-weight:700;font-size:16px;color:var(--text-primary)}
+    .tc-location{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+    .tc-badge{position:absolute;top:12px;right:12px;padding:3px 10px;border-radius:var(--radius-full);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+    .tc-badge.tutor{background:var(--primary-light);color:var(--primary)}
+    .tc-badge.student{background:#e8f5e9;color:var(--success)}
+    .tc-body{padding:16px 20px;flex:1;display:flex;flex-direction:column;gap:10px}
+    .tc-info{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary)}
+    .tc-info i{width:16px;color:var(--text-muted);font-size:12px;text-align:center}
+    .tc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}
+    .tc-tag{background:var(--bg);padding:3px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600;color:var(--text-secondary)}
+    .tc-footer{padding:16px 20px;border-top:1.5px solid var(--border-light);display:flex;gap:8px;align-items:center}
+    .btn-view-profile{flex:1;height:42px;border:none;border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff}
+    .btn-view-profile:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,115,232,0.3);color:#fff}
+    .btn-save-contact{height:42px;padding:0 14px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+    .btn-save-contact:hover{background:var(--accent);color:#fff}
+    .btn-save-contact.saved{background:#e8f5e9;border-color:var(--success);color:var(--success)}
+    .search-header-bar{background:var(--bg-white);padding:12px 0;border-bottom:1px solid var(--border-light)}
+    .btn-apply-filter{width:100%;height:42px;border:none;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-apply-filter:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,115,232,0.3)}
+    .btn-clear-filter{width:100%;height:36px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);border-radius:var(--radius-md);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition);margin-top:8px}
+    .btn-clear-filter:hover{border-color:var(--danger);color:var(--danger)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in{animation:fadeUp 0.4s ease forwards}
+    @media(max-width:768px){.filter-panel{position:static;margin-bottom:20px}}
+</style>
 <section class="search-page">
   <div class="container">
     <div class="row g-4">
-      <!-- Sidebar Filters -->
       <div class="col-lg-3 col-md-4">
         <div class="filter-panel">
-          <h6 style="font-weight:700;margin-bottom:16px;font-size:15px">Refine Search</h6>
-          <div class="mb-3">
-            <div class="filter-title">Locality / Pincode</div>
-            <input class="form-control" placeholder="Enter locality" style="height:38px;font-size:13px;border-radius:var(--radius-sm)">
-          </div>
-          <div class="mb-3">
-            <div class="filter-title">Course</div>
-            <input class="form-control" placeholder="Enter course" style="height:38px;font-size:13px;border-radius:var(--radius-sm)">
-          </div>
-          <div class="mb-3">
-            <div class="filter-title">Subject</div>
-            <input class="form-control" placeholder="Enter subject" style="height:38px;font-size:13px;border-radius:var(--radius-sm)">
-          </div>
-          <div class="mb-3">
-            <div class="filter-title">Gender</div>
-            <div class="form-check" style="font-size:13px">
-              <input class="form-check-input" type="radio" name="gender"> <label class="form-check-label">Male</label>
-            </div>
-            <div class="form-check" style="font-size:13px">
-              <input class="form-check-input" type="radio" name="gender"> <label class="form-check-label">Female</label>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="filter-title">Experience</div>
-            <div class="form-check" style="font-size:13px"><input class="form-check-input" type="radio" name="exp"> 0-2 years</div>
-            <div class="form-check" style="font-size:13px"><input class="form-check-input" type="radio" name="exp"> 2-5 years</div>
-            <div class="form-check" style="font-size:13px"><input class="form-check-input" type="radio" name="exp"> 5-10 years</div>
-            <div class="form-check" style="font-size:13px"><input class="form-check-input" type="radio" name="exp"> 10+ years</div>
-          </div>
+          <h6 style="font-weight:700;margin-bottom:16px;font-size:15px"><i class="fa-solid fa-sliders"></i> Refine Search</h6>
+          <div class="mb-3"><div class="filter-title">City</div><select id="filterCity" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">All Cities</option></select></div>
+          <div class="mb-3"><div class="filter-title">Subject</div><input id="filterSubject" class="form-control" placeholder="e.g. Mathematics" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"></div>
+          <div class="mb-3"><div class="filter-title">Experience</div><select id="filterExperience" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">Any Experience</option><option value="0-2">0-2 years</option><option value="2-5">2-5 years</option><option value="5-10">5-10 years</option><option value="10+">10+ years</option></select></div>
+          <div class="mb-3"><div class="filter-title">Payment Range</div><div class="d-flex gap-2"><input id="filterPayMin" type="number" class="form-control" placeholder="Min" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><input id="filterPayMax" type="number" class="form-control" placeholder="Max" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"></div></div>
+          <div class="mb-3"><div class="filter-title">Sort By</div><select id="filterSort" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">Default</option><option value="payment_low">Price: Low to High</option><option value="payment_high">Price: High to Low</option><option value="experience_high">Experience: Most</option></select></div>
+          <button class="btn-apply-filter" onclick="applyFilters()"><i class="fa-solid fa-search"></i> Apply Filters</button>
+          <button class="btn-clear-filter" onclick="clearFilters()"><i class="fa-solid fa-xmark"></i> Clear All</button>
         </div>
       </div>
-
-      <!-- Results -->
       <div class="col-lg-9 col-md-8">
-        <div class="result-header">
-          <div>
-            <h5 style="font-weight:700;margin:0" id="resultTitle">Search Results</h5>
-            <div class="result-count" id="resultCount"></div>
-          </div>
-          <select class="form-select form-select-sm" style="width:auto;font-size:13px;border-radius:var(--radius-sm)">
-            <option>Default Sort</option>
-            <option>Experience</option>
-            <option>Price</option>
-          </select>
-        </div>
-
+        <div class="result-header"><div><h5 style="font-weight:700;margin:0" id="resultTitle">Search Results</h5><div class="result-count" id="resultCount"></div></div></div>
         <div class="row g-4" id="results"></div>
       </div>
     </div>
   </div>
 </section>
-
-<footer class="footer">
-  <div class="container">
-    <div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div>
-  </div>
-</footer>
-
+<footer class="footer"><div class="container"><div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div></div></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -254,128 +105,149 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 renderAuthButtons("authButtons");
-var params = new URLSearchParams(window.location.search);
-const q = params.get("q") || "";
-const city = params.get("city") || "";
-const type = params.get("type") || "tutor";
+loadCartFromFirestore().then(function(){renderAuthButtons("authButtons")});
 
-let page = 1;
-let loading = false;
-let hasMore = true;
-let totalCount = 0;
+var urlParams = new URLSearchParams(window.location.search);
+var searchQ = urlParams.get("q") || "";
+var searchCity = urlParams.get("city") || "";
+var searchType = urlParams.get("type") || "tutor";
+var searchSubject = urlParams.get("subject") || "";
+var searchExperience = urlParams.get("experience") || "";
+var searchPayMin = urlParams.get("payment_min") || "";
+var searchPayMax = urlParams.get("payment_max") || "";
+var searchSort = urlParams.get("sort") || "";
 
-const box = document.getElementById("results");
-const adminToken = localStorage.getItem("admin_token");
+var page = 1, loading = false, hasMore = true, totalCount = 0;
+var box = document.getElementById("results");
 
-// Set active type
-document.getElementById("typeSelect").value = type;
-document.getElementById("queryInput").value = q;
-document.getElementById("resultTitle").textContent = (type === "tutor" ? "Home Tutors" : "Students") + (city ? " in " + city : "") + (q ? " for " + q : "");
+fetch("https://ncrhomr.vercel.app/cities").then(function(r){return r.json()}).then(function(d){
+  var sel = document.getElementById("filterCity");
+  if(d.cities) d.cities.forEach(function(c){
+    if(c && c.trim()!==""){var o=document.createElement("option");o.value=c;o.textContent=c;if(c===searchCity)o.selected=true;sel.appendChild(o);}
+  });
+});
 
-function buildUrl() {
-  let url = "https://ncrhomr.vercel.app/search?type=" + type + "&page=" + page;
-  if (q) url += "&q=" + encodeURIComponent(q);
-  if (city) url += "&city=" + encodeURIComponent(city);
-  return url;
+document.getElementById("typeSelect").value = searchType;
+document.getElementById("queryInput").value = searchQ;
+if(searchSubject) document.getElementById("filterSubject").value = searchSubject;
+if(searchExperience) document.getElementById("filterExperience").value = searchExperience;
+if(searchPayMin) document.getElementById("filterPayMin").value = searchPayMin;
+if(searchPayMax) document.getElementById("filterPayMax").value = searchPayMax;
+if(searchSort) document.getElementById("filterSort").value = searchSort;
+
+function buildUrl(){
+  var u = "https://ncrhomr.vercel.app/search?type="+encodeURIComponent(searchType)+"&page="+page;
+  if(searchQ) u+="&q="+encodeURIComponent(searchQ);
+  if(searchCity) u+="&city="+encodeURIComponent(searchCity);
+  if(searchSubject) u+="&subject="+encodeURIComponent(searchSubject);
+  if(searchExperience) u+="&experience="+encodeURIComponent(searchExperience);
+  if(searchPayMin) u+="&payment_min="+encodeURIComponent(searchPayMin);
+  if(searchPayMax) u+="&payment_max="+encodeURIComponent(searchPayMax);
+  if(searchSort) u+="&sort="+encodeURIComponent(searchSort);
+  return u;
 }
 
-async function loadResults() {
-  if (loading || !hasMore) return;
-  loading = true;
-  showLoader();
-  try {
-    const res = await fetch(buildUrl(), { headers: adminToken ? { "X-Admin-Token": adminToken } : {} });
-    const data = await res.json();
-    if (!data.data || data.data.length === 0) {
-      hasMore = false;
-      if (totalCount === 0) {
-        box.innerHTML = '<div class="col-12 text-center py-5"><div style="font-size:48px;margin-bottom:16px"><i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted)"></i></div><h5 style="font-weight:700;color:var(--text-secondary)">No results found</h5><p style="color:var(--text-muted)">Try adjusting your search terms or filters.</p></div>';
-      }
-      showEndMessage();
-      return;
-    }
-    totalCount += data.data.length;
-    document.getElementById("resultCount").textContent = totalCount + " result(s) found";
-    renderResults(data.data);
-    page++;
-  } catch (err) {
-    console.error("Load error:", err);
-  } finally {
-    hideLoader();
-    loading = false;
-  }
+function updateTitle(){
+  var p=[];p.push(searchType==="tutor"?"Home Tutors":"Students");
+  if(searchCity)p.push("in "+searchCity);if(searchQ)p.push("for "+searchQ);
+  if(searchSubject)p.push("Sub: "+searchSubject);if(searchExperience)p.push("Exp: "+searchExperience+" yrs");
+  document.getElementById("resultTitle").textContent=p.join(" ");
 }
 
-function renderResults(items) {
-  items.forEach(item => {
-    const initial = (item.name || "N").charAt(0).toUpperCase();
-    const card = document.createElement("div");
-    card.className = "col-lg-4 col-md-6 fade-in";
-    card.innerHTML = '<div class="tutor-card">' +
-      '<div class="d-flex align-items-center mb-3">' +
-        '<div class="avatar">' + initial + '</div>' +
-        '<div class="ms-2" style="min-width:0">' +
-          '<div class="card-name">' + (item.name||"") + '</div>' +
-          '<div class="card-location"><i class="fa-solid fa-location-dot"></i> ' + (item.city||"N/A") + '</div>' +
-        '</div>' +
-        '<span class="badge-type ms-auto">' + (item.type||"").toUpperCase() + '</span>' +
-      '</div>' +
-      '<div class="mb-2"><div class="info-item"><i class="fa-solid fa-book"></i>' + (item.course||"N/A") + '</div></div>' +
-      '<div class="mb-2"><div class="info-item"><i class="fa-solid fa-pen"></i>' + (item.subject||"N/A") + '</div></div>' +
-      '<div class="mb-2"><div class="info-item"><i class="fa-solid fa-briefcase"></i>' + (item.experience||"N/A") + '</div></div>' +
-      '<div class="mb-3"><div class="info-item"><i class="fa-solid fa-laptop"></i>' + (item.preferred_mode||"N/A") + '</div></div>' +
-      '<div class="d-flex gap-2">' +
-        '<a href="data.html?id=' + item.id + '&type=' + item.type + '" class="view-profile-btn"><i class="fa-solid fa-eye"></i> View Profile</a>' +
-        '<button class="demo-btn" onclick="freeDemo(\'' + item.id + '\',\'' + item.type + '\')"><i class="fa-solid fa-graduation-cap"></i> Free Demo</button>' +
-      '</div>' +
-    '</div>';
+function loadResults(){
+  if(loading||!hasMore)return;loading=true;showLoader();
+  var adminToken=localStorage.getItem("admin_token");
+  fetch(buildUrl(),{headers:adminToken?{"X-Admin-Token":adminToken}:{}})
+  .then(function(r){return r.json()}).then(function(data){
+    if(!data.data||data.data.length===0){hasMore=false;if(totalCount===0){box.innerHTML='<div class="col-12 text-center py-5"><div style="font-size:48px;margin-bottom:16px"><i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted)"></i></div><h5 style="font-weight:700;color:var(--text-secondary)">No results found</h5><p style="color:var(--text-muted)">Try adjusting your filters.</p></div>';}showEndMessage();return;}
+    totalCount+=data.data.length;
+    document.getElementById("resultCount").textContent=totalCount+" result(s) found";
+    renderResults(data.data);page++;
+  }).catch(function(e){console.error(e)}).finally(function(){hideLoader();loading=false});
+}
+
+function renderResults(items){
+  items.forEach(function(item){
+    var initial=(item.name||"N").charAt(0).toUpperCase();
+    var isTutor=(item.type||"tutor")==="tutor";
+    var cardType=isTutor?"tutor":"student";
+    var saved=isProfileSaved(item.id,item.type);
+    var card=document.createElement("div");
+    card.className="col-lg-6 col-md-6 fade-in";
+    card.innerHTML='<div class="tutor-card">'+
+      '<span class="tc-badge '+cardType+'">'+(item.type||"tutor").toUpperCase()+'</span>'+
+      '<div class="tc-header"><div class="tc-avatar '+cardType+'">'+initial+'</div>'+
+      '<div style="min-width:0"><div class="tc-name">'+(item.name||"")+'</div>'+
+      '<div class="tc-location"><i class="fa-solid fa-location-dot"></i> '+(item.city||"N/A")+'</div></div></div>'+
+      '<div class="tc-body">'+
+        '<div class="tc-info"><i class="fa-solid fa-book"></i> '+(item.course||"N/A")+'</div>'+
+        '<div class="tc-info"><i class="fa-solid fa-pen"></i> '+(item.subject||"N/A")+'</div>'+
+        '<div class="tc-info"><i class="fa-solid fa-briefcase"></i> '+(item.experience||"N/A")+'</div>'+
+        '<div class="tc-info"><i class="fa-solid fa-laptop"></i> '+(item.preferred_mode||"N/A")+'</div>'+
+        '<div class="tc-info"><i class="fa-solid fa-language"></i> '+(item.language||"N/A")+'</div>'+
+        '<div class="tc-tags">'+
+          (item.course?'<span class="tc-tag">'+item.course+'</span>':'')+
+          (item.subject?'<span class="tc-tag">'+item.subject+'</span>':'')+
+          (item.preferred_mode?'<span class="tc-tag">'+item.preferred_mode+'</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="tc-footer">'+
+        '<a href="data.html?id='+item.id+'&type='+item.type+'" class="btn-view-profile"><i class="fa-solid fa-eye"></i> View Profile</a>'+
+        '<button class="btn-save-contact '+(saved?'saved':'')+'" onclick="toggleSave(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\')">'+(saved?'<i class="fa-solid fa-check"></i> Saved':'<i class="fa-solid fa-cart-plus"></i> Save')+'</button>'+
+      '</div></div>';
     box.appendChild(card);
   });
 }
 
-window.addEventListener("scroll", () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300) {
-    loadResults();
-  }
-});
-
-function showLoader() {
-  if (!document.getElementById("loader")) {
-    const div = document.createElement("div");
-    div.id = "loader";
-    div.className = "text-center my-4 col-12";
-    div.innerHTML = '<div class="spinner-border" style="color:var(--accent);width:36px;height:36px"></div><p style="margin-top:10px;color:var(--text-muted);font-size:14px">Loading more results...</p>';
-    box.parentElement.appendChild(div);
-  }
-}
-function hideLoader() {
-  const loader = document.getElementById("loader");
-  if (loader) loader.remove();
-}
-function showEndMessage() {
-  if (totalCount > 0 && !document.getElementById("endMsg")) {
-    const div = document.createElement("div");
-    div.id = "endMsg";
-    div.className = "text-center my-4 col-12";
-    div.innerHTML = '<p style="color:var(--text-muted);font-size:14px"><i class="fa-solid fa-check-circle" style="color:var(--success)"></i> You have seen all ' + totalCount + ' results</p>';
-    box.parentElement.appendChild(div);
+function toggleSave(btn,id,type,name,city,course,subject){
+  if(!isLoggedIn()){Swal.fire({icon:"info",title:"Login Required",text:"Please login to save profiles",confirmButtonText:"Login",confirmButtonColor:"#1a73e8",showCancelButton:true,cancelButtonText:"Sign Up"}).then(function(r){if(r.isConfirmed)window.location.href="login.html";else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html";});return;}
+  if(isProfileSaved(id,type)){
+    removeSavedProfile(id,type);
+    btn.classList.remove("saved");btn.innerHTML='<i class="fa-solid fa-cart-plus"></i> Save';
+    Swal.fire({icon:"info",title:"Removed",timer:1000,showConfirmButton:false,toast:true,position:"top-end"});
+  } else {
+    saveProfileToList({id:id,type:type,name:name,city:city,course:course,subject:subject,savedAt:new Date().toISOString()});
+    btn.classList.add("saved");btn.innerHTML='<i class="fa-solid fa-check"></i> Saved';
+    Swal.fire({icon:"success",title:"Profile Saved!",timer:1200,showConfirmButton:false,toast:true,position:"top-end"});
   }
 }
 
-function doSearch() {
-  const q2 = document.getElementById("queryInput").value.trim();
-  const type2 = document.getElementById("typeSelect").value;
-  const params2 = new URLSearchParams();
-  if (q2) params2.append("q", q2);
-  params2.append("type", type2);
-  window.location.href = "search.html?" + params2.toString();
-}
+window.addEventListener("scroll",function(){if(window.innerHeight+window.scrollY>=document.body.offsetHeight-300)loadResults();});
+function showLoader(){if(!document.getElementById("loader")){var d=document.createElement("div");d.id="loader";d.className="text-center my-4 col-12";d.innerHTML='<div class="spinner-border" style="color:var(--accent);width:36px;height:36px"></div><p style="margin-top:10px;color:var(--text-muted);font-size:14px">Loading more results...</p>';box.parentElement.appendChild(d);}}
+function hideLoader(){var l=document.getElementById("loader");if(l)l.remove();}
+function showEndMessage(){if(totalCount>0&&!document.getElementById("endMsg")){var d=document.createElement("div");d.id="endMsg";d.className="text-center my-4 col-12";d.innerHTML='<p style="color:var(--text-muted);font-size:14px"><i class="fa-solid fa-check-circle" style="color:var(--success)"></i> All '+totalCount+' results loaded</p>';box.parentElement.appendChild(d);}}
 
-function freeDemo(id, type) {
-  window.location.href = "data.html?id=" + id + "&type=" + type;
+function doSearch(){
+  var q2=document.getElementById("queryInput").value.trim();
+  var t2=document.getElementById("typeSelect").value;
+  var p2=new URLSearchParams();if(q2)p2.append("q",q2);p2.append("type",t2);
+  window.location.href="search.html?"+p2.toString();
 }
-
-loadResults();
+function applyFilters(){
+  searchType=document.getElementById("typeSelect").value;
+  searchQ=document.getElementById("queryInput").value.trim();
+  searchCity=document.getElementById("filterCity").value;
+  searchSubject=document.getElementById("filterSubject").value.trim();
+  searchExperience=document.getElementById("filterExperience").value;
+  searchPayMin=document.getElementById("filterPayMin").value;
+  searchPayMax=document.getElementById("filterPayMax").value;
+  searchSort=document.getElementById("filterSort").value;
+  page=1;hasMore=true;totalCount=0;box.innerHTML="";
+  var p=new URLSearchParams();p.append("type",searchType);
+  if(searchQ)p.append("q",searchQ);if(searchCity)p.append("city",searchCity);
+  if(searchSubject)p.append("subject",searchSubject);if(searchExperience)p.append("experience",searchExperience);
+  if(searchPayMin)p.append("payment_min",searchPayMin);if(searchPayMax)p.append("payment_max",searchPayMax);
+  if(searchSort)p.append("sort",searchSort);
+  window.history.replaceState({},"","search.html?"+p.toString());
+  updateTitle();loadResults();
+}
+function clearFilters(){
+  document.getElementById("filterCity").value="";document.getElementById("filterSubject").value="";
+  document.getElementById("filterExperience").value="";document.getElementById("filterPayMin").value="";
+  document.getElementById("filterPayMax").value="";document.getElementById("filterSort").value="";
+  applyFilters();
+}
+updateTitle();loadResults();
 </script>
 </body>
 </html>

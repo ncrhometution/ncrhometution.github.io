@@ -108,7 +108,7 @@ function loginWithGoogle() {
     saveProfile(profile);
     loadCartFromFirestore().then(function() {
       syncProfileToFirestore();
-      Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html"; });
+      Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
     });
   }).catch(function(err) {
     Swal.close();
@@ -145,7 +145,7 @@ function loginWithEmail() {
     saveProfile(profile);
     loadCartFromFirestore().then(function() {
       syncProfileToFirestore();
-      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html"; });
+      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
     });
   }).catch(function(err) {
     Swal.close();

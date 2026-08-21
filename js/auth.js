@@ -1,5 +1,5 @@
 ﻿// ============================================================
-// NCR Home Tuition — Auth + Cart + Firestore Sync Module
+// NCR Home Tuition - Auth + Cart + Firestore Sync Module
 // ============================================================
 
 // ---- Firebase Config ----
@@ -14,7 +14,7 @@ const FIREBASE_CONFIG = {
 
 // ---- Profile helpers (localStorage) ----
 function getProfile() {
-  try { const r = localStorage.getItem("user_profile"); return r ? JSON.parse(r) : null; } catch { return null; }
+  try { var r = localStorage.getItem("user_profile"); return r ? JSON.parse(r) : null; } catch(e) { return null; }
 }
 function saveProfile(p) { localStorage.setItem("user_profile", JSON.stringify(p)); }
 function clearProfile() {
@@ -33,7 +33,7 @@ function requireAuth(redirectUrl) {
       confirmButtonColor: "#1a73e8",
       showCancelButton: true,
       cancelButtonText: "Sign Up Free"
-    }).then(r => {
+    }).then(function(r) {
       if (r.isConfirmed) window.location.href = "login.html";
       else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html";
     });
@@ -42,32 +42,55 @@ function requireAuth(redirectUrl) {
   return true;
 }
 
+// ---- Welcome toast on reload after login ----
+function checkWelcomeToast() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get("welcome") === "1") {
+    var profile = getProfile();
+    var name = profile ? (profile.displayName || profile.email || "there") : "there";
+    Swal.fire({
+      icon: "success",
+      title: "Welcome, " + name + "!",
+      text: "Successfully logged in",
+      timer: 2500,
+      showConfirmButton: false,
+      toast: true,
+      position: "top-end"
+    });
+    // Remove ?welcome=1 from URL
+    var url = new URL(window.location);
+    url.searchParams.delete("welcome");
+    window.history.replaceState({}, "", url);
+  }
+}
+
 // ---- Lead wallet ----
 function getLeads() { return parseInt(localStorage.getItem("user_leads") || "0", 10); }
 function setLeads(n) { localStorage.setItem("user_leads", String(n)); }
 function addLeads(count) { setLeads(getLeads() + count); }
 function useLead() {
-  const c = getLeads();
+  var c = getLeads();
   if (c <= 0) return false;
   setLeads(c - 1);
+  syncCartToFirestore();
   return true;
 }
 
 // ---- Lead packages ----
-const LEAD_PACKAGES = [
-  { id: "lead_1",  leads: 1,  price: 99,  label: "1 Lead",   per: 99,  desc: "Try it out",          savings: null,  color: "blue" },
-  { id: "lead_5",  leads: 5,  price: 399, label: "5 Leads",  per: 80,  desc: "Best for getting started", savings: "20%",  color: "orange" },
-  { id: "lead_10", leads: 10, price: 699, label: "10 Leads", per: 70,  desc: "Best value overall",   savings: "30%",  color: "green" }
+var LEAD_PACKAGES = [
+  { id: "lead_1",  leads: 1,  price: 99,  label: "1 Lead",   per: 99,  desc: "Try it out",          savings: null,  color: "blue",   icon: "fa-solid fa-bolt" },
+  { id: "lead_5",  leads: 5,  price: 399, label: "5 Leads",  per: 80,  desc: "Best for getting started", savings: "20%",  color: "orange", popular: true, icon: "fa-solid fa-fire" },
+  { id: "lead_10", leads: 10, price: 699, label: "10 Leads", per: 70,  desc: "Best value overall",   savings: "30%",  color: "green",  icon: "fa-solid fa-crown" }
 ];
 
 // ---- Cart (localStorage) ----
-function getCart() { try { const r = localStorage.getItem("user_cart"); return r ? JSON.parse(r) : []; } catch { return []; } }
+function getCart() { try { var r = localStorage.getItem("user_cart"); return r ? JSON.parse(r) : []; } catch(e) { return []; } }
 function saveCart(c) { localStorage.setItem("user_cart", JSON.stringify(c)); }
 function addToCart(pkgId) {
-  const pkg = LEAD_PACKAGES.find(p => p.id === pkgId);
+  var pkg = LEAD_PACKAGES.find(function(p) { return p.id === pkgId; });
   if (!pkg) return false;
-  const cart = getCart();
-  const ex = cart.find(i => i.id === pkgId);
+  var cart = getCart();
+  var ex = cart.find(function(i) { return i.id === pkgId; });
   if (ex) ex.qty += 1;
   else cart.push({ id: pkg.id, label: pkg.label, price: pkg.price, leads: pkg.leads, qty: 1 });
   saveCart(cart);
@@ -75,51 +98,81 @@ function addToCart(pkgId) {
   return true;
 }
 function removeFromCart(pkgId) {
-  let cart = getCart().filter(i => i.id !== pkgId);
+  var cart = getCart().filter(function(i) { return i.id !== pkgId; });
   saveCart(cart);
   syncCartToFirestore();
 }
 function clearCart() { saveCart([]); syncCartToFirestore(); }
-function getCartTotal() { return getCart().reduce((s, i) => s + (i.price * i.qty), 0); }
-function getCartLeadCount() { return getCart().reduce((s, i) => s + (i.leads * i.qty), 0); }
-function getCartItemCount() { return getCart().reduce((s, i) => s + i.qty, 0); }
+function getCartTotal() { return getCart().reduce(function(s, i) { return s + (i.price * i.qty); }, 0); }
+function getCartLeadCount() { return getCart().reduce(function(s, i) { return s + (i.leads * i.qty); }, 0); }
+function getCartItemCount() { return getCart().reduce(function(s, i) { return s + i.qty; }, 0); }
+
+// ---- Saved profiles (viewed contacts) ----
+function getSavedProfiles() { try { var r = localStorage.getItem("user_saved_profiles"); return r ? JSON.parse(r) : []; } catch(e) { return []; } }
+function saveProfileToList(profile) {
+  var list = getSavedProfiles();
+  if (!list.find(function(p) { return p.id === profile.id && p.type === profile.type; })) {
+    list.push(profile);
+    localStorage.setItem("user_saved_profiles", JSON.stringify(list));
+    syncSavedToFirestore();
+  }
+}
+function removeSavedProfile(id, type) {
+  var list = getSavedProfiles().filter(function(p) { return !(p.id === id && p.type === type); });
+  localStorage.setItem("user_saved_profiles", JSON.stringify(list));
+  syncSavedToFirestore();
+}
+function isProfileSaved(id, type) {
+  return getSavedProfiles().some(function(p) { return p.id === id && p.type === type; });
+}
 
 // ---- Firestore sync ----
 function syncCartToFirestore() {
   if (typeof firebase === 'undefined' || !firebase.firestore) return;
-  const profile = getProfile();
+  var profile = getProfile();
   if (!profile || !profile.uid) return;
-  const db = firebase.firestore();
-  db.collection("users").doc(profile.uid).set({
+  firebase.firestore().collection("users").doc(profile.uid).set({
     cart: getCart(),
     leads: getLeads(),
+    savedProfiles: getSavedProfiles(),
     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true }).catch(() => {});
+  }, { merge: true }).catch(function() {});
+}
+
+function syncSavedToFirestore() {
+  syncCartToFirestore();
 }
 
 function loadCartFromFirestore() {
-  return new Promise((resolve) => {
+  return new Promise(function(resolve) {
     if (typeof firebase === 'undefined' || !firebase.firestore) { resolve(); return; }
-    const profile = getProfile();
+    var profile = getProfile();
     if (!profile || !profile.uid) { resolve(); return; }
-    const db = firebase.firestore();
-    db.collection("users").doc(profile.uid).get()
-      .then(doc => {
+    firebase.firestore().collection("users").doc(profile.uid).get()
+      .then(function(doc) {
         if (doc.exists) {
-          const data = doc.data();
+          var data = doc.data();
           if (data.cart && data.cart.length > 0) saveCart(data.cart);
           if (typeof data.leads === 'number') setLeads(data.leads);
+          if (data.savedProfiles && data.savedProfiles.length > 0) {
+            localStorage.setItem("user_saved_profiles", JSON.stringify(data.savedProfiles));
+          }
+          // Also restore profile fields from Firestore
+          if (data.mobile_no && !profile.mobile_no) profile.mobile_no = data.mobile_no;
+          if (data.displayName && !profile.displayName) profile.displayName = data.displayName;
+          if (data.role && !profile.role) profile.role = data.role;
+          saveProfile(profile);
         }
         resolve();
       })
-      .catch(() => resolve());
+      .catch(function() { resolve(); });
   });
 }
 
 // ---- Save full profile to Firestore ----
 function syncProfileToFirestore() {
   if (typeof firebase === 'undefined' || !firebase.firestore) return;
-  const profile = getProfile();
+  var profile = getProfile();
   if (!profile || !profile.uid) return;
   firebase.firestore().collection("users").doc(profile.uid).set({
     displayName: profile.displayName,
@@ -128,17 +181,28 @@ function syncProfileToFirestore() {
     role: profile.role,
     cart: getCart(),
     leads: getLeads(),
+    savedProfiles: getSavedProfiles(),
     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true }).catch(() => {});
+  }, { merge: true }).catch(function() {});
+}
+
+// ---- Update profile fields ----
+function updateProfile(fields) {
+  var profile = getProfile();
+  if (!profile) return false;
+  Object.assign(profile, fields);
+  saveProfile(profile);
+  syncProfileToFirestore();
+  return true;
 }
 
 // ---- Render auth buttons for any page ----
 function renderAuthButtons(containerId) {
-  const box = document.getElementById(containerId);
+  var box = document.getElementById(containerId);
   if (!box) return;
-  const profile = getProfile();
+  var profile = getProfile();
   if (profile) {
-    const initial = (profile.displayName || profile.email || "U").charAt(0).toUpperCase();
+    var initial = (profile.displayName || profile.email || "U").charAt(0).toUpperCase();
     box.innerHTML =
       '<div class="auth-actions">' +
         '<a href="cart.html" class="btn-nav-login" style="display:flex;align-items:center;gap:6px;position:relative">' +
@@ -171,19 +235,20 @@ function logoutUser() {
     confirmButtonColor: "#dc3545",
     cancelButtonColor: "#6c757d",
     confirmButtonText: "Yes, Logout"
-  }).then(result => {
+  }).then(function(result) {
     if (result.isConfirmed) {
       syncProfileToFirestore();
       if (typeof firebase !== 'undefined' && firebase.auth) firebase.auth().signOut();
       clearProfile();
       localStorage.removeItem("admin_token");
+      localStorage.removeItem("user_saved_profiles");
       Swal.fire({ icon: "success", title: "Logged Out", timer: 1000, showConfirmButton: false });
-      setTimeout(() => { window.location.href = "index.html"; }, 1000);
+      setTimeout(function() { window.location.href = "index.html"; }, 1000);
     }
   });
 }
 
-// ---- Nav HTML template (reusable across pages) ----
+// ---- Nav HTML template ----
 function getNavHTML(activePage) {
   return '<nav class="navbar navbar-expand-lg navbar-modern">' +
     '<div class="container">' +
