@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Each user can only read/write their own document under users/{uid}
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Allow public read for search (tutors/students collections) if you use them later
+    match /tutors/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /students/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>NCR Home Tuition</title>
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -260,12 +261,44 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/auth.js"></script>
-<script>try{firebase.initializeApp(FIREBASE_CONFIG);}catch(e){}</script>
+<script>try{initFirebase();}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Restore session from Firestore on page load
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user && !isLoggedIn()) {
+    firebase.firestore().collection("users").doc(user.uid).get()
+      .then(function(doc) {
+        var data = doc.exists ? doc.data() : {};
+        var profile = {
+          uid: user.uid,
+          displayName: data.displayName || user.displayName || "",
+          email: user.email,
+          mobile_no: data.mobile_no || "",
+          role: data.role || "",
+          emailVerified: user.emailVerified,
+          leads: typeof data.leads === "number" ? data.leads : 0
+        };
+        saveProfile(profile);
+        setLeads(profile.leads);
+        if (data.cart) saveCart(data.cart);
+        if (data.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(data.savedProfiles));
+        renderAuthButtons("authButtons");
+      })
+      .catch(function() {
+        var profile = { uid: user.uid, displayName: user.displayName || "", email: user.email, mobile_no: "", role: "", emailVerified: user.emailVerified, leads: 0 };
+        saveProfile(profile);
+        renderAuthButtons("authButtons");
+      });
+  } else if (!user && isLoggedIn()) {
+    clearProfile();
+    renderAuthButtons("authButtons");
+  }
+});
+
 renderAuthButtons("authButtons");
 checkWelcomeToast();
-loadCartFromFirestore().then(function() { renderAuthButtons("authButtons"); });
+loadFromFirestore().then(function() { renderAuthButtons("authButtons"); });
 
 // Load cities
 document.addEventListener("DOMContentLoaded", function () {

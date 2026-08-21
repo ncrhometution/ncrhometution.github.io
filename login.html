@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Login | NCR Home Tuition</title>
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -94,10 +95,42 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/auth.js"></script>
 <script>
-firebase.initializeApp(FIREBASE_CONFIG);
+initFirebase();
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
-if (isLoggedIn()) window.location.href = "profile.html";
+
+// Restore session from Firestore on page load
+auth.onAuthStateChanged(function(user) {
+  if (user && !isLoggedIn()) {
+    // Firebase Auth has a user but localStorage is empty (new session / cleared cache)
+    firebase.firestore().collection("users").doc(user.uid).get()
+      .then(function(doc) {
+        var data = doc.exists ? doc.data() : {};
+        var profile = {
+          uid: user.uid,
+          displayName: data.displayName || user.displayName || "",
+          email: user.email,
+          mobile_no: data.mobile_no || "",
+          role: data.role || "",
+          emailVerified: user.emailVerified,
+          leads: typeof data.leads === "number" ? data.leads : 0
+        };
+        saveProfile(profile);
+        setLeads(profile.leads);
+        if (data.cart) saveCart(data.cart);
+        if (data.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(data.savedProfiles));
+        renderAuthButtons("authButtons");
+      })
+      .catch(function() {
+        // Even if Firestore fails, save basic profile from Auth
+        var profile = { uid: user.uid, displayName: user.displayName || "", email: user.email, mobile_no: "", role: "", emailVerified: user.emailVerified, leads: 0 };
+        saveProfile(profile);
+      });
+  } else if (!user && isLoggedIn()) {
+    // Auth signed out but localStorage still has profile
+    clearProfile();
+  }
+});
 
 function loginWithGoogle() {
   Swal.fire({ title: "Connecting to Google...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -106,10 +139,8 @@ function loginWithGoogle() {
     var u = result.user;
     var profile = { uid: u.uid, displayName: u.displayName, email: u.email, mobile_no: u.phoneNumber || "", role: "", emailVerified: u.emailVerified, leads: 0 };
     saveProfile(profile);
-    loadCartFromFirestore().then(function() {
-      syncProfileToFirestore();
-      Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
-    });
+    syncProfileToFirestore();
+    Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
   }).catch(function(err) {
     Swal.close();
     if (err.code === "auth/popup-closed-by-user") return;
@@ -143,10 +174,8 @@ function loginWithEmail() {
     }
     var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: true, leads: 0 };
     saveProfile(profile);
-    loadCartFromFirestore().then(function() {
-      syncProfileToFirestore();
-      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
-    });
+    syncProfileToFirestore();
+    Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
   }).catch(function(err) {
     Swal.close();
     var msg = err.message;

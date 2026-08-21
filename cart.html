@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Cart - Buy Leads | NCR Home Tuition</title>
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/qRjkLrqS/Whats-App-Image-2026-02-02-at-07-28-40-removebg-preview.png">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -11,45 +12,44 @@
   <link rel="stylesheet" href="css/main.css">
   <style>
     .cart-page{padding:100px 0 60px;min-height:100vh;background:linear-gradient(135deg,#f8faff 0%,#f0e6ff 100%)}
-    .cart-header{text-align:center;margin-bottom:48px}
-    .cart-header h1{font-size:36px;font-weight:800;margin-bottom:8px}
-    .cart-header p{font-size:16px;color:var(--text-muted);max-width:500px;margin:0 auto}
-    .lead-balance{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--bg-white);border-radius:var(--radius-lg);padding:16px 28px;margin:0 auto 48px;max-width:400px;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+    .cart-header{text-align:center;margin-bottom:32px}
+    .cart-header h1{font-size:32px;font-weight:800;margin-bottom:8px}
+    .cart-header p{font-size:15px;color:var(--text-muted);max-width:500px;margin:0 auto}
+
+    /* Lead balance */
+    .lead-balance{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--bg-white);border-radius:var(--radius-lg);padding:16px 28px;margin:0 auto 36px;max-width:400px;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
     .lead-balance .lb-icon{width:44px;height:44px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--primary)}
     .lead-balance .lb-info{text-align:left}
     .lead-balance .lb-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
     .lead-balance .lb-count{font-size:24px;font-weight:800;color:var(--primary)}
-    .packages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:960px;margin:0 auto 56px}
-    .pkg-card{background:var(--bg-white);border-radius:var(--radius-xl);padding:0;box-shadow:var(--shadow-md);border:2px solid transparent;transition:var(--transition);overflow:hidden;position:relative;display:flex;flex-direction:column}
-    .pkg-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-xl);border-color:var(--primary)}
-    .pkg-card.popular{border-color:var(--accent)}
-    .pkg-card.popular .pkg-badge{display:block}
-    .pkg-badge{display:none;position:absolute;top:16px;right:-32px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:4px 40px;transform:rotate(45deg);text-transform:uppercase;letter-spacing:0.5px;z-index:2}
-    .pkg-top{padding:32px 28px 20px;text-align:center;position:relative}
-    .pkg-icon{width:64px;height:64px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px}
-    .pkg-card.blue .pkg-icon{background:var(--primary-light);color:var(--primary)}
-    .pkg-card.orange .pkg-icon{background:#fff3e0;color:var(--accent)}
-    .pkg-card.green .pkg-icon{background:#e8f5e9;color:var(--success)}
-    .pkg-card.blue .pkg-price-wrap{color:var(--primary)}
-    .pkg-card.orange .pkg-price-wrap{color:var(--accent)}
-    .pkg-card.green .pkg-price-wrap{color:var(--success)}
-    .pkg-leads{font-size:40px;font-weight:800;margin-bottom:4px}
-    .pkg-label{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
-    .pkg-price-wrap{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
-    .pkg-price{font-size:32px;font-weight:800}
-    .pkg-per{font-size:13px;color:var(--text-muted);font-weight:500}
-    .pkg-savings{display:inline-block;background:#e8f5e9;color:var(--success);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:8px}
-    .pkg-bottom{padding:20px 28px 28px}
-    .pkg-desc{font-size:14px;color:var(--text-secondary);text-align:center;margin-bottom:20px}
-    .btn-add-cart{width:100%;height:52px;border:none;border-radius:var(--radius-md);font-weight:700;font-size:15px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
-    .pkg-card.blue .btn-add-cart{background:var(--primary);color:#fff}
-    .pkg-card.blue .btn-add-cart:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 4px 14px rgba(26,115,232,0.3)}
-    .pkg-card.orange .btn-add-cart{background:var(--accent);color:#fff}
-    .pkg-card.orange .btn-add-cart:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 4px 14px rgba(255,109,0,0.3)}
-    .pkg-card.green .btn-add-cart{background:var(--success);color:#fff}
-    .pkg-card.green .btn-add-cart:hover{background:#0a8a5a;transform:translateY(-2px);box-shadow:0 4px 14px rgba(16,158,108,0.3)}
-    .btn-add-cart:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-    .cart-panel{background:var(--bg-white);border-radius:var(--radius-xl);padding:32px;box-shadow:var(--shadow-md);max-width:960px;margin:0 auto;border:1px solid var(--border)}
+
+    /* Quick buy buttons */
+    .quick-buy-section{max-width:800px;margin:0 auto 48px}
+    .quick-buy-section h3{font-weight:800;font-size:18px;margin-bottom:20px;text-align:center}
+    .quick-buy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .qb-card{background:var(--bg-white);border-radius:var(--radius-lg);padding:24px;text-align:center;border:2px solid var(--border);transition:var(--transition);cursor:pointer;position:relative;overflow:hidden}
+    .qb-card:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+    .qb-card.popular{border-color:var(--accent)}
+    .qb-card.popular::before{content:'BEST VALUE';position:absolute;top:12px;right:-30px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:3px 36px;transform:rotate(45deg);letter-spacing:0.5px}
+    .qb-leads{font-size:36px;font-weight:800;color:var(--text-primary);margin-bottom:4px}
+    .qb-label{font-size:13px;color:var(--text-muted);font-weight:600;margin-bottom:12px}
+    .qb-price{font-size:24px;font-weight:800;margin-bottom:4px}
+    .qb-card:nth-child(1) .qb-price{color:var(--primary)}
+    .qb-card:nth-child(2) .qb-price{color:var(--accent)}
+    .qb-card:nth-child(3) .qb-price{color:var(--success)}
+    .qb-per{font-size:12px;color:var(--text-muted);margin-bottom:16px}
+    .qb-savings{display:inline-block;background:#e8f5e9;color:var(--success);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:16px}
+    .qb-btn{width:100%;height:44px;border:none;border-radius:var(--radius-md);font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px}
+    .qb-card:nth-child(1) .qb-btn{background:var(--primary);color:#fff}
+    .qb-card:nth-child(1) .qb-btn:hover{background:#1565c0}
+    .qb-card:nth-child(2) .qb-btn{background:var(--accent);color:#fff}
+    .qb-card:nth-child(2) .qb-btn:hover{background:#e65100}
+    .qb-card:nth-child(3) .qb-btn{background:var(--success);color:#fff}
+    .qb-card:nth-child(3) .qb-btn:hover{background:#0a8a5a}
+    .qb-desc{font-size:12px;color:var(--text-muted);margin-bottom:14px}
+
+    /* Cart panel */
+    .cart-panel{background:var(--bg-white);border-radius:var(--radius-xl);padding:32px;box-shadow:var(--shadow-md);max-width:800px;margin:0 auto;border:1px solid var(--border)}
     .cart-panel h3{font-weight:800;font-size:20px;margin-bottom:20px;display:flex;align-items:center;gap:10px}
     .cart-empty{text-align:center;padding:40px 0;color:var(--text-muted)}
     .cart-empty i{font-size:48px;margin-bottom:12px;display:block;color:var(--border)}
@@ -62,25 +62,35 @@
     .ci-right{text-align:right;display:flex;align-items:center;gap:16px}
     .ci-price{font-weight:800;font-size:17px;color:var(--text-primary)}
     .ci-qty{display:flex;align-items:center;gap:8px}
-    .ci-qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:var(--transition)}
+    .ci-qty button{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:var(--transition);font-size:14px}
     .ci-qty button:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
-    .ci-qty span{font-weight:700;min-width:20px;text-align:center}
-    .ci-remove{color:var(--danger);cursor:pointer;font-size:18px;transition:var(--transition);padding:4px}
+    .ci-qty span{font-weight:700;min-width:24px;text-align:center;font-size:15px}
+    .ci-remove{color:var(--danger);cursor:pointer;font-size:16px;transition:var(--transition);padding:4px}
     .ci-remove:hover{transform:scale(1.2)}
+
+    /* Pricing breakdown */
+    .pricing-breakdown{background:#f8f9fa;border-radius:var(--radius-md);padding:16px 20px;margin-top:16px;font-size:13px}
+    .pricing-breakdown .pb-row{display:flex;justify-content:space-between;padding:6px 0;color:var(--text-secondary)}
+    .pricing-breakdown .pb-row.pb-total{border-top:2px solid var(--border);margin-top:8px;padding-top:10px;font-weight:800;font-size:16px;color:var(--text-primary)}
+
+    /* Cart footer */
     .cart-footer{margin-top:24px;padding-top:20px;border-top:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
     .cf-total{font-size:20px;font-weight:800}
     .cf-total span{color:var(--primary);font-size:28px}
     .btn-checkout{height:52px;padding:0 36px;background:linear-gradient(135deg,var(--accent),#ff9800);color:#fff;border:none;border-radius:var(--radius-md);font-weight:700;font-size:15px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px}
     .btn-checkout:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,109,0,0.3)}
     .btn-checkout:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
-    .lead-info-row{display:flex;gap:16px;max-width:960px;margin:0 auto 40px}
-    .lead-info-card{flex:1;background:var(--bg-white);border-radius:var(--radius-lg);padding:20px 24px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
-    .lic-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+    /* Lead info */
+    .lead-info-row{display:flex;gap:16px;max-width:800px;margin:0 auto 40px}
+    .lead-info-card{flex:1;background:var(--bg-white);border-radius:var(--radius-lg);padding:18px 20px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+    .lic-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
     .lic-icon.blue{background:var(--primary-light);color:var(--primary)}
     .lic-icon.orange{background:#fff3e0;color:var(--accent)}
-    .lic-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-    .lic-value{font-size:20px;font-weight:800}
-    @media(max-width:768px){.packages-grid{grid-template-columns:1fr}.cart-item{flex-direction:column;align-items:flex-start;gap:12px}.cart-footer{flex-direction:column;text-align:center}.lead-info-row{flex-direction:column}}
+    .lic-label{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .lic-value{font-size:18px;font-weight:800}
+
+    @media(max-width:768px){.quick-buy-grid{grid-template-columns:1fr}.cart-item{flex-direction:column;align-items:flex-start;gap:12px}.cart-footer{flex-direction:column;text-align:center}.lead-info-row{flex-direction:column}}
   </style>
 </head>
 <body>
@@ -93,6 +103,7 @@
       <h1><i class="fa-solid fa-shopping-cart" style="color:var(--accent)"></i> Buy Lead Credits</h1>
       <p>Use leads to contact students and parents directly. More leads, more savings.</p>
     </div>
+
     <div class="lead-balance animate-in">
       <div class="lb-icon"><i class="fa-solid fa-bolt"></i></div>
       <div class="lb-info">
@@ -100,6 +111,7 @@
         <div class="lb-count" id="leadsCount">0</div>
       </div>
     </div>
+
     <div class="lead-info-row animate-in">
       <div class="lead-info-card">
         <div class="lic-icon blue"><i class="fa-solid fa-eye"></i></div>
@@ -107,13 +119,56 @@
       </div>
       <div class="lead-info-card">
         <div class="lic-icon orange"><i class="fa-solid fa-rupee-sign"></i></div>
-        <div><div class="lic-label">1 Lead Cost</div><div class="lic-value">&#8377;99</div></div>
+        <div><div class="lic-label">Starting at</div><div class="lic-value">&#8377;99/lead</div></div>
       </div>
     </div>
-    <div class="packages-grid animate-in" id="packagesGrid"></div>
+
+    <!-- Quick Buy Buttons -->
+    <div class="quick-buy-section animate-in">
+      <h3><i class="fa-solid fa-bolt" style="color:var(--accent)"></i> Choose a Package</h3>
+      <div class="quick-buy-grid">
+        <!-- 1 Lead -->
+        <div class="qb-card" onclick="quickBuy(1)">
+          <div class="qb-leads">1</div>
+          <div class="qb-label">Lead</div>
+          <div class="qb-price">&#8377;99</div>
+          <div class="qb-per">&#8377;99 per lead</div>
+          <div class="qb-desc">Try it out</div>
+          <button class="qb-btn"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+        </div>
+        <!-- 5 Leads -->
+        <div class="qb-card popular" onclick="quickBuy(5)">
+          <div class="qb-leads">5</div>
+          <div class="qb-label">Leads</div>
+          <div class="qb-price">&#8377;399</div>
+          <div class="qb-per">&#8377;80 per lead</div>
+          <div class="qb-savings"><i class="fa-solid fa-tag"></i> Save 20%</div>
+          <div class="qb-desc">Best for getting started</div>
+          <button class="qb-btn"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+        </div>
+        <!-- 10 Leads -->
+        <div class="qb-card" onclick="quickBuy(10)">
+          <div class="qb-leads">10</div>
+          <div class="qb-label">Leads</div>
+          <div class="qb-price">&#8377;699</div>
+          <div class="qb-per">&#8377;70 per lead</div>
+          <div class="qb-savings"><i class="fa-solid fa-tag"></i> Save 30%</div>
+          <div class="qb-desc">Best value overall</div>
+          <button class="qb-btn"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Panel -->
     <div class="cart-panel animate-in" id="cartPanel">
       <h3><i class="fa-solid fa-shopping-cart"></i> Your Cart</h3>
-      <div id="cartItems"><div class="cart-empty"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty. Add a package above to get started.</p></div></div>
+      <div id="cartItems">
+        <div class="cart-empty">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <p>Your cart is empty. Choose a package above to get started.</p>
+        </div>
+      </div>
+      <div id="pricingBreakdown"></div>
       <div class="cart-footer" id="cartFooter" style="display:none">
         <div class="cf-total">Total: <span id="cartTotal">&#8377;0</span></div>
         <button class="btn-checkout" id="checkoutBtn" onclick="checkout()">
@@ -132,51 +187,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/auth.js"></script>
 <script>
+initFirebase();
 document.getElementById('navbar-placeholder').innerHTML = getNavHTML('cart');
 renderAuthButtons('authButtons');
 
-function renderPackages() {
-  var grid = document.getElementById('packagesGrid');
-  grid.innerHTML = LEAD_PACKAGES.map(function(pkg) {
-    var popular = pkg.popular ? ' popular' : '';
-    var badgeHtml = pkg.popular ? '<div class="pkg-badge">Most Popular</div>' : '';
-    var savingsHtml = pkg.savings ? '<div class="pkg-savings"><i class="fa-solid fa-tag"></i> Save ' + pkg.savings + '</div>' : '';
-    return '<div class="pkg-card ' + pkg.color + popular + '">' + badgeHtml +
-      '<div class="pkg-top"><div class="pkg-icon"><i class="fa-solid fa-bolt"></i></div>' +
-      '<div class="pkg-leads">' + pkg.leads + '</div>' +
-      '<div class="pkg-label">Lead' + (pkg.leads > 1 ? 's' : '') + '</div>' +
-      '<div class="pkg-price-wrap"><div class="pkg-price">&#8377;' + pkg.price + '</div>' +
-      '<div class="pkg-per">&#8377;' + pkg.per + ' per lead</div>' +
-      savingsHtml + '</div></div>' +
-      '<div class="pkg-bottom"><div class="pkg-desc">' + pkg.desc + '</div>' +
-      '<button class="btn-add-cart" onclick="addToCartUI(\'' + pkg.id + '\')"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>' +
-      '</div></div>';
-  }).join('');
-}
-
-function renderCart() {
-  var cart = getCart();
-  var container = document.getElementById('cartItems');
-  var footer = document.getElementById('cartFooter');
-  if (cart.length === 0) {
-    container.innerHTML = '<div class="cart-empty"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty. Add a package above to get started.</p></div>';
-    footer.style.display = 'none';
-    return;
-  }
-  footer.style.display = 'flex';
-  container.innerHTML = cart.map(function(item) {
-    return '<div class="cart-item"><div class="ci-info"><div class="ci-icon"><i class="fa-solid fa-bolt"></i></div><div><div class="ci-name">' + item.label + '</div><div class="ci-meta">' + item.leads + ' leads &bull; &#8377;' + item.price + ' each</div></div></div>' +
-      '<div class="ci-right"><div class="ci-qty"><button onclick="changeQty(\'' + item.id + '\',-1)">-</button><span>' + item.qty + '</span><button onclick="changeQty(\'' + item.id + '\',1)">+</button></div>' +
-      '<div class="ci-price">&#8377;' + (item.price * item.qty) + '</div>' +
-      '<div class="ci-remove" onclick="removeFromCartUI(\'' + item.id + '\')"><i class="fa-solid fa-trash"></i></div></div></div>';
-  }).join('');
-  document.getElementById('cartTotal').textContent = '\u20B9' + getCartTotal();
-  document.getElementById('leadsCount').textContent = getLeads();
-}
-
-function addToCartUI(pkgId) {
+// ---- Quick buy with popup ----
+function quickBuy(leads) {
   if (!isLoggedIn()) {
-    Swal.fire({ icon: 'info', title: 'Login Required', text: 'Please login to buy leads', confirmButtonText: 'Login', confirmButtonColor: '#1a73e8',
+    Swal.fire({
+      icon: 'info', title: 'Login Required', text: 'Please login to buy leads',
+      confirmButtonText: 'Login', confirmButtonColor: '#1a73e8',
       showCancelButton: true, cancelButtonText: 'Sign Up Free'
     }).then(function(r) {
       if (r.isConfirmed) window.location.href = 'login.html';
@@ -184,18 +204,128 @@ function addToCartUI(pkgId) {
     });
     return;
   }
-  addToCart(pkgId);
-  var pkg = LEAD_PACKAGES.find(function(p) { return p.id === pkgId; });
-  Swal.fire({ icon: 'success', title: pkg.label + ' added!', timer: 1200, showConfirmButton: false });
+
+  var price = calculateSmartPrice(leads);
+  var pkgId = 'lead_' + leads;
+
+  Swal.fire({
+    title: 'Add ' + leads + ' Lead' + (leads > 1 ? 's' : '') + ' to Cart?',
+    html: '<div style="text-align:center">' +
+      '<div style="font-size:48px;font-weight:800;color:var(--primary);margin:16px 0">' + leads + '</div>' +
+      '<div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">Lead' + (leads > 1 ? 's' : '') + '</div>' +
+      '<div style="font-size:28px;font-weight:800;color:var(--text-primary)">&#8377;' + price.total + '</div>' +
+      '<div style="font-size:13px;color:var(--text-muted);margin-top:4px">&#8377;' + Math.round(price.total / leads) + ' per lead</div>' +
+      '</div>',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: '<i class="fa-solid fa-cart-plus"></i> Add to Cart',
+    confirmButtonColor: '#1a73e8',
+    cancelButtonText: 'Cancel'
+  }).then(function(result) {
+    if (result.isConfirmed) {
+      // Store in cart with smart pricing
+      var cart = getCart();
+      var existing = cart.find(function(i) { return i.id === pkgId; });
+      if (existing) {
+        existing.qty += 1;
+        existing.totalLeads = (existing.totalLeads || leads) + leads;
+        existing.smartPrice = calculateSmartPrice(existing.totalLeads).total;
+      } else {
+        cart.push({
+          id: pkgId,
+          label: leads + ' Lead' + (leads > 1 ? 's' : ''),
+          leads: leads,
+          qty: 1,
+          totalLeads: leads,
+          smartPrice: price.total
+        });
+      }
+      saveCart(cart);
+      syncCartToFirestore();
+
+      Swal.fire({
+        icon: 'success',
+        title: leads + ' Lead' + (leads > 1 ? 's' : '') + ' added!',
+        text: 'Total: ₹' + price.total,
+        timer: 1500,
+        showConfirmButton: false
+      });
+      renderCart();
+    }
+  });
+}
+
+// ---- Render cart ----
+function renderCart() {
+  var cart = getCart();
+  var container = document.getElementById('cartItems');
+  var footer = document.getElementById('cartFooter');
+  var breakdownEl = document.getElementById('pricingBreakdown');
+
+  if (cart.length === 0) {
+    container.innerHTML = '<div class="cart-empty"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty. Choose a package above to get started.</p></div>';
+    footer.style.display = 'none';
+    breakdownEl.innerHTML = '';
+    document.getElementById('leadsCount').textContent = getLeads();
+    return;
+  }
+
+  footer.style.display = 'flex';
+
+  // Calculate total leads across all cart items
+  var totalLeadsInCart = cart.reduce(function(sum, item) { return sum + (item.leads * item.qty); }, 0);
+  var smartPricing = calculateSmartPrice(totalLeadsInCart);
+
+  container.innerHTML = cart.map(function(item) {
+    var itemTotal = item.leads * item.qty;
+    return '<div class="cart-item">' +
+      '<div class="ci-info">' +
+        '<div class="ci-icon"><i class="fa-solid fa-bolt"></i></div>' +
+        '<div>' +
+          '<div class="ci-name">' + item.label + '</div>' +
+          '<div class="ci-meta">' + item.leads + ' lead' + (item.leads > 1 ? 's' : '') + ' per unit</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ci-right">' +
+        '<div class="ci-qty">' +
+          '<button onclick="changeQty(\'' + item.id + '\',-1)"><i class="fa-solid fa-minus"></i></button>' +
+          '<span>' + item.qty + '</span>' +
+          '<button onclick="changeQty(\'' + item.id + '\',1)"><i class="fa-solid fa-plus"></i></button>' +
+        '</div>' +
+        '<div class="ci-price">&#8377;' + (item.smartPrice || item.price) + '</div>' +
+        '<div class="ci-remove" onclick="removeFromCartUI(\'' + item.id + '\')"><i class="fa-solid fa-trash"></i></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Show pricing breakdown
+  if (smartPricing.breakdown.length > 1) {
+    breakdownEl.innerHTML = '<div class="pricing-breakdown">' +
+      smartPricing.breakdown.map(function(row) {
+        return '<div class="pb-row"><span>' + row.desc + '</span><span>&#8377;' + row.amount + '</span></div>';
+      }).join('') +
+      '<div class="pb-row pb-total"><span>Total</span><span>&#8377;' + smartPricing.total + '</span></div>' +
+    '</div>';
+  } else {
+    breakdownEl.innerHTML = '';
+  }
+
+  document.getElementById('cartTotal').textContent = '\u20B9' + smartPricing.total;
+  document.getElementById('leadsCount').textContent = getLeads();
+}
+
+function removeFromCartUI(pkgId) {
+  removeFromCart(pkgId);
   renderCart();
 }
 
-function removeFromCartUI(pkgId) { removeFromCart(pkgId); renderCart(); }
 function changeQty(pkgId, delta) {
   var cart = getCart();
   var item = cart.find(function(i) { return i.id === pkgId; });
   if (!item) return;
   item.qty = Math.max(1, item.qty + delta);
+  item.totalLeads = item.leads * item.qty;
+  item.smartPrice = calculateSmartPrice(item.totalLeads).total;
   saveCart(cart);
   syncCartToFirestore();
   renderCart();
@@ -206,10 +336,24 @@ function checkout() {
     Swal.fire({ icon: 'info', title: 'Login Required', text: 'Please login first', confirmButtonText: 'Login' }).then(function() { window.location.href = 'login.html'; });
     return;
   }
+  var cart = getCart();
+  var totalLeads = cart.reduce(function(sum, item) { return sum + (item.leads * item.qty); }, 0);
+  var smartPricing = calculateSmartPrice(totalLeads);
+
   Swal.fire({
     title: 'Proceed to Payment?',
-    html: '<div style="text-align:left;font-size:14px"><p><strong>Total: &#8377;' + getCartTotal() + '</strong></p><p>You will receive <strong>' + getCartLeadCount() + ' leads</strong> after payment.</p></div>',
-    icon: 'question', showCancelButton: true, confirmButtonText: 'Pay Now', confirmButtonColor: '#ff6d00',
+    html: '<div style="text-align:left;font-size:14px">' +
+      '<p><strong>Total: &#8377;' + smartPricing.total + '</strong></p>' +
+      '<p>You will receive <strong>' + totalLeads + ' leads</strong> after payment.</p>' +
+      (smartPricing.breakdown.length > 1 ?
+        '<div style="background:#f8f9fa;padding:12px;border-radius:8px;margin-top:12px">' +
+          smartPricing.breakdown.map(function(r) { return '<div style="display:flex;justify-content:space-between;padding:4px 0"><span>' + r.desc + '</span><span>&#8377;' + r.amount + '</span></div>'; }).join('') +
+        '</div>' : '') +
+      '</div>',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Pay Now',
+    confirmButtonColor: '#ff6d00',
     cancelButtonText: 'Cancel'
   }).then(function(r) {
     if (r.isConfirmed) {
@@ -218,10 +362,13 @@ function checkout() {
   });
 }
 
+// ---- Load from Firestore then render ----
 document.addEventListener('DOMContentLoaded', function() {
-  renderPackages();
-  renderCart();
-  document.getElementById('leadsCount').textContent = getLeads();
+  loadFromFirestore().then(function() {
+    renderCart();
+    document.getElementById('leadsCount').textContent = getLeads();
+    renderAuthButtons('authButtons');
+  });
 });
 </script>
 </body>

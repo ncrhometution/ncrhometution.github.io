@@ -12,6 +12,17 @@ const FIREBASE_CONFIG = {
   appId: "1:959092582322:web:c1b82f73db01f4585066ab"
 };
 
+// ---- Init Firebase (safe to call multiple times) ----
+function initFirebase() {
+  if (typeof firebase !== "undefined" && !firebase.apps.length) {
+    firebase.initializeApp(FIREBASE_CONFIG);
+  }
+  // Force LOCAL persistence so auth survives page reload
+  if (typeof firebase !== "undefined" && firebase.auth) {
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function() {});
+  }
+}
+
 // ---- Profile helpers (localStorage) ----
 function getProfile() {
   try { var r = localStorage.getItem("user_profile"); return r ? JSON.parse(r) : null; } catch(e) { return null; }
@@ -21,9 +32,10 @@ function clearProfile() {
   localStorage.removeItem("user_profile");
   localStorage.removeItem("user_leads");
   localStorage.removeItem("user_cart");
+  localStorage.removeItem("user_saved_profiles");
 }
 function isLoggedIn() { return !!getProfile(); }
-function requireAuth(redirectUrl) {
+function requireAuth() {
   if (!isLoggedIn()) {
     Swal.fire({
       icon: "info",
@@ -57,7 +69,6 @@ function checkWelcomeToast() {
       toast: true,
       position: "top-end"
     });
-    // Remove ?welcome=1 from URL
     var url = new URL(window.location);
     url.searchParams.delete("welcome");
     window.history.replaceState({}, "", url);
@@ -83,6 +94,76 @@ var LEAD_PACKAGES = [
   { id: "lead_10", leads: 10, price: 699, label: "10 Leads", per: 70,  desc: "Best value overall",   savings: "30%",  color: "green",  icon: "fa-solid fa-crown" }
 ];
 
+// ---- Smart pricing ----
+// 1-4 leads = ₹99 each
+// 5 leads = ₹399
+// 6-9 leads = ₹399 + (remaining × ₹99)
+// 10 leads = ₹699
+function calculateSmartPrice(totalLeads) {
+  if (totalLeads <= 0) return { total: 0, breakdown: [] };
+  if (totalLeads <= 4) {
+    return { total: totalLeads * 99, breakdown: [{ desc: totalLeads + ' × ₹99', amount: totalLeads * 99 }] };
+  }
+  if (totalLeads === 5) {
+    return { total: 399, breakdown: [{ desc: '5 Lead Package', amount: 399 }] };
+  }
+  if (totalLeads < 10) {
+    var extra = totalLeads - 5;
+    var extraCost = extra * 99;
+    return {
+      total: 399 + extraCost,
+      breakdown: [
+        { desc: '5 Lead Package', amount: 399 },
+        { desc: extra + ' × ₹99', amount: extraCost }
+      ]
+    };
+  }
+  if (totalLeads === 10) {
+    return { total: 699, breakdown: [{ desc: '10 Lead Package', amount: 699 }] };
+  }
+  var packs = Math.floor(totalLeads / 10);
+  var remainder = totalLeads % 10;
+  var packCost = packs * 699;
+  if (remainder === 0) {
+    return { total: packCost, breakdown: [{ desc: packs + ' × 10 Lead Package', amount: packCost }] };
+  }
+  if (remainder <= 4) {
+    var remCost = remainder * 99;
+    return {
+      total: packCost + remCost,
+      breakdown: [
+        { desc: packs + ' × 10 Lead Package', amount: packCost },
+        { desc: remainder + ' × ₹99', amount: remCost }
+      ]
+    };
+  }
+  if (remainder === 5) {
+    return {
+      total: packCost + 399,
+      breakdown: [
+        { desc: packs + ' × 10 Lead Package', amount: packCost },
+        { desc: '5 Lead Package', amount: 399 }
+      ]
+    };
+  }
+  var rem5pack = 399;
+  var remExtras = (remainder - 5) * 99;
+  return {
+    total: packCost + rem5pack + remExtras,
+    breakdown: [
+      { desc: packs + ' × 10 Lead Package', amount: packCost },
+      { desc: '5 Lead Package', amount: rem5pack },
+      { desc: (remainder - 5) + ' × ₹99', amount: remExtras }
+    ]
+  };
+}
+
+function getSmartPrice() {
+  var cart = getCart();
+  var totalLeads = cart.reduce(function(sum, i) { return sum + (i.leads * i.qty); }, 0);
+  return calculateSmartPrice(totalLeads);
+}
+
 // ---- Cart (localStorage) ----
 function getCart() { try { var r = localStorage.getItem("user_cart"); return r ? JSON.parse(r) : []; } catch(e) { return []; } }
 function saveCart(c) { localStorage.setItem("user_cart", JSON.stringify(c)); }
@@ -91,8 +172,16 @@ function addToCart(pkgId) {
   if (!pkg) return false;
   var cart = getCart();
   var ex = cart.find(function(i) { return i.id === pkgId; });
-  if (ex) ex.qty += 1;
-  else cart.push({ id: pkg.id, label: pkg.label, price: pkg.price, leads: pkg.leads, qty: 1 });
+  if (ex) {
+    ex.qty += 1;
+    ex.totalLeads = (ex.totalLeads || pkg.leads) * ex.qty;
+  } else {
+    cart.push({ id: pkg.id, label: pkg.label, price: pkg.price, leads: pkg.leads, qty: 1, totalLeads: pkg.leads });
+  }
+  // Recalculate smart price for each item
+  cart.forEach(function(item) {
+    item.smartPrice = calculateSmartPrice(item.leads * item.qty).total;
+  });
   saveCart(cart);
   syncCartToFirestore();
   return true;
@@ -114,13 +203,13 @@ function saveProfileToList(profile) {
   if (!list.find(function(p) { return p.id === profile.id && p.type === profile.type; })) {
     list.push(profile);
     localStorage.setItem("user_saved_profiles", JSON.stringify(list));
-    syncSavedToFirestore();
+    syncCartToFirestore();
   }
 }
 function removeSavedProfile(id, type) {
   var list = getSavedProfiles().filter(function(p) { return !(p.id === id && p.type === type); });
   localStorage.setItem("user_saved_profiles", JSON.stringify(list));
-  syncSavedToFirestore();
+  syncCartToFirestore();
 }
 function isProfileSaved(id, type) {
   return getSavedProfiles().some(function(p) { return p.id === id && p.type === type; });
@@ -128,49 +217,6 @@ function isProfileSaved(id, type) {
 
 // ---- Firestore sync ----
 function syncCartToFirestore() {
-  if (typeof firebase === 'undefined' || !firebase.firestore) return;
-  var profile = getProfile();
-  if (!profile || !profile.uid) return;
-  firebase.firestore().collection("users").doc(profile.uid).set({
-    cart: getCart(),
-    leads: getLeads(),
-    savedProfiles: getSavedProfiles(),
-    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true }).catch(function() {});
-}
-
-function syncSavedToFirestore() {
-  syncCartToFirestore();
-}
-
-function loadCartFromFirestore() {
-  return new Promise(function(resolve) {
-    if (typeof firebase === 'undefined' || !firebase.firestore) { resolve(); return; }
-    var profile = getProfile();
-    if (!profile || !profile.uid) { resolve(); return; }
-    firebase.firestore().collection("users").doc(profile.uid).get()
-      .then(function(doc) {
-        if (doc.exists) {
-          var data = doc.data();
-          if (data.cart && data.cart.length > 0) saveCart(data.cart);
-          if (typeof data.leads === 'number') setLeads(data.leads);
-          if (data.savedProfiles && data.savedProfiles.length > 0) {
-            localStorage.setItem("user_saved_profiles", JSON.stringify(data.savedProfiles));
-          }
-          // Also restore profile fields from Firestore
-          if (data.mobile_no && !profile.mobile_no) profile.mobile_no = data.mobile_no;
-          if (data.displayName && !profile.displayName) profile.displayName = data.displayName;
-          if (data.role && !profile.role) profile.role = data.role;
-          saveProfile(profile);
-        }
-        resolve();
-      })
-      .catch(function() { resolve(); });
-  });
-}
-
-// ---- Save full profile to Firestore ----
-function syncProfileToFirestore() {
   if (typeof firebase === 'undefined' || !firebase.firestore) return;
   var profile = getProfile();
   if (!profile || !profile.uid) return;
@@ -183,7 +229,41 @@ function syncProfileToFirestore() {
     leads: getLeads(),
     savedProfiles: getSavedProfiles(),
     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true }).catch(function() {});
+  }, { merge: true }).catch(function(err) { console.warn("Firestore sync failed:", err.message); });
+}
+
+function syncProfileToFirestore() {
+  syncCartToFirestore();
+}
+
+// ---- Load profile + cart from Firestore on page load ----
+function loadFromFirestore() {
+  return new Promise(function(resolve) {
+    if (typeof firebase === 'undefined' || !firebase.firestore || !firebase.auth) { resolve(); return; }
+    var user = firebase.auth().currentUser;
+    if (!user) { resolve(); return; }
+    firebase.firestore().collection("users").doc(user.uid).get()
+      .then(function(doc) {
+        if (doc.exists) {
+          var data = doc.data();
+          // Update local profile with Firestore data
+          var profile = getProfile();
+          if (profile) {
+            if (data.mobile_no) profile.mobile_no = data.mobile_no;
+            if (data.displayName) profile.displayName = data.displayName;
+            if (data.role) profile.role = data.role;
+            saveProfile(profile);
+          }
+          if (data.cart && data.cart.length > 0) saveCart(data.cart);
+          if (typeof data.leads === 'number') setLeads(data.leads);
+          if (data.savedProfiles && data.savedProfiles.length > 0) {
+            localStorage.setItem("user_saved_profiles", JSON.stringify(data.savedProfiles));
+          }
+        }
+        resolve();
+      })
+      .catch(function(err) { console.warn("Firestore load failed:", err.message); resolve(); });
+  });
 }
 
 // ---- Update profile fields ----
@@ -241,7 +321,6 @@ function logoutUser() {
       if (typeof firebase !== 'undefined' && firebase.auth) firebase.auth().signOut();
       clearProfile();
       localStorage.removeItem("admin_token");
-      localStorage.removeItem("user_saved_profiles");
       Swal.fire({ icon: "success", title: "Logged Out", timer: 1000, showConfirmButton: false });
       setTimeout(function() { window.location.href = "index.html"; }, 1000);
     }
