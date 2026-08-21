@@ -62,9 +62,10 @@
     .tc-footer{padding:16px 20px;border-top:1.5px solid var(--border-light);display:flex;gap:8px;align-items:center}
     .btn-view-profile{flex:1;height:42px;border:none;border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff}
     .btn-view-profile:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,115,232,0.3);color:#fff}
-    .btn-save-contact{height:42px;padding:0 14px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
-    .btn-save-contact:hover{background:var(--accent);color:#fff}
-    .btn-save-contact.saved{background:#e8f5e9;border-color:var(--success);color:var(--success)}
+    .btn-add-cart{height:42px;padding:0 16px;border:2px solid var(--accent);background:transparent;color:var(--accent);border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+    .btn-add-cart:hover{background:var(--accent);color:#fff;transform:translateY(-1px)}
+    .btn-add-cart.in-cart{background:#e8f5e9;border-color:var(--success);color:var(--success)}
+    .btn-add-cart.in-cart:hover{background:#ffcdd2;border-color:var(--danger);color:var(--danger)}
     .search-header-bar{background:var(--bg-white);padding:12px 0;border-bottom:1px solid var(--border-light)}
     .btn-apply-filter{width:100%;height:42px;border:none;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
     .btn-apply-filter:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,115,232,0.3)}
@@ -90,7 +91,12 @@
         </div>
       </div>
       <div class="col-lg-9 col-md-8">
-        <div class="result-header"><div><h5 style="font-weight:700;margin:0" id="resultTitle">Search Results</h5><div class="result-count" id="resultCount"></div></div></div>
+        <div class="result-header">
+          <div><h5 style="font-weight:700;margin:0" id="resultTitle">Search Results</h5><div class="result-count" id="resultCount"></div></div>
+          <a href="cart.html" class="btn btn-accent-custom btn-sm" style="display:flex;align-items:center;gap:6px;text-decoration:none">
+            <i class="fa-solid fa-shopping-cart"></i> View Cart <span id="headerCartCount" style="background:rgba(255,255,255,0.3);padding:2px 8px;border-radius:10px;font-size:11px"></span>
+          </a>
+        </div>
         <div class="row g-4" id="results"></div>
       </div>
     </div>
@@ -106,7 +112,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 renderAuthButtons("authButtons");
-loadFromFirestore().then(function(){renderAuthButtons("authButtons")});
+loadFromFirestore().then(function(){renderAuthButtons("authButtons");updateCartBadge();});
+
+function updateCartBadge(){
+  var c=getCartCount();
+  var el=document.getElementById("headerCartCount");
+  if(el) el.textContent=c>0?c+" item"+(c>1?"s":""):"";
+}
 
 var urlParams = new URLSearchParams(window.location.search);
 var searchQ = urlParams.get("q") || "";
@@ -172,7 +184,7 @@ function renderResults(items){
     var initial=(item.name||"N").charAt(0).toUpperCase();
     var isTutor=(item.type||"tutor")==="tutor";
     var cardType=isTutor?"tutor":"student";
-    var saved=isProfileSaved(item.id,item.type);
+    var inCart=isInCart(item.id,item.type);
     var card=document.createElement("div");
     card.className="col-lg-6 col-md-6 fade-in";
     card.innerHTML='<div class="tutor-card">'+
@@ -194,23 +206,35 @@ function renderResults(items){
       '</div>'+
       '<div class="tc-footer">'+
         '<a href="data.html?id='+item.id+'&type='+item.type+'" class="btn-view-profile"><i class="fa-solid fa-eye"></i> View Profile</a>'+
-        '<button class="btn-save-contact '+(saved?'saved':'')+'" onclick="toggleSave(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\')">'+(saved?'<i class="fa-solid fa-check"></i> Saved':'<i class="fa-solid fa-cart-plus"></i> Save')+'</button>'+
+        '<button class="btn-add-cart '+(inCart?'in-cart':'')+'" id="cartBtn_'+item.id+'_'+item.type+'" onclick="toggleCart(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\',\''+(item.experience||"").replace(/'/g,"\\'")+'\',\''+(item.preferred_mode||"").replace(/'/g,"\\'")+'\',\''+(item.language||"").replace(/'/g,"\\'")+'\')">'+(inCart?'<i class="fa-solid fa-check"></i> In Cart':'<i class="fa-solid fa-cart-plus"></i> ₹99')+'</button>'+
       '</div></div>';
     box.appendChild(card);
   });
 }
 
-function toggleSave(btn,id,type,name,city,course,subject){
-  if(!isLoggedIn()){Swal.fire({icon:"info",title:"Login Required",text:"Please login to save profiles",confirmButtonText:"Login",confirmButtonColor:"#1a73e8",showCancelButton:true,cancelButtonText:"Sign Up"}).then(function(r){if(r.isConfirmed)window.location.href="login.html";else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html";});return;}
-  if(isProfileSaved(id,type)){
-    removeSavedProfile(id,type);
-    btn.classList.remove("saved");btn.innerHTML='<i class="fa-solid fa-cart-plus"></i> Save';
-    Swal.fire({icon:"info",title:"Removed",timer:1000,showConfirmButton:false,toast:true,position:"top-end"});
-  } else {
-    saveProfileToList({id:id,type:type,name:name,city:city,course:course,subject:subject,savedAt:new Date().toISOString()});
-    btn.classList.add("saved");btn.innerHTML='<i class="fa-solid fa-check"></i> Saved';
-    Swal.fire({icon:"success",title:"Profile Saved!",timer:1200,showConfirmButton:false,toast:true,position:"top-end"});
+function toggleCart(btn,id,type,name,city,course,subject,experience,mode,language){
+  if(!isLoggedIn()){
+    Swal.fire({icon:"info",title:"Login Required",text:"Please login to add profiles to cart",
+      confirmButtonText:"Login",confirmButtonColor:"#1a73e8",showCancelButton:true,cancelButtonText:"Sign Up Free"
+    }).then(function(r){if(r.isConfirmed)window.location.href="login.html";else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html";});
+    return;
   }
+  if(isInCart(id,type)){
+    removeProfileFromCart(id,type);
+    btn.classList.remove("in-cart");
+    btn.innerHTML='<i class="fa-solid fa-cart-plus"></i> ₹99';
+    Swal.fire({icon:"info",title:"Removed from Cart",timer:1000,showConfirmButton:false,toast:true,position:"top-end"});
+  } else {
+    addProfileToCart({id:id,type:type,name:name,city:city,course:course,subject:subject,experience:experience,preferred_mode:mode,language:language});
+    btn.classList.add("in-cart");
+    btn.innerHTML='<i class="fa-solid fa-check"></i> In Cart';
+    var count=getCartCount();
+    var pricing=calculateSmartPrice(count);
+    Swal.fire({icon:"success",title:name+" added to cart!",text:count+" profile"+(count>1?"s":"")+" in cart — Total: ₹"+pricing.total,
+      timer:2000,showConfirmButton:false,toast:true,position:"top-end"});
+  }
+  updateCartBadge();
+  renderAuthButtons("authButtons");
 }
 
 window.addEventListener("scroll",function(){if(window.innerHeight+window.scrollY>=document.body.offsetHeight-300)loadResults();});

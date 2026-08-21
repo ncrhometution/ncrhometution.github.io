@@ -265,6 +265,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   function fillData(data) {
+    currentData = data;
     document.getElementById("avatarLetter").textContent = (data.name||"N").charAt(0).toUpperCase();
     document.getElementById("profileName").textContent = data.name || "Unknown";
     document.getElementById("profileType").textContent = ((data.type||type).toUpperCase()) + " Profile";
@@ -290,6 +291,16 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("joinBtn").style.display = "none";
     } else {
       contactBox.classList.add("blurred");
+      // Show leads remaining if logged in
+      if(isLoggedIn()){
+        var leadsLeft = getLeads();
+        var existingBtn = document.getElementById("loginBtn");
+        if(leadsLeft > 0){
+          existingBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Reveal Contact (1 lead)';
+          existingBtn.setAttribute("onclick", "revealContact()");
+        }
+        document.getElementById("leadsLeft").textContent = leadsLeft + " leads remaining";
+      }
     }
   }
 });

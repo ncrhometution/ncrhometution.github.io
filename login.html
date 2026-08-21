@@ -135,12 +135,34 @@ auth.onAuthStateChanged(function(user) {
 function loginWithGoogle() {
   Swal.fire({ title: "Connecting to Google...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
   auth.signInWithPopup(googleProvider).then(function(result) {
-    Swal.close();
     var u = result.user;
-    var profile = { uid: u.uid, displayName: u.displayName, email: u.email, mobile_no: u.phoneNumber || "", role: "", emailVerified: u.emailVerified, leads: 0 };
-    saveProfile(profile);
-    syncProfileToFirestore();
-    Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+    // Read existing Firestore data FIRST so we don't overwrite signup info
+    firebase.firestore().collection("users").doc(u.uid).get().then(function(doc) {
+      var ex = doc.exists ? doc.data() : {};
+      var profile = {
+        uid: u.uid,
+        displayName: ex.displayName || u.displayName || "",
+        email: u.email,
+        mobile_no: ex.mobile_no || "",
+        role: ex.role || "",
+        emailVerified: u.emailVerified,
+        leads: typeof ex.leads === "number" ? ex.leads : 0
+      };
+      saveProfile(profile);
+      setLeads(profile.leads);
+      if (ex.cart) saveCart(ex.cart);
+      if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
+      syncProfileToFirestore();
+      Swal.close();
+      Swal.fire({ icon: "success", title: "Welcome, " + (profile.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+    }).catch(function() {
+      // Firestore failed - save basic Auth profile only
+      var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: u.emailVerified, leads: 0 };
+      saveProfile(profile);
+      syncProfileToFirestore();
+      Swal.close();
+      Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+    });
   }).catch(function(err) {
     Swal.close();
     if (err.code === "auth/popup-closed-by-user") return;
@@ -172,10 +194,31 @@ function loginWithEmail() {
       });
       return;
     }
-    var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: true, leads: 0 };
-    saveProfile(profile);
-    syncProfileToFirestore();
-    Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+    // Read existing Firestore data FIRST so we don't overwrite signup info
+    firebase.firestore().collection("users").doc(u.uid).get().then(function(doc) {
+      var ex = doc.exists ? doc.data() : {};
+      var profile = {
+        uid: u.uid,
+        displayName: ex.displayName || u.displayName || "",
+        email: u.email,
+        mobile_no: ex.mobile_no || "",
+        role: ex.role || "",
+        emailVerified: true,
+        leads: typeof ex.leads === "number" ? ex.leads : 0
+      };
+      saveProfile(profile);
+      setLeads(profile.leads);
+      if (ex.cart) saveCart(ex.cart);
+      if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
+      syncProfileToFirestore();
+      Swal.fire({ icon: "success", title: "Welcome back, " + (profile.displayName || "") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+    }).catch(function() {
+      // Firestore failed - save basic Auth profile only
+      var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: true, leads: 0 };
+      saveProfile(profile);
+      syncProfileToFirestore();
+      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+    });
   }).catch(function(err) {
     Swal.close();
     var msg = err.message;
