@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Profile | NCR Home Tuition</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
     .blurred { filter: blur(6px); user-select: none; pointer-events: none; }
     .profile-page { padding: 40px 0 60px; background: var(--bg); min-height: calc(100vh - 64px); }
     .profile-header {
-      background: linear-gradient(135deg, var(--primary), #2979ff);
+      background: linear-gradient(135deg, var(--primary), #14b8a6);
       border-radius: var(--radius-xl);
       padding: 32px;
       color: #fff;
@@ -120,13 +120,13 @@
 
 <nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <a href="index.html" class="navbar-brand">
       <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
       NCR Home Tuition
     </a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
@@ -136,11 +136,11 @@
         <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
         <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
       </ul>
+    </div>
       <div class="auth-actions" id="authButtons">
         <a href="login.html" class="btn-nav-login">Login</a>
         <a href="student-register.html" class="btn-nav-signup">Sign Up Free</a>
       </div>
-    </div>
   </div>
 </nav>
 
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function() {
   .then(data => {
     Swal.close();
     document.getElementById("profileHeader").style.display = "block";
-    Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#ff6d00" });
+    Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#f59e0b" });
     fillData(data);
   })
   .catch(function(e) {
@@ -316,12 +316,12 @@ document.addEventListener("DOMContentLoaded", function() {
 // Lead-gated contact info
 function revealContact() {
   if (!isLoggedIn()) {
-    Swal.fire({ icon: "info", title: "Login Required", text: "Please login to view contact details", confirmButtonText: "Login", confirmButtonColor: "#1a73e8" })
+    Swal.fire({ icon: "info", title: "Login Required", text: "Please login to view contact details", confirmButtonText: "Login", confirmButtonColor: "#0f766e" })
       .then(() => { window.location.href = "login.html"; });
     return;
   }
   if (getLeads() <= 0) {
-    Swal.fire({ icon: "warning", title: "No Leads Left", text: "Buy lead credits to view contact information", confirmButtonText: "Buy Leads", confirmButtonColor: "#ff6d00", showCancelButton: true, cancelButtonText: "Cancel" })
+    Swal.fire({ icon: "warning", title: "No Leads Left", text: "Buy lead credits to view contact information", confirmButtonText: "Buy Leads", confirmButtonColor: "#f59e0b", showCancelButton: true, cancelButtonText: "Cancel" })
       .then(r => { if (r.isConfirmed) window.location.href = "cart.html"; });
     return;
   }

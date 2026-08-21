@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Search Results | NCR Home Tuition</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -13,8 +13,8 @@
 </head>
 <body><nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
-    <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
+    <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
@@ -23,8 +23,8 @@
         <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
         <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
       </ul>
-      <div class="auth-actions" id="authButtons"></div>
     </div>
+      <div class="auth-actions" id="authButtons"></div>
   </div>
 </nav>
 <div class="search-header-bar">
@@ -47,7 +47,7 @@
     .tutor-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--primary)}
     .tc-header{display:flex;align-items:center;gap:14px;padding:20px 20px 0}
     .tc-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;flex-shrink:0}
-    .tc-avatar.tutor{background:linear-gradient(135deg,var(--primary),#2979ff)}
+    .tc-avatar.tutor{background:linear-gradient(135deg,var(--primary),#14b8a6)}
     .tc-avatar.student{background:linear-gradient(135deg,var(--success),#10a36a)}
     .tc-name{font-weight:700;font-size:16px;color:var(--text-primary)}
     .tc-location{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
@@ -60,15 +60,15 @@
     .tc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}
     .tc-tag{background:var(--bg);padding:3px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600;color:var(--text-secondary)}
     .tc-footer{padding:16px 20px;border-top:1.5px solid var(--border-light);display:flex;gap:8px;align-items:center}
-    .btn-view-profile{flex:1;height:42px;border:none;border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff}
-    .btn-view-profile:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,115,232,0.3);color:#fff}
+    .btn-view-profile{flex:1;height:42px;border:none;border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;background:linear-gradient(135deg,var(--primary),#14b8a6);color:#fff}
+    .btn-view-profile:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(15,118,110,0.3);color:#fff}
     .btn-add-cart{flex:1;height:42px;border:2px solid var(--accent);background:transparent;color:var(--accent);border-radius:var(--radius-md);font-weight:700;font-size:13px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
     .btn-add-cart:hover{background:var(--accent);color:#fff;transform:translateY(-1px)}
     .btn-add-cart.in-cart{background:#e8f5e9;border-color:var(--success);color:var(--success)}
     .btn-add-cart.in-cart:hover{background:#ffcdd2;border-color:var(--danger);color:var(--danger)}
     .search-header-bar{background:var(--bg-white);padding:12px 0;border-bottom:1px solid var(--border-light)}
-    .btn-apply-filter{width:100%;height:42px;border:none;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
-    .btn-apply-filter:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,115,232,0.3)}
+    .btn-apply-filter{width:100%;height:42px;border:none;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),#14b8a6);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-apply-filter:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(15,118,110,0.3)}
     .btn-clear-filter{width:100%;height:36px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);border-radius:var(--radius-md);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition);margin-top:8px}
     .btn-clear-filter:hover{border-color:var(--danger);color:var(--danger)}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -215,7 +215,7 @@ function renderResults(items){
 function toggleCart(btn,id,type,name,city,course,subject,experience,mode,language){
   if(!isLoggedIn()){
     Swal.fire({icon:"info",title:"Login Required",text:"Please login to add profiles to cart",
-      confirmButtonText:"Login",confirmButtonColor:"#1a73e8",showCancelButton:true,cancelButtonText:"Sign Up Free"
+      confirmButtonText:"Login",confirmButtonColor:"#0f766e",showCancelButton:true,cancelButtonText:"Sign Up Free"
     }).then(function(r){if(r.isConfirmed)window.location.href="login.html";else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html";});
     return;
   }

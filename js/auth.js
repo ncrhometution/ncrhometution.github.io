@@ -310,8 +310,17 @@ function renderAuthButtons(containerId) {
       '</div>';
   } else {
     box.innerHTML =
-      '<a href="login.html" class="btn-nav-login">Login</a>' +
-      '<a href="signup.html" class="btn-nav-signup">Sign Up Free</a>';
+      '<div class="dropdown auth-dropdown">' +
+        '<button class="btn-nav-login auth-dd-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+          '<i class="fa-regular fa-circle-user"></i> Account' +
+          '<i class="fa-solid fa-chevron-down dd-caret"></i>' +
+        '</button>' +
+        '<ul class="dropdown-menu dropdown-menu-end auth-menu">' +
+          '<li><a class="dropdown-item" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>' +
+          '<li><hr class="dropdown-divider"></li>' +
+          '<li><a class="dropdown-item" href="signup.html"><i class="fa-solid fa-user-plus"></i> Sign Up Free</a></li>' +
+        '</ul>' +
+      '</div>';
   }
 }
 
@@ -334,8 +343,8 @@ function logoutUser() {
 function getNavHTML(activePage) {
   return '<nav class="navbar navbar-expand-lg navbar-modern">' +
     '<div class="container">' +
-      '<a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>' +
       '<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>' +
+      '<a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>' +
       '<div class="collapse navbar-collapse" id="navMenu">' +
         '<ul class="navbar-nav mx-auto">' +
           '<li class="nav-item"><a class="nav-link' + (activePage==='home'?' active':'') + '" href="index.html">Home</a></li>' +
@@ -345,8 +354,8 @@ function getNavHTML(activePage) {
           '<li class="nav-item"><a class="nav-link' + (activePage==='find'?' active':'') + '" href="findbyidtutor.html">Find Tutor</a></li>' +
           '<li class="nav-item"><a class="nav-link' + (activePage==='cart'?' active':'') + '" href="cart.html"><i class="fa-solid fa-shopping-cart"></i> Cart</a></li>' +
         '</ul>' +
-        '<div class="auth-actions" id="authButtons"></div>' +
       '</div>' +
+      '<div class="auth-actions" id="authButtons"></div>' +
     '</div>' +
   '</nav>';
 }

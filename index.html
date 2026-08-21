@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NCR Home Tuition</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.png">
+  <title>NCR Home Tuition | Find Home Tutors &amp; Tuition Jobs</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="NCR Home Tuition connects students and tutors across India. Post tuition needs free, join as a tutor free, and book a free demo class today.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,13 +17,13 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <a href="index.html" class="navbar-brand">
       <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
       NCR Home Tuition
     </a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
@@ -32,67 +33,94 @@
         <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
         <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
       </ul>
-      <div class="auth-actions" id="authButtons">
-        <a href="login.html" class="btn-nav-login" id="loginBtn">Login</a>
-        <a href="student-register.html" class="btn-nav-signup" id="signupBtn">Sign Up Free</a>
-      </div>
+    </div>
+    <div class="auth-actions" id="authButtons">
+      <a href="login.html" class="btn-nav-login" id="loginBtn">Login</a>
+      <a href="student-register.html" class="btn-nav-signup" id="signupBtn">Sign Up Free</a>
     </div>
   </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero-section">
+<!-- Search First -->
+<section class="search-top">
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6 hero-content">
-        <div class="section-badge"><i class="fa-solid fa-bolt"></i> India's Home Tuition Network</div>
-        <h1 class="hero-title">Find the <span class="highlight">Perfect Tutor</span> for Your Child</h1>
-        <p class="hero-text">Connect with verified home tutors and students across India. Free registration, free demo classes, and personalized learning at your doorstep.</p>
-        <div class="d-flex gap-3 flex-wrap">
-          <a href="student-register.html" class="btn btn-accent-custom btn-lg">
-            <i class="fa-solid fa-search"></i> Find a Tutor
-          </a>
-          <a href="tutor-register.html" class="btn btn-outline-custom btn-lg">
-            <i class="fa-solid fa-chalkboard-teacher"></i> Become a Tutor
-          </a>
+    <h2><i class="fa-solid fa-magnifying-glass-location" style="color:var(--primary)"></i> Search Tutors &amp; Tuitions Near You</h2>
+    <p class="search-sub">Choose your city, pick what you are looking for, and search instantly.</p>
+    <div class="search-box-hero">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="search-label">City</label>
+          <div class="city-dropdown" id="cityDropdown">
+            <button type="button" class="city-toggle" onclick="toggleCityDD(event)">
+              <i class="fa-solid fa-location-dot"></i>
+              <span class="ct-label" id="cityLabel">All Cities</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="city-menu">
+              <div class="city-search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="citySearch" placeholder="Search city..." oninput="filterCities()" autocomplete="off">
+              </div>
+              <div class="city-list" id="cityListDiv">
+                <button type="button" class="city-option selected" data-value="" onclick="selectCity(this)"><span>All Cities</span></button>
+              </div>
+              <div class="city-empty" id="cityEmpty">No city found</div>
+            </div>
+          </div>
+          <input type="hidden" id="citySelect" value="">
         </div>
-      </div>
-      <div class="col-lg-6 text-center hero-image-wrapper d-none d-lg-block">
-        <img src="https://i.postimg.cc/52Sypgbn/png-transparent-course-credit-education-academic-degree-student-student-angle-people-university-remo.png" alt="Home Tutor Illustration">
+        <div class="col-md-3">
+          <label class="search-label">Looking For</label>
+          <select class="form-select" id="typeSelect">
+            <option value="tutor">Tutors</option>
+            <option value="student">Tuitions</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="search-label">Course or Subject <span style="text-transform:none;font-weight:500">(optional)</span></label>
+          <div class="search-input-wrap">
+            <i class="fa-solid fa-book-open"></i>
+            <input class="form-control" id="queryInput" placeholder="e.g. Mathematics, Science, Class 10..." autocomplete="off">
+          </div>
+        </div>
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-accent-custom" onclick="doSearch()" style="height:48px">
+            <i class="fa-solid fa-search"></i> Search
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Search Box -->
-<div class="container">
-  <div class="search-box-hero">
-    <div class="row g-3 align-items-end">
-      <div class="col-md-3">
-        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">City</label>
-        <select class="form-select" id="citySelect">
-          <option value="">All Cities</option>
-        </select>
+<!-- Hero -->
+<section class="hero-section">
+  <div class="container text-center">
+    <div class="hero-content">
+      <div class="section-badge"><i class="fa-solid fa-bolt"></i> India's Trusted Home Tuition Network</div>
+      <h1 class="hero-title">We Help Students and Tutors <span class="highlight">Find Each Other</span></h1>
+      <p class="hero-text">Post your tuition requirement or offer your teaching services — free registration, free demo classes and verified profiles, all in one place.</p>
+    </div>
+    <div class="audience-cards mt-2">
+      <div class="audience-card student animate-in">
+        <div class="audience-icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <h3>Looking for a Home Tutor?</h3>
+        <p>Tell us what you need and get matched with verified tutors near you. First demo class is always free.</p>
+        <a href="student-register.html" class="btn btn-primary-custom" style="width:100%;justify-content:center">
+          <i class="fa-solid fa-magnifying-glass"></i> I Need a Tutor
+        </a>
       </div>
-      <div class="col-md-3">
-        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">Looking For</label>
-        <select class="form-select" id="typeSelect">
-          <option value="tutor">Teacher (Tutors)</option>
-          <option value="student">Students</option>
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">Course or Subject</label>
-        <input class="form-control" id="queryInput" placeholder="e.g. Mathematics, Science, Class 10...">
-      </div>
-      <div class="col-md-2 d-grid">
-        <button class="btn btn-accent-custom" onclick="doSearch()" style="height:48px">
-          <i class="fa-solid fa-search"></i> Search
-        </button>
+      <div class="audience-card tutor animate-in" style="animation-delay:0.12s">
+        <div class="audience-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <h3>Looking for Students?</h3>
+        <p>Create your free profile, apply to tuition jobs that match your subjects, and teach on your own schedule.</p>
+        <a href="tutor-register.html" class="btn btn-accent-custom" style="width:100%;justify-content:center">
+          <i class="fa-solid fa-chalkboard-teacher"></i> Join as Tutor
+        </a>
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- Stats -->
 <div class="container">
@@ -107,112 +135,223 @@
     </div>
     <div class="stat-item animate-in" style="animation-delay:0.2s">
       <div class="stat-number">6,00,000+</div>
-      <div class="stat-label">Tuition Jobs</div>
+      <div class="stat-label">Tuition Jobs Handled</div>
     </div>
   </div>
 </div>
 
-<!-- Features -->
-<section class="py-5">
+<!-- Dual CTA Banners -->
+<section class="py-4">
   <div class="container">
-    <div class="text-center mb-5">
-      <div class="section-badge"><i class="fa-solid fa-star"></i> Why Choose Us</div>
-      <h2 class="section-title">Why Home Tuition?</h2>
-      <p class="section-subtitle">Personalized learning that brings results. Here is why thousands trust NCR Home Tuition.</p>
-    </div>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card-modern feature-card">
-          <div class="feature-icon blue"><i class="fa-solid fa-user-graduate"></i></div>
-          <h5>Students & Parents</h5>
-          <ul style="list-style:none;padding:0;margin:0;text-align:left">
-            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Personalized one-to-one attention
-            </li>
-            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Better grades & concept clarity
-            </li>
-            <li style="padding:8px 0;font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Expert guidance at home
-            </li>
-          </ul>
-          <a href="student-register.html" class="btn btn-primary-custom mt-3" style="width:100%;justify-content:center">Register as Student</a>
+    <div class="cta-banner-grid">
+      <div class="cta-banner teal">
+        <div class="banner-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <div>
+          <h3>Do You Need a Tutor's Help?</h3>
+          <p>Share your subject, class and locality — interested tutors will reach out to you directly.</p>
+          <a href="student-register.html" class="btn-banner"><i class="fa-solid fa-paper-plane"></i> Post Tuition Need — Free</a>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card-modern feature-card">
-          <div class="feature-icon orange"><i class="fa-solid fa-chalkboard-user"></i></div>
-          <h5>Home Tutors</h5>
-          <ul style="list-style:none;padding:0;margin:0;text-align:left">
-            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Be your own boss
-            </li>
-            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Flexible timings & earnings
-            </li>
-            <li style="padding:8px 0;font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Extra monthly income
-            </li>
-          </ul>
-          <a href="tutor-register.html" class="btn btn-accent-custom mt-3" style="width:100%;justify-content:center">Join as Tutor</a>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card-modern feature-card">
-          <div class="feature-icon green"><i class="fa-solid fa-handshake"></i></div>
-          <h5>Trusted Process</h5>
-          <ul style="list-style:none;padding:0;margin:0;text-align:left">
-            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Free demo before joining
-            </li>
-            <li style="padding:8px 0;border-bottom:1px solid var(--border-light);font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Verified profiles
-            </li>
-            <li style="padding:8px 0;font-size:14px;color:var(--text-secondary)">
-              <i class="fa-solid fa-check-circle" style="color:var(--success);margin-right:8px"></i> Secure & private contact
-            </li>
-          </ul>
-          <a href="how-it-works.html" class="btn btn-outline-custom mt-3" style="width:100%;justify-content:center">Learn More</a>
+      <div class="cta-banner amber">
+        <div class="banner-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div>
+          <h3>Interested in Teaching?</h3>
+          <p>Register once and apply to unlimited home tuition jobs that match your skills and area.</p>
+          <a href="tutor-register.html" class="btn-banner"><i class="fa-solid fa-user-plus"></i> Join as Tutor — Free</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- How It Works Section -->
+<!-- Why Home Tuition -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge"><i class="fa-solid fa-star"></i> Why Choose Us</div>
+      <h2 class="section-title">Why Home Tuition Works</h2>
+      <p class="section-subtitle">One-to-one attention is the #1 secret behind better grades. Here is what both sides gain.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="split-panel student">
+          <div class="split-panel-head">
+            <div class="audience-icon"><i class="fa-solid fa-user-graduate"></i></div>
+            <h3>For Students &amp; Parents</h3>
+          </div>
+          <ul class="check-list">
+            <li><strong>100% attention:</strong> your child can ask every doubt freely, without hesitation.</li>
+            <li><strong>Personalised pace:</strong> lessons move at the student's speed, not a classroom's.</li>
+            <li><strong>Comfort of home:</strong> no travel time, no safety worries — learning at your doorstep.</li>
+            <li><strong>Free demo first:</strong> try a tutor before you commit to anything.</li>
+          </ul>
+          <a href="student-register.html" class="btn btn-primary-custom"><i class="fa-solid fa-arrow-right"></i> Register as Student</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="split-panel tutor">
+          <div class="split-panel-head">
+            <div class="audience-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <h3>For Tutors</h3>
+          </div>
+          <ul class="check-list">
+            <li><strong>Be your own boss:</strong> choose your students, subjects, timings and fee.</li>
+            <li><strong>Steady extra income:</strong> a few hours a day can add a solid second income.</li>
+            <li><strong>Nearby tuitions:</strong> find teaching jobs posted by students in your own area.</li>
+            <li><strong>No commission cuts:</strong> you keep what you earn, month after month.</li>
+          </ul>
+          <a href="tutor-register.html" class="btn btn-accent-custom"><i class="fa-solid fa-arrow-right"></i> Join as Tutor</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
 <section class="py-5" style="background:var(--bg-white)">
   <div class="container">
     <div class="text-center mb-5">
       <div class="section-badge"><i class="fa-solid fa-route"></i> Simple Process</div>
       <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Three easy steps — whether you are learning or teaching.</p>
     </div>
-    <div class="row text-center">
-      <div class="col-md-4 mb-4">
-        <div class="step-number-circle">1</div>
-        <h5 style="font-weight:700">Register Free</h5>
-        <p style="color:var(--text-secondary);font-size:14px;max-width:260px;margin:0 auto">Create your profile as a student or tutor in under 2 minutes</p>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="split-panel student">
+          <div class="split-panel-head">
+            <div class="audience-icon"><i class="fa-solid fa-user-graduate"></i></div>
+            <h3>Students / Parents</h3>
+          </div>
+          <div class="mini-step">
+            <div class="mini-dot">1</div>
+            <div><h6>Tell Us Your Tuition Needs</h6><p>Fill in a few details about class, subjects and your locality. It takes under 2 minutes.</p></div>
+          </div>
+          <div class="mini-step">
+            <div class="mini-dot">2</div>
+            <div><h6>Get a Free Demo Class</h6><p>Matching tutors apply to your requirement and we arrange a free demo at your convenience.</p></div>
+          </div>
+          <div class="mini-step">
+            <div class="mini-dot">3</div>
+            <div><h6>Confirm &amp; Start Learning</h6><p>Loved the demo? Confirm your tutor and begin the journey to better grades.</p></div>
+          </div>
+        </div>
       </div>
-      <div class="col-md-4 mb-4">
-        <div class="step-number-circle">2</div>
-        <h5 style="font-weight:700">Get Free Demo</h5>
-        <p style="color:var(--text-secondary);font-size:14px;max-width:260px;margin:0 auto">Browse matches, request a demo class, and find your perfect fit</p>
-      </div>
-      <div class="col-md-4 mb-4">
-        <div class="step-number-circle">3</div>
-        <h5 style="font-weight:700">Start Learning</h5>
-        <p style="color:var(--text-secondary);font-size:14px;max-width:260px;margin:0 auto">Confirm your tutor and begin your journey to academic excellence</p>
+      <div class="col-lg-6">
+        <div class="split-panel tutor">
+          <div class="split-panel-head">
+            <div class="audience-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <h3>Tutors</h3>
+          </div>
+          <div class="mini-step">
+            <div class="mini-dot">1</div>
+            <div><h6>Create Your Free Profile</h6><p>Add your qualifications, subjects and experience. Detailed profiles get maximum attention.</p></div>
+          </div>
+          <div class="mini-step">
+            <div class="mini-dot">2</div>
+            <div><h6>Apply to Tuition Jobs</h6><p>Browse tuition needs posted near you and apply to the ones that match your profile.</p></div>
+          </div>
+          <div class="mini-step">
+            <div class="mini-dot">3</div>
+            <div><h6>Get Selected &amp; Start Earning</h6><p>Crack the demo class, get confirmed, and earn on a schedule you control.</p></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
+<!-- Testimonials -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge"><i class="fa-solid fa-comments"></i> Our Users Say</div>
+      <h2 class="section-title">Stories From Both Sides</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="testimonial-card">
+          <div class="quote-mark"><i class="fa-solid fa-quote-left"></i></div>
+          <p class="quote">We were struggling to find a patient maths tutor for our son. Within days of posting our need, three good tutors contacted us. The free demo made the choice easy!</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">RS</div>
+            <div><strong>Ritu Sharma</strong><span>Parent, Delhi</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="testimonial-card">
+          <div class="quote-mark"><i class="fa-solid fa-quote-left"></i></div>
+          <p class="quote">I used to fear physics. My home tutor explains everything with real-life examples, and now physics is my highest-scoring subject in school.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AK</div>
+            <div><strong>Aarav Kumar</strong><span>Class 10 Student, Noida</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="testimonial-card">
+          <div class="quote-mark"><i class="fa-solid fa-quote-left"></i></div>
+          <p class="quote">Teaching is my passion, and this platform lets me take two evening tuitions near my home. The extra income genuinely helps my family every month.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar gold">PV</div>
+            <div><strong>Priya Verma</strong><span>Home Tutor, Ghaziabad</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="testimonial-card">
+          <div class="quote-mark"><i class="fa-solid fa-quote-left"></i></div>
+          <p class="quote">As a working professional I can only teach on weekends. Here I found students who wanted exactly that. Flexible, simple and completely worth it.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar gold">AM</div>
+            <div><strong>Amit Mishra</strong><span>Part-time Tutor, Gurugram</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Comparison -->
+<section class="py-5" style="background:var(--bg-white)">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-badge"><i class="fa-solid fa-scale-balanced"></i> Honest Comparison</div>
+      <h2 class="section-title">Why NCR Home Tuition?</h2>
+      <p class="section-subtitle">See how we stack up against typical local tuition agencies.</p>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card good">
+        <h3>NCR Home Tuition</h3>
+        <div class="compare-sub" style="color:#6ee7b7">The smart choice</div>
+        <ul class="compare-list">
+          <li><i class="fa-solid fa-circle-check"></i><span><strong>Transparent &amp; affordable:</strong> simple one-time plans — no hidden cuts from your monthly tuition fee.</span></li>
+          <li><i class="fa-solid fa-circle-check"></i><span><strong>Fast matching:</strong> a large all-India tutor network means your requirement reaches suitable tutors quickly.</span></li>
+          <li><i class="fa-solid fa-circle-check"></i><span><strong>Verified profiles:</strong> tutors register with real details so you can choose with confidence.</span></li>
+          <li><i class="fa-solid fa-circle-check"></i><span><strong>Free demo class:</strong> decide only after you have seen the tutor teach.</span></li>
+        </ul>
+      </div>
+      <div class="compare-card bad">
+        <h3 style="color:var(--text-secondary)">Typical Local Agencies</h3>
+        <div class="compare-sub" style="color:var(--text-muted)">The old way</div>
+        <ul class="compare-list">
+          <li><i class="fa-solid fa-circle-xmark"></i><span><strong>Heavy charges:</strong> many agencies take a big share of the first month's fee — or a cut every month.</span></li>
+          <li><i class="fa-solid fa-circle-xmark"></i><span><strong>Limited options:</strong> small local lists mean fewer choices and slower matching.</span></li>
+          <li><i class="fa-solid fa-circle-xmark"></i><span><strong>Commission pressure:</strong> when tutors keep losing fee to commissions, tuitions often stop early.</span></li>
+          <li><i class="fa-solid fa-circle-xmark"></i><span><strong>Paid demos or commitments:</strong> you are pushed to decide before ever seeing a class.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
 <section class="py-5">
   <div class="container">
     <div class="cta-section text-center" style="position:relative;z-index:2">
       <h2 style="font-size:32px;font-weight:800;margin-bottom:16px">Ready to Get Started?</h2>
-      <p style="font-size:16px;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto">
-        Join thousands of students and tutors who are already benefiting from NCR Home Tuition.
+      <p style="font-size:16px;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto">
+        Join thousands of students, parents and tutors who already learn and earn with NCR Home Tuition.
       </p>
       <div class="d-flex gap-3 justify-content-center flex-wrap">
         <a href="student-register.html" class="btn btn-accent-custom btn-lg">
@@ -222,7 +361,7 @@
           <i class="fa-solid fa-chalkboard-teacher"></i> Join as Tutor
         </a>
       </div>
-      <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,0.4)">
+      <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,0.45)">
         Need help? WhatsApp us at <a href="https://wa.link/yufbkl" style="color:var(--accent)">6386672447</a>
       </p>
     </div>
@@ -233,25 +372,42 @@
 <footer class="footer">
   <div class="container">
     <div class="row g-4">
-      <div class="col-md-3">
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-brand">
+          <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+          NCR Home Tuition
+        </div>
+        <p class="footer-about">India's simple, trusted platform to find verified home tutors and genuine tuition jobs — free to join, free demo, no commission drama.</p>
+        <div class="contact-strip">
+          <div class="contact-item">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>WhatsApp<br><a href="https://wa.link/yufbkl">6386672447</a></span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-clock"></i>
+            <span>Support<br>9am – 6pm (Mon–Sat)</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6">
         <h6>Tuitions By City</h6>
         <a href="#">Mumbai</a><a href="#">Delhi</a><a href="#">Bengaluru</a><a href="#">Hyderabad</a><a href="#">Chennai</a>
       </div>
-      <div class="col-md-3">
+      <div class="col-lg-2 col-md-3 col-6">
         <h6>By Category</h6>
-        <a href="#">Nursery / Kindergarten</a><a href="#">Class 1 to 5</a><a href="#">Class 6 to 10</a><a href="#">Class 11 & 12</a><a href="#">Engineering / Degree</a>
+        <a href="#">Nursery / Kindergarten</a><a href="#">Class 1 to 5</a><a href="#">Class 6 to 10</a><a href="#">Class 11 &amp; 12</a><a href="#">Engineering / Degree</a>
       </div>
-      <div class="col-md-3">
+      <div class="col-lg-2 col-md-3 col-6">
         <h6>By Subject</h6>
         <a href="#">Maths</a><a href="#">Physics</a><a href="#">Chemistry</a><a href="#">Biology</a><a href="#">English</a>
       </div>
-      <div class="col-md-3">
+      <div class="col-lg-2 col-md-3 col-6">
         <h6>Quick Links</h6>
         <a href="how-it-works.html">How It Works</a><a href="login.html">Admin Login</a><a href="findbyidtutor.html">Find Tutor By ID</a><a href="findbyidtution.html">Find Tuition By ID</a>
       </div>
     </div>
     <div class="footer-bottom">
-      &copy; 2026 NCR Home Tuition. All rights reserved. | Built with care for students & tutors.
+      &copy; 2026 NCR Home Tuition. All rights reserved. | Built with care for students &amp; tutors.
     </div>
   </div>
 </footer>
@@ -300,19 +456,65 @@ renderAuthButtons("authButtons");
 checkWelcomeToast();
 loadFromFirestore().then(function() { renderAuthButtons("authButtons"); });
 
-// Load cities
+// ---------- City searchable dropdown ----------
+function toggleCityDD(e) {
+  if (e) e.stopPropagation();
+  var dd = document.getElementById("cityDropdown");
+  var opening = !dd.classList.contains("open");
+  document.querySelectorAll(".city-dropdown.open").forEach(function(d) { d.classList.remove("open"); });
+  if (opening) {
+    dd.classList.add("open");
+    var s = document.getElementById("citySearch");
+    if (s) { s.value = ""; filterCities(); s.focus(); }
+  }
+}
+function filterCities() {
+  var q = (document.getElementById("citySearch").value || "").trim().toLowerCase();
+  var any = false;
+  document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) {
+    var v = (o.getAttribute("data-value") || "").toLowerCase();
+    var show = !q || v.indexOf(q) > -1;
+    o.style.display = show ? "" : "none";
+    if (show) any = true;
+  });
+  document.getElementById("cityEmpty").style.display = any ? "none" : "block";
+}
+function selectCity(btn) {
+  document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) { o.classList.remove("selected"); });
+  btn.classList.add("selected");
+  document.getElementById("citySelect").value = btn.getAttribute("data-value") || "";
+  document.getElementById("cityLabel").textContent = btn.getAttribute("data-value") || "All Cities";
+  document.getElementById("cityDropdown").classList.remove("open");
+}
+document.addEventListener("click", function(e) {
+  var dd = document.getElementById("cityDropdown");
+  if (dd && !dd.contains(e.target)) dd.classList.remove("open");
+});
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") {
+    var dd = document.getElementById("cityDropdown");
+    if (dd) dd.classList.remove("open");
+  }
+});
+
+// Load cities into the searchable dropdown
 document.addEventListener("DOMContentLoaded", function () {
   fetch("https://ncrhomr.vercel.app/cities")
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      var citySelect = document.getElementById("citySelect");
-      citySelect.innerHTML = '<option value="">All Cities</option>';
+      var list = document.getElementById("cityListDiv");
+      if (!list) return;
       data.cities.forEach(function(city) {
         if (city && city.trim() !== "") {
-          var opt = document.createElement("option");
-          opt.value = city;
-          opt.textContent = city;
-          citySelect.appendChild(opt);
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "city-option";
+          b.setAttribute("data-value", city);
+          b.onclick = function() { selectCity(b); };
+          var sp = document.createElement("span");
+          sp.textContent = city;
+          b.appendChild(sp);
+          list.appendChild(b);
         }
       });
     })
@@ -320,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function doSearch() {
-  var city = document.getElementById("citySelect").value;
+  var city = document.getElementById("citySelect").value.trim();
   var q = document.getElementById("queryInput").value.trim();
   var type = document.getElementById("typeSelect") ? document.getElementById("typeSelect").value : "tutor";
   var params = new URLSearchParams();
