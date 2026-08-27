@@ -108,6 +108,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/api.js"></script>
 <script>try{initFirebase();}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -138,7 +139,7 @@ fetch("https://ncrhomr.vercel.app/cities").then(function(r){return r.json()}).th
   if(d.cities) d.cities.forEach(function(c){
     if(c && c.trim()!==""){var o=document.createElement("option");o.value=c;o.textContent=c;if(c===searchCity)o.selected=true;sel.appendChild(o);}
   });
-});
+}).catch(function(e){console.error("Error loading cities:",e);});
 
 document.getElementById("typeSelect").value = searchType;
 document.getElementById("queryInput").value = searchQ;
@@ -150,7 +151,7 @@ if(searchSort) document.getElementById("filterSort").value = searchSort;
 
 function buildUrl(){
   var u = "https://ncrhomr.vercel.app/search?type="+encodeURIComponent(searchType)+"&page="+page;
-  if(searchQ) u+="&q="+encodeURIComponent(searchQ);
+  if(searchQ) u+="&keyword="+encodeURIComponent(searchQ);
   if(searchCity) u+="&city="+encodeURIComponent(searchCity);
   if(searchSubject) u+="&subject="+encodeURIComponent(searchSubject);
   if(searchExperience) u+="&experience="+encodeURIComponent(searchExperience);
@@ -195,9 +196,10 @@ function renderResults(items){
       '<div class="tc-body">'+
         '<div class="tc-info"><i class="fa-solid fa-book"></i> '+(item.course||"N/A")+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-pen"></i> '+(item.subject||"N/A")+'</div>'+
-        '<div class="tc-info"><i class="fa-solid fa-briefcase"></i> '+(item.experience||"N/A")+'</div>'+
+        '<div class="tc-info"><i class="fa-solid fa-briefcase"></i> '+(item.experience_years!=null?item.experience_years+" yrs":(item.experience||"N/A"))+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-laptop"></i> '+(item.preferred_mode||"N/A")+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-language"></i> '+(item.language||"N/A")+'</div>'+
+        (item.payment!=null?'<div class="tc-info"><i class="fa-solid fa-indian-rupee-sign"></i> ₹'+item.payment+(item.payment_type?" / "+item.payment_type:"")+'</div>':'')+
         '<div class="tc-tags">'+
           (item.course?'<span class="tc-tag">'+item.course+'</span>':'')+
           (item.subject?'<span class="tc-tag">'+item.subject+'</span>':'')+

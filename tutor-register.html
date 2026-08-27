@@ -155,8 +155,8 @@
             </div>
             <div class="form-row-pair">
               <div class="form-group">
-                <label>Experience</label>
-                <input type="text" id="experience" class="form-control" placeholder="e.g. 3 years" required>
+                <label>Experience (Years)</label>
+                <input type="number" id="experience" class="form-control" placeholder="e.g. 3" min="0" max="60" required>
               </div>
               <div class="form-group">
                 <label>Preferred Mode</label>
@@ -164,6 +164,19 @@
                   <option value="">Select mode</option>
                   <option>Online</option>
                   <option>Offline</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Expected Fee (₹/hour)</label>
+                <input type="number" id="payment" class="form-control" placeholder="e.g. 500" min="0">
+              </div>
+              <div class="form-group">
+                <label>Fee Type</label>
+                <select id="paymentType" class="form-control">
+                  <option value="per_hour">Per Hour</option>
+                  <option value="per_month">Per Month</option>
                 </select>
               </div>
             </div>
@@ -272,13 +285,18 @@ document.getElementById("tutorForm").addEventListener("submit", async function(e
     course: document.getElementById("course").value.trim(),
     subject: document.getElementById("subject").value.trim(),
     qualification: document.getElementById("qualification").value.trim(),
-    experience: document.getElementById("experience").value.trim(),
+    experience_years: parseInt(document.getElementById("experience").value, 10) || 0,
     preferred_mode: document.getElementById("mode").value.toLowerCase(),
     language: document.getElementById("language").value,
     country: "India",
     city: document.getElementById("city").value.trim(),
     timezone: "Asia/Kolkata"
   };
+  var payVal = document.getElementById("payment").value.trim();
+  if (payVal) {
+    data.payment = parseInt(payVal, 10) || 0;
+    data.payment_type = document.getElementById("paymentType").value;
+  }
 
   if (!data.name || !data.mobile_no || !data.email) {
     Swal.fire({ icon: "warning", title: "Missing Fields", text: "Please fill all required fields", confirmButtonColor: "#f59e0b" });

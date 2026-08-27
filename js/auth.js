@@ -66,6 +66,14 @@ function checkWelcomeToast() {
 function getLeads() { return parseInt(localStorage.getItem("user_leads") || "0", 10); }
 function setLeads(n) { localStorage.setItem("user_leads", String(n)); }
 function addLeads(count) { setLeads(getLeads() + count); }
+// Spend one lead; returns true if a lead was available and consumed
+function useLead() {
+  var leads = getLeads();
+  if (leads <= 0) return false;
+  setLeads(leads - 1);
+  syncCartToFirestore();
+  return true;
+}
 
 // ============================================================
 // CART = list of tutor/student profiles you want to contact
@@ -302,7 +310,7 @@ function renderAuthButtons(containerId) {
         '</a>' +
         '<a href="profile.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;padding:6px 12px;border-radius:var(--radius-full);transition:var(--transition)" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'">' +
           '<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">' + initial + '</div>' +
-          '<span style="font-size:13px;font-weight:600;color:var(--text-primary);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (profile.displayName || "Account") + '</span>' +
+          '<span class="acct-label" style="font-size:13px;font-weight:600;color:var(--text-primary);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (profile.displayName || "Account") + '</span>' +
         '</a>' +
         '<button class="btn-nav-login" onclick="logoutUser()" style="color:var(--danger);border:none;font-size:12px;padding:6px 10px">' +
           '<i class="fa-solid fa-right-from-bracket"></i>' +
@@ -312,7 +320,7 @@ function renderAuthButtons(containerId) {
     box.innerHTML =
       '<div class="dropdown auth-dropdown">' +
         '<button class="btn-nav-login auth-dd-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-          '<i class="fa-regular fa-circle-user"></i> Account' +
+          '<i class="fa-regular fa-circle-user"></i> <span class="acct-label">Account</span>' +
           '<i class="fa-solid fa-chevron-down dd-caret"></i>' +
         '</button>' +
         '<ul class="dropdown-menu dropdown-menu-end auth-menu">' +

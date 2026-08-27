@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .admin-page{padding:40px 0 60px;background:var(--bg);min-height:100vh}
+    .admin-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .admin-top h4{font-weight:800;margin:0}
+    .admin-top p{font-size:13px;color:var(--text-muted);margin:2px 0 0}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:var(--bg-white);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+    .stat-card .sc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+    .stat-card .sc-value{font-size:24px;font-weight:800}
+    .stat-card .sc-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .admin-card{background:var(--bg-white);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);border:1px solid var(--border-light);overflow:hidden}
+    .admin-card .card-head{padding:18px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .admin-card .card-head h6{font-weight:700;margin:0}
+    .table-wrap{overflow-x:auto}
+    table.admin-table{width:100%;font-size:13px;border-collapse:collapse}
+    .admin-table th{background:var(--bg);padding:12px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);white-space:nowrap}
+    .admin-table td{padding:12px 16px;border-top:1px solid var(--border-light);vertical-align:middle}
+    .admin-table tr:hover td{background:#f8f9fa}
+    .badge-status{padding:4px 12px;border-radius:var(--radius-full);font-size:11px;font-weight:700;text-transform:uppercase}
+    .badge-status.paid{background:#e8f5e9;color:#1b5e20}
+    .badge-status.created{background:#fff3e0;color:#e65100}
+    .badge-status.failed{background:#ffebee;color:#b71c1c}
+    .badge-status.refunded{background:#ede7f6;color:#4527a0}
+    .badge-status.other{background:var(--bg);color:var(--text-muted)}
+    .pager{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px}
+    .pager button{height:36px;padding:0 16px;border-radius:var(--radius-md);border:1.5px solid var(--border);background:var(--bg-white);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition)}
+    .pager button:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+    .pager button:disabled{opacity:0.4;cursor:not-allowed}
+    .pager span{font-size:13px;color:var(--text-muted);font-weight:600}
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap}
+    .filter-bar select,.filter-bar input{height:38px;border-radius:var(--radius-md);font-size:13px;border:1.5px solid var(--border)}
+    .btn-logout-admin{height:38px;padding:0 16px;border-radius:var(--radius-md);border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition)}
+    .btn-logout-admin:hover{background:var(--danger);color:#fff}
+    .empty-state{text-align:center;padding:60px 24px;color:var(--text-muted)}
+    .empty-state i{font-size:48px;display:block;margin-bottom:12px;color:var(--border)}
+    @media(max-width:991px){.stat-cards{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:576px){.stat-cards{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-modern">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
+    <div class="d-flex align-items-center gap-2">
+      <span style="font-size:12px;color:var(--text-muted);font-weight:600"><i class="fa-solid fa-shield-halved" style="color:var(--accent)"></i> Admin</span>
+      <button class="btn-logout-admin" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </div>
+</nav>
+
+<section class="admin-page">
+  <div class="container">
+    <div class="admin-top">
+      <div>
+        <h4><i class="fa-solid fa-receipt" style="color:var(--accent)"></i> Payments Dashboard</h4>
+        <p>All Razorpay transactions on NCR Home Tuition</p>
+      </div>
+      <div class="filter-bar">
+        <select id="filterStatus" onchange="loadPayments(1)">
+          <option value="">All Status</option>
+          <option value="paid">Paid</option>
+          <option value="created">Created</option>
+          <option value="failed">Failed</option>
+          <option value="refunded">Refunded</option>
+        </select>
+        <select id="filterUserType" onchange="loadPayments(1)">
+          <option value="">All Types</option>
+          <option value="student">Student</option>
+          <option value="tutor">Tutor</option>
+        </select>
+        <button class="btn btn-accent-custom btn-sm" onclick="loadPayments(1)" style="height:38px;padding:0 16px"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="sc-icon" style="background:var(--primary-light);color:var(--primary)"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+        <div class="sc-value" id="statTotal">-</div>
+        <div class="sc-label">Total Collected</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#e8f5e9;color:var(--success)"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="sc-value" id="statPaid">-</div>
+        <div class="sc-label">Paid Orders</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#fff3e0;color:var(--accent)"><i class="fa-solid fa-clock"></i></div>
+        <div class="sc-value" id="statCreated">-</div>
+        <div class="sc-label">Pending</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#ffebee;color:var(--danger)"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="sc-value" id="statFailed">-</div>
+        <div class="sc-label">Failed</div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-head">
+        <h6><i class="fa-solid fa-list" style="color:var(--primary)"></i> Transactions</h6>
+        <span style="font-size:12px;color:var(--text-muted)" id="totalLabel"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Type</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Order ID</th>
+              <th>Payment ID</th>
+            </tr>
+          </thead>
+          <tbody id="paymentsBody">
+            <tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading payments...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button id="prevBtn" onclick="loadPayments(page-1)"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextBtn" onclick="loadPayments(page+1)">Next <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/api.js"></script>
+<script>
+var page = 1;
+var totalPages = 1;
+
+if (!isAdminLoggedIn()) {
+  window.location.href = "admin-login-page.html";
+}
+
+function adminLogout() {
+  Swal.fire({
+    title: "Logout?", text: "End this admin session?", icon: "warning",
+    showCancelButton: true, confirmButtonColor: "#dc3545", cancelButtonColor: "#6c757d", confirmButtonText: "Yes, Logout"
+  }).then(function(r) {
+    if (r.isConfirmed) {
+      clearAdminToken();
+      window.location.href = "admin-login-page.html";
+    }
+  });
+}
+
+function fmtDate(s) {
+  if (!s) return "-";
+  try {
+    var d = new Date(s);
+    return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) + " " +
+           d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+  } catch(e) { return s; }
+}
+
+function badgeClass(status) {
+  var s = (status || "").toLowerCase();
+  if (s === "paid") return "paid";
+  if (s === "created") return "created";
+  if (s === "failed") return "failed";
+  if (s === "refunded") return "refunded";
+  return "other";
+}
+
+function loadPayments(p) {
+  if (!isAdminLoggedIn()) { window.location.href = "admin-login-page.html"; return; }
+  page = p || 1;
+  var params = { page: page, per_page: 18 };
+  var st = document.getElementById("filterStatus").value;
+  var ut = document.getElementById("filterUserType").value;
+  if (st) params.status = st;
+  if (ut) params.user_type = ut;
+
+  listPayments(params).then(function(data) {
+    var rows = data.data || [];
+    var pag = data.pagination || {};
+    totalPages = pag.total_pages || 1;
+    document.getElementById("totalLabel").textContent = pag.total + " transaction(s)";
+    document.getElementById("pageInfo").textContent = "Page " + page + " of " + totalPages;
+    document.getElementById("prevBtn").disabled = page <= 1;
+    document.getElementById("nextBtn").disabled = page >= totalPages;
+
+    // Stats across all pages (best effort from current page)
+    var total = 0, paid = 0, created = 0, failed = 0;
+    rows.forEach(function(r) {
+      var amt = r.amount || 0;
+      total += amt;
+      var s = (r.status || "").toLowerCase();
+      if (s === "paid") paid += amt;
+      else if (s === "created") created += amt;
+      else if (s === "failed") failed += amt;
+    });
+    document.getElementById("statTotal").textContent = "₹" + total.toLocaleString("en-IN");
+    document.getElementById("statPaid").textContent = "₹" + paid.toLocaleString("en-IN");
+    document.getElementById("statCreated").textContent = "₹" + created.toLocaleString("en-IN");
+    document.getElementById("statFailed").textContent = "₹" + failed.toLocaleString("en-IN");
+
+    if (rows.length === 0) {
+      document.getElementById("paymentsBody").innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-receipt"></i> No payments found</div></td></tr>';
+      return;
+    }
+
+    document.getElementById("paymentsBody").innerHTML = rows.map(function(r) {
+      var amt = (r.amount || 0) / 100; // paise -> rupees
+      return '<tr>' +
+        '<td style="white-space:nowrap">' + fmtDate(r.created_at || r.paid_at) + '</td>' +
+        '<td style="font-weight:700">₹' + amt.toLocaleString("en-IN") + '</td>' +
+        '<td><span class="badge-status ' + badgeClass(r.status) + '">' + (r.status || "unknown") + '</span></td>' +
+        '<td>' + (r.user_type || "-") + '</td>' +
+        '<td>' + (r.email || "-") + '</td>' +
+        '<td>' + (r.mobile_no || "-") + '</td>' +
+        '<td style="font-size:11px;color:var(--text-muted)">' + (r.razorpay_order_id || "-") + '</td>' +
+        '<td style="font-size:11px;color:var(--text-muted)">' + (r.razorpay_payment_id || "-") + '</td>' +
+      '</tr>';
+    }).join("");
+  }).catch(function(err) {
+    document.getElementById("paymentsBody").innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i> ' + getErrorMessage(err) + '</div></td></tr>';
+  });
+}
+
+loadPayments(1);
+</script>
+</body>
+</html>

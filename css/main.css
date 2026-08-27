@@ -1394,6 +1394,15 @@ h1, h2, h3, h4, h5, h6 {
   .btn-nav-login, .btn-nav-signup, .auth-dd-toggle { padding: 6px 10px !important; font-size: 11.5px !important; }
   .auth-dd-toggle .dd-caret { display: none; }
 }
+@media (max-width: 400px) {
+  .navbar-modern .container { padding-left: 10px; padding-right: 10px; }
+  .navbar-modern .navbar-brand { font-size: 13px; gap: 4px; letter-spacing: -0.2px; }
+  .brand-icon { width: 24px; height: 24px; border-radius: 6px; font-size: 11px; }
+  .navbar-modern .navbar-toggler { padding: 3px 6px; margin-right: 2px; }
+  .auth-actions { gap: 3px; padding-left: 4px; }
+  .btn-nav-login, .btn-nav-signup, .auth-dd-toggle { padding: 5px 8px !important; font-size: 11px !important; }
+  .acct-label { max-width: 60px; }
+}
 @media (max-width: 768px) {
   .hero-title { font-size: 30px; }
   .hero-section { padding: 40px 0 80px; }

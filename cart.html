@@ -170,6 +170,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/api.js"></script>
 <script>
 initFirebase();
 document.getElementById('navbar-placeholder').innerHTML = getNavHTML('cart');
@@ -291,54 +292,136 @@ function proceedToPayment(){
   var pricing = calculateSmartPrice(cart.length);
   var profile = getProfile();
 
-  // Initialize Razorpay
-  var options = {
-    key: 'YOUR_RAZORPAY_KEY_ID', // Replace with your Razorpay Key ID
-    amount: pricing.total * 100, // Amount in paise
-    currency: 'INR',
-    name: 'NCR Home Tuition',
-    description: 'Purchase ' + cart.length + ' Lead' + (cart.length > 1 ? 's' : '') + ' — Contact ' + cart.length + ' profile' + (cart.length > 1 ? 's' : ''),
-    image: 'favicon.svg',
-    handler: function(response){
-      // Payment successful
-      addLeads(cart.length);
-      saveCart([]);
-      syncCartToFirestore();
-      Swal.fire({
-        icon: 'success',
-        title: 'Payment Successful!',
-        html: '<p><strong>' + cart.length + ' Lead' + (cart.length > 1 ? 's' : '') + ' added!</strong></p><p style="font-size:13px;color:var(--text-muted)">You can now view contact details of your selected profiles</p>',
-        confirmButtonColor: '#109e6c',
-        confirmButtonText: 'Go to Profile'
-      }).then(function(){ window.location.href = 'profile.html'; });
-    },
-    prefill: {
-      name: profile.displayName || '',
-      email: profile.email || '',
-      contact: profile.mobile_no || ''
-    },
-    theme: {
-      color: '#f59e0b'
-    },
-    modal: {
-      ondismiss: function(){
-        Swal.fire({icon:'info',title:'Payment Cancelled',text:'You can complete payment later',timer:2000,showConfirmButton:false});
-      }
-    }
-  };
+  // Collect contact info (email + mobile) required by the payment API
+  var email = (profile && profile.email) || "";
+  var mobile = (profile && profile.mobile_no) || "";
 
-  var rzp = new Razorpay(options);
-  rzp.on('payment.failed', function(response){
-    Swal.fire({icon:'error',title:'Payment Failed',text:'Please try again. Your cart items are saved.',confirmButtonColor:'#dc3545'});
+  Swal.fire({
+    title: 'Payment Details',
+    html:
+      '<div style="text-align:left">' +
+        '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Email Address</label>' +
+        '<input id="payEmail" class="swal2-input" style="width:100%;height:42px;font-size:14px;margin-bottom:12px" placeholder="you@email.com" value="' + email + '">' +
+        '<label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Mobile Number</label>' +
+        '<input id="payMobile" class="swal2-input" style="width:100%;height:42px;font-size:14px;margin-bottom:12px" placeholder="10-digit mobile" value="' + mobile + '" maxlength="10">' +
+        '<div style="background:var(--bg);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-secondary)">' +
+          'You are paying <b style="color:var(--primary)">₹' + pricing.total + '</b> for <b>' + cart.length + ' lead' + (cart.length > 1 ? 's' : '') + '</b> to view contact details of the selected profiles.' +
+        '</div>' +
+      '</div>',
+    showCancelButton: true,
+    confirmButtonText: 'Pay ₹' + pricing.total,
+    confirmButtonColor: '#f59e0b',
+    cancelButtonText: 'Cancel',
+    focusConfirm: false,
+    preConfirm: function(){
+      var e = document.getElementById('payEmail').value.trim();
+      var m = document.getElementById('payMobile').value.trim();
+      if(!e || !e.includes('@')){ Swal.showValidationMessage('Enter a valid email'); return false; }
+      if(!m || m.length !== 10 || !/^\d+$/.test(m)){ Swal.showValidationMessage('Enter a valid 10-digit mobile number'); return false; }
+      return { email: e, mobile: m };
+    }
+  }).then(function(result){
+    if(!result.isConfirmed) return;
+    var contact = result.value;
+    // Save contact back to profile for next time
+    updateProfile({ email: contact.email, mobile_no: contact.mobile });
+
+    // user_type = type of profiles being purchased (first item), user_ids = comma-separated ids
+    var userType = cart[0].type || 'student';
+    var userIds = cart.map(function(i){ return i.id; }).join(',');
+
+    Swal.fire({ title: 'Creating Order...', text: 'Please wait', allowOutsideClick: false, didOpen: function(){ Swal.showLoading(); } });
+
+    createOrder({
+      email: contact.email,
+      mobile_no: contact.mobile,
+      amount: pricing.total,
+      currency: 'INR',
+      user_type: userType,
+      user_ids: userIds
+    }).then(function(order){
+      Swal.close();
+      return openCheckout(order, {
+        name: 'NCR Home Tuition',
+        description: 'Purchase ' + cart.length + ' Lead' + (cart.length > 1 ? 's' : '') + ' — Contact ' + cart.length + ' profile' + (cart.length > 1 ? 's' : ''),
+        prefill: { name: (profile && profile.displayName) || '', email: contact.email, contact: contact.mobile },
+        themeColor: '#f59e0b'
+      }).then(function(response){
+        // Payment captured -> verify with backend
+        Swal.fire({ title: 'Verifying Payment...', text: 'Please wait', allowOutsideClick: false, didOpen: function(){ Swal.showLoading(); } });
+        return verifyPayment({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature
+        }).then(function(verified){
+          Swal.close();
+          // Grant leads locally
+          addLeads(cart.length);
+          saveCart([]);
+          syncCartToFirestore();
+          try { localStorage.setItem('__NCR_LAST_PAYMENTS__', JSON.stringify(verified.payment || verified)); } catch(e) {}
+          Swal.fire({
+            icon: 'success',
+            title: 'Payment Successful!',
+            html: '<p><strong>' + cart.length + ' Lead' + (cart.length > 1 ? 's' : '') + ' added!</strong></p><p style="font-size:13px;color:var(--text-muted)">You can now view contact details of your selected profiles</p>',
+            confirmButtonColor: '#109e6c',
+            confirmButtonText: 'Go to Profile'
+          }).then(function(){ window.location.href = 'profile.html'; });
+        });
+      });
+    }).catch(function(err){
+      Swal.close();
+      if (err && err.detail && err.detail.cancelled) {
+        Swal.fire({icon:'info',title:'Payment Cancelled',text:'You can complete payment later',timer:2000,showConfirmButton:false});
+      } else {
+        Swal.fire({icon:'error',title:'Payment Failed',text:getErrorMessage(err),confirmButtonColor:'#dc3545'});
+      }
+    });
   });
-  rzp.open();
 }
 
 // Load from Firestore then render
 loadFromFirestore().then(function(){
   renderCartPage();
   renderAuthButtons('authButtons');
+  checkPaymentStatus();
 });
+
+// Show last payment result banner (if any) and handle rzp_success return
+function checkPaymentStatus(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('rzp_success') === '1') {
+    // Returned from Razorpay redirect flow - verify by order id if present
+    var orderId = params.get('order_id');
+    if (orderId) {
+      getPaymentByOrder(orderId).then(function(data){
+        if (data && data.payment && data.payment.status === 'paid') {
+          var n = (data.payment.user_ids || []).length || 1;
+          addLeads(n);
+          saveCart([]);
+          syncCartToFirestore();
+          renderCartPage();
+          Swal.fire({icon:'success',title:'Payment Verified!',text:n + ' lead' + (n>1?'s':'') + ' added to your account',confirmButtonColor:'#109e6c'});
+        }
+      }).catch(function(){});
+    }
+    var url = new URL(window.location);
+    url.searchParams.delete('rzp_success');
+    url.searchParams.delete('order_id');
+    window.history.replaceState({}, '', url);
+    return;
+  }
+  try {
+    var last = JSON.parse(localStorage.getItem('__NCR_LAST_PAYMENTS__') || 'null');
+    if (last && last.id) {
+      var banner = document.createElement('div');
+      banner.style.cssText = 'background:#e8f5e9;border:1px solid #a5d6a7;color:#1b5e20;border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:14px;display:flex;align-items:center;gap:10px';
+      banner.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i> Last payment of <b>₹' + (last.amount || 0) + '</b> was successful (ID: ' + (last.razorpay_payment_id || last.id).toString().slice(0, 18) + '). Your leads are credited.';
+      var header = document.querySelector('.cart-header');
+      if (header) header.parentNode.insertBefore(banner, header.nextSibling);
+    }
+  } catch(e) {}
+}
 </script>
 </body>
 </html>

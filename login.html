@@ -79,8 +79,12 @@
     </div>
     <div class="admin-form" id="adminForm">
       <div class="input-group-modern">
+        <i class="fa-solid fa-user-shield input-icon"></i>
+        <input type="text" id="adminUser" class="form-control" placeholder="Admin Username">
+      </div>
+      <div class="input-group-modern">
         <i class="fa-solid fa-key input-icon"></i>
-        <input type="password" id="adminToken" class="form-control" placeholder="Admin Secret Key">
+        <input type="password" id="adminPass" class="form-control" placeholder="Admin Password">
       </div>
       <button class="btn-submit" onclick="adminLogin()" style="height:44px;font-size:13px;background:linear-gradient(135deg,var(--accent),#fbbf24)">
         <i class="fa-solid fa-shield-halved"></i>&nbsp; Admin Login
@@ -229,19 +233,23 @@ function loginWithEmail() {
 }
 
 function adminLogin() {
-  var token = document.getElementById("adminToken").value.trim();
-  if (!token) return;
+  var username = document.getElementById("adminUser").value.trim();
+  var password = document.getElementById("adminPass").value;
+  if (!username || !password) {
+    showLoginError("Enter admin username and password");
+    return;
+  }
   Swal.fire({ title: "Verifying...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
   fetch("https://ncrhomr.vercel.app/admin/login", {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token: token })
+    body: JSON.stringify({ username: username, password: password })
   }).then(function(r) { return r.json(); }).then(function(data) {
     Swal.close();
-    if (data.status === "success" || data.token) {
-      localStorage.setItem("admin_token", data.token || token);
-      Swal.fire({ icon: "success", title: "Admin Access Granted", timer: 1500, showConfirmButton: false }).then(function() { window.location.href = "admin.html"; });
+    if (data.status === "success" && data.session_token) {
+      localStorage.setItem("admin_token", data.session_token);
+      Swal.fire({ icon: "success", title: "Admin Access Granted", timer: 1500, showConfirmButton: false }).then(function() { window.location.href = "admin-payments.html"; });
     } else {
-      showLoginError("Invalid admin key");
+      showLoginError(data.detail || "Invalid admin credentials");
     }
   }).catch(function() { Swal.close(); showLoginError("Connection error. Try again."); });
 }

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0c1d1b 0%,#0f766e 60%,#134e4a 100%);padding:40px 20px;position:relative;overflow:hidden}
+    .auth-page::before{content:'';position:absolute;top:-200px;right:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(245,158,11,0.15) 0%,transparent 70%);border-radius:50%}
+    .auth-card{width:100%;max-width:440px;background:var(--bg-white);border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-xl);position:relative;z-index:2}
+    .auth-card .logo-circle{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),#fbbf24);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:24px;margin-bottom:16px;box-shadow:0 4px 14px rgba(245,158,11,0.3)}
+    .auth-card h3{text-align:center;font-weight:800;font-size:24px;margin-bottom:4px}
+    .auth-card .subtitle{text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:28px}
+    .input-group-modern{position:relative;margin-bottom:14px}
+    .input-group-modern .input-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:16px;z-index:5}
+    .input-group-modern .form-control{padding-left:44px;height:50px;border:1.5px solid var(--border);border-radius:var(--radius-md);font-size:14px;transition:var(--transition)}
+    .input-group-modern .form-control:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,118,110,0.12)}
+    .btn-submit{width:100%;height:50px;background:linear-gradient(135deg,var(--accent),#fbbf24);color:#fff;border:none;border-radius:var(--radius-md);font-weight:700;font-size:15px;transition:var(--transition);box-shadow:0 2px 10px rgba(245,158,11,0.3);cursor:pointer}
+    .btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.4);color:#fff}
+    .error-text{color:var(--danger);font-size:12px;margin-top:-8px;margin-bottom:10px;display:none}
+    .back-link{display:block;text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted);text-decoration:none}
+    .back-link:hover{color:var(--primary)}
+  </style>
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card animate-in">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="logo-circle"><i class="fa-solid fa-shield-halved"></i></div>
+    </div>
+    <h3>Admin Login</h3>
+    <p class="subtitle">Restricted area — NCR Home Tuition staff only</p>
+
+    <div class="input-group-modern">
+      <i class="fa-solid fa-user-shield input-icon"></i>
+      <input type="text" id="adminUser" class="form-control" placeholder="Admin Username" autocomplete="username">
+    </div>
+
+    <div class="input-group-modern">
+      <i class="fa-solid fa-key input-icon"></i>
+      <input type="password" id="adminPass" class="form-control" placeholder="Admin Password" autocomplete="current-password">
+    </div>
+
+    <div id="adminAuthError" class="error-text" style="text-align:center;margin-top:8px"></div>
+
+    <button class="btn-submit" onclick="adminLogin()">
+      <i class="fa-solid fa-right-to-bracket"></i>&nbsp; Login to Dashboard
+    </button>
+
+    <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to website</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/api.js"></script>
+<script>
+document.getElementById("adminPass").addEventListener("keydown", function(e){ if(e.key === "Enter") adminLogin(); });
+document.getElementById("adminUser").addEventListener("keydown", function(e){ if(e.key === "Enter") adminLogin(); });
+
+function adminLogin() {
+  var username = document.getElementById("adminUser").value.trim();
+  var password = document.getElementById("adminPass").value;
+  var errEl = document.getElementById("adminAuthError");
+  if (!username || !password) {
+    errEl.textContent = "Enter admin username and password";
+    errEl.style.display = "block";
+    return;
+  }
+  errEl.style.display = "none";
+  Swal.fire({ title: "Verifying...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  adminLogin(username, password)
+    .then(function(data) {
+      Swal.close();
+      if (data.status === "success" && data.session_token) {
+        setAdminToken(data.session_token);
+        Swal.fire({ icon: "success", title: "Admin Access Granted", timer: 1500, showConfirmButton: false })
+          .then(function() { window.location.href = "admin-payments.html"; });
+      } else {
+        errEl.textContent = data.detail || "Invalid admin credentials";
+        errEl.style.display = "block";
+      }
+    })
+    .catch(function(err) {
+      Swal.close();
+      errEl.textContent = getErrorMessage(err);
+      errEl.style.display = "block";
+    });
+}
+</script>
+</body>
+</html>
