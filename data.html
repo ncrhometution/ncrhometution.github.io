@@ -261,6 +261,8 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("profileHeader").style.display = "block";
     Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#f59e0b" });
     fillData(data);
+    // Refresh purchased-lead cache from backend (matched by login email + mobile + status=paid)
+    fetchPurchasedLeads().then(function() { fillData(data); });
   })
   .catch(function(e) {
     console.error("Profile load error:", e);
@@ -298,8 +300,11 @@ document.addEventListener("DOMContentLoaded", function() {
       contactBox.classList.remove("blurred");
       document.getElementById("loginBtn").style.display = "none";
       document.getElementById("joinBtn").style.display = "none";
-      if (data.mobile_no || data.email) {
-        contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (data.mobile_no || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (data.email || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (data.city || "N/A") + '</p>';
+      var purchased = getPurchasedLeads().find(function(p) { return p.id === id && p.type === type; });
+      var phone = (purchased && purchased.mobile_no) || data.mobile_no || "";
+      var mail = (purchased && purchased.email) || data.email || "";
+      if (phone || mail) {
+        contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (phone || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (mail || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (data.city || "N/A") + '</p>';
       } else {
         contactBox.innerHTML = '<p style="font-size:13px;margin:0"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> <b>Purchased lead</b> — this profile is in your purchased list.</p>';
       }

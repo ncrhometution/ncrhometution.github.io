@@ -24,6 +24,8 @@ var APIS = {
   verifyPayment:   API_BASE + "payments/verify",
   webhook:         API_BASE + "payments/webhook",
   payments:        API_BASE + "payments",
+  myPayments:      API_BASE + "payments/my",
+  myPurchased:     API_BASE + "payments/my/profiles",
   paymentById:     function(id) { return API_BASE + "payments/" + encodeURIComponent(id); },
   paymentByOrder:  function(id) { return API_BASE + "payments/order/" + encodeURIComponent(id); },
   paymentByRzp:    function(id) { return API_BASE + "payments/razorpay/" + encodeURIComponent(id); }
@@ -151,6 +153,14 @@ function getPaymentByOrder(orderId) {
 }
 function getPaymentByRazorpay(paymentId) {
   return api(APIS.paymentByRzp(paymentId));
+}
+// getMyPayments(email, mobileNo) - public: paid payments matching this buyer
+function getMyPayments(email, mobileNo) {
+  return api(APIS.myPayments, { params: { email: email, mobile_no: mobileNo } });
+}
+// getMyPurchasedProfiles(email, mobileNo) - public: purchased profiles (full records incl. contact)
+function getMyPurchasedProfiles(email, mobileNo) {
+  return api(APIS.myPurchased, { params: { email: email, mobile_no: mobileNo } });
 }
 
 // ---- Razorpay checkout ----

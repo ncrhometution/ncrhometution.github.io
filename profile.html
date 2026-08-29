@@ -98,6 +98,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script>
     initFirebase();
@@ -106,7 +107,7 @@
 
     if(!isLoggedIn()){window.location.href="login.html";}
     else{
-      loadFromFirestore().then(function(){renderProfile();renderSaved();renderPurchased();renderAuthButtons("authButtons");});
+      loadFromFirestore().then(function(){renderProfile();renderSaved();renderAuthButtons("authButtons");renderPurchased();fetchPurchasedLeads().then(renderPurchased);});
     }
 
     function renderProfile(){
@@ -140,7 +141,8 @@
       el.innerHTML=list.map(function(s){
         var isTutor=s.type==="tutor";
         var date=s.purchasedAt?new Date(s.purchasedAt).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):"";
-        return '<div class="saved-item"><div class="si-info"><div class="si-avatar '+(isTutor?"tutor":"student")+'">'+(s.name||"N").charAt(0).toUpperCase()+'</div><div><div class="si-name">'+(s.name||"Unknown")+'</div><div class="si-meta">'+(s.city||"")+(s.course?" - "+s.course:"")+(date?'<br><span style="color:var(--success)"><i class="fa-solid fa-circle-check"></i> Purchased '+date+'</span>':"")+'</div></div></div><div class="si-actions"><a href="data.html?id='+s.id+'&type='+s.type+'&purchased=1"><i class="fa-solid fa-eye"></i> View</a></div></div>';
+        var contact=(s.mobile_no||s.email)?'<br><span style="font-size:12px"><i class="fa-solid fa-phone"></i> '+(s.mobile_no||"")+(s.email?' &nbsp;<i class="fa-solid fa-envelope"></i> '+s.email:"")+'</span>':"";
+        return '<div class="saved-item"><div class="si-info"><div class="si-avatar '+(isTutor?"tutor":"student")+'">'+(s.name||"N").charAt(0).toUpperCase()+'</div><div><div class="si-name">'+(s.name||"Unknown")+'</div><div class="si-meta">'+(s.city||"")+(s.course?" - "+s.course:"")+(date?'<br><span style="color:var(--success)"><i class="fa-solid fa-circle-check"></i> Purchased '+date+'</span>':"")+contact+'</div></div></div><div class="si-actions"><a href="data.html?id='+s.id+'&type='+s.type+'&purchased=1"><i class="fa-solid fa-eye"></i> View</a></div></div>';
       }).join("");
     }
 

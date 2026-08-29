@@ -226,7 +226,9 @@ function isProfileSaved(id, type) {
 
 // ============================================================
 // PURCHASED LEADS (profiles bought via payment)
-// Each entry = a profile whose contact was paid for.
+// Source of truth: backend GET /payments/my/profiles, matched
+// by the logged-in user's email + mobile_no + status=paid.
+// localStorage is only a cache for instant display / offline.
 // ============================================================
 function getPurchasedLeads() {
   try { var r = localStorage.getItem("user_purchased_leads"); return r ? JSON.parse(r) : []; } catch(e) { return []; }
@@ -244,6 +246,46 @@ function addPurchasedLeads(profiles) {
 }
 function isPurchased(id, type) {
   return getPurchasedLeads().some(function(p) { return p.id === id && p.type === type; });
+}
+
+// Fetch purchased leads from the backend, matched by the logged-in
+// user's email + mobile_no + payment status = paid.
+// Returns a Promise resolving to the purchased list (also cached).
+function fetchPurchasedLeads() {
+  return new Promise(function(resolve) {
+    var profile = getProfile();
+    if (!profile || !profile.email || !profile.mobile_no) { resolve(getPurchasedLeads()); return; }
+    getMyPurchasedProfiles(profile.email, profile.mobile_no)
+      .then(function(res) {
+        var items = (res && res.data) || [];
+        var list = items.map(function(it) {
+          var prof = it.profile || {};
+          var pay = it.payment || {};
+          return {
+            id: prof.id,
+            type: it.type || "tutor",
+            name: prof.name || "Unknown",
+            city: prof.city || "",
+            course: prof.course || "",
+            subject: prof.subject || "",
+            qualification: prof.qualification || "",
+            experience_years: prof.experience_years,
+            preferred_mode: prof.preferred_mode,
+            language: prof.language,
+            email: prof.email || "",
+            mobile_no: prof.mobile_no || "",
+            purchasedAt: pay.paid_at || pay.created_at || "",
+            paymentId: pay.id || "",
+            amount: pay.amount || 0,
+            razorpay_payment_id: pay.razorpay_payment_id || ""
+          };
+        });
+        savePurchasedLeads(list);
+        syncCartToFirestore();
+        resolve(list);
+      })
+      .catch(function() { resolve(getPurchasedLeads()); });
+  });
 }
 
 // ============================================================
