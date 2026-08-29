@@ -114,6 +114,44 @@
       font-size: 13px;
       color: var(--text-secondary);
     }
+    /* Purchased success banner (closed-mask style) */
+    .closed-mask {
+      background: #e8f5e9;
+      border: 1.5px solid #a5d6a7;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .closed-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--success, #16a34a);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .closed-tag p { margin: 0; font-size: 11px; color: #fff; }
+    .dot-white {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      display: inline-block;
+    }
+    .closed-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -203,6 +241,13 @@
       <!-- Contact Sidebar -->
       <div class="col-lg-4">
         <div class="contact-sidebar">
+          <div class="closed-mask" id="purchasedMask" style="display:none">
+            <div class="closed-tag tuition"><span class="dot-white"></span><p>Closed</p></div>
+            <span class="closed-text">
+              <i class="fa-solid fa-circle-check" style="color:var(--success);font-size:20px"></i>
+              <b id="purchasedMsg">Home Tutor found successfully.</b>
+            </span>
+          </div>
           <h6><i class="fa-solid fa-lock" style="color:var(--text-muted)"></i> Contact Information</h6>
           <div class="contact-info blurred" id="contactBox">
             <p><i class="fa-solid fa-phone"></i> XXXXXXXX89</p>
@@ -212,6 +257,10 @@
           <a href="login.html" class="btn btn-primary-custom w-100 justify-content-center mb-2" id="loginBtn">
             <i class="fa-solid fa-right-to-bracket"></i> Login to View
           </a>
+          <a href="javascript:void(0)" class="btn btn-primary-custom w-100 justify-content-center mb-2" id="addCartBtn" style="display:none" onclick="addToCartFromData()">
+            <i class="fa-solid fa-cart-plus"></i> <span id="addCartLabel">Add to Cart</span>
+          </a>
+          <p id="leadPrice" style="display:none;text-align:center;font-size:13px;font-weight:700;color:var(--accent);margin:0 0 8px"><i class="fa-solid fa-tag"></i> ₹99 per lead</p>
           <a href="tutor-register.html" class="btn btn-outline-custom w-100 justify-content-center" id="joinBtn" style="font-size:13px">
             <i class="fa-solid fa-user-plus"></i> Join as Tutor Free
           </a>
@@ -289,17 +338,33 @@ document.addEventListener("DOMContentLoaded", function() {
     const contactBox = document.getElementById("contactBox");
     const isAdmin = !!adminToken && typeof data.email === "string" && typeof data.mobile_no === "string";
     const isPurchasedLead = params.get("purchased") === "1" || isPurchased(id, type);
+    const loginBtn = document.getElementById("loginBtn");
+    const joinBtn = document.getElementById("joinBtn");
+    const addCartBtn = document.getElementById("addCartBtn");
+    const leadPrice = document.getElementById("leadPrice");
+    const purchasedMask = document.getElementById("purchasedMask");
+    const leadsLeftEl = document.getElementById("leadsLeft");
 
     if (isAdmin) {
       contactBox.classList.remove("blurred");
       contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + data.mobile_no + '</p><p><i class="fa-solid fa-envelope"></i> ' + data.email + '</p><p><i class="fa-solid fa-location-dot"></i> ' + data.city + ', ' + (data.country||'') + '</p>';
-      document.getElementById("loginBtn").style.display = "none";
-      document.getElementById("joinBtn").style.display = "none";
+      loginBtn.style.display = "none";
+      joinBtn.style.display = "none";
+      addCartBtn.style.display = "none";
+      leadPrice.style.display = "none";
+      purchasedMask.style.display = "none";
+      leadsLeftEl.style.display = "none";
     } else if (isPurchasedLead) {
       // Purchased lead - full details unlocked, no lead spent
       contactBox.classList.remove("blurred");
-      document.getElementById("loginBtn").style.display = "none";
-      document.getElementById("joinBtn").style.display = "none";
+      loginBtn.style.display = "none";
+      joinBtn.style.display = "none";
+      addCartBtn.style.display = "none";
+      leadPrice.style.display = "none";
+      leadsLeftEl.style.display = "none";
+      // Green success banner (closed-mask style): tutor -> "Home Tutor found successfully", student -> "Student found successfully"
+      purchasedMask.style.display = "block";
+      document.getElementById("purchasedMsg").textContent = (type === "student" ? "Student found successfully." : "Home Tutor found successfully.");
       var purchased = getPurchasedLeads().find(function(p) { return p.id === id && p.type === type; });
       var phone = (purchased && purchased.mobile_no) || data.mobile_no || "";
       var mail = (purchased && purchased.email) || data.email || "";
@@ -310,29 +375,63 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       var badge = document.getElementById("profileBadge");
       if (badge) badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Purchased';
-    } else {
+    } else if (isLoggedIn()) {
+      // Logged in but NOT purchased: offer Add to Cart + price instead of Login/Join
       contactBox.classList.add("blurred");
-      // Show leads remaining if logged in
-      if(isLoggedIn()){
-        var leadsLeft = getLeads();
-        var existingBtn = document.getElementById("loginBtn");
-        var leadsLeftEl = document.getElementById("leadsLeft");
-        if(leadsLeft > 0){
-          existingBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Reveal Contact (1 lead)';
-          existingBtn.setAttribute("onclick", "revealContact()");
-          existingBtn.href = "javascript:void(0)";
-        }
-        if(leadsLeftEl){
-          leadsLeftEl.style.display = 'block';
-          leadsLeftEl.textContent = leadsLeft + " leads remaining";
-        }
+      loginBtn.style.display = "none";
+      joinBtn.style.display = "none";
+      purchasedMask.style.display = "none";
+      addCartBtn.style.display = "flex";
+      leadPrice.style.display = "block";
+      var inCart = isInCart(id, type);
+      document.getElementById("addCartLabel").textContent = inCart ? "In Cart" : "Add to Cart";
+      addCartBtn.innerHTML = '<i class="fa-solid ' + (inCart ? 'fa-check' : 'fa-cart-plus') + '"></i> <span id="addCartLabel">' + (inCart ? "In Cart" : "Add to Cart") + '</span>';
+      var leadsLeft = getLeads();
+      if (leadsLeft > 0) {
+        leadsLeftEl.style.display = 'block';
+        leadsLeftEl.textContent = leadsLeft + " leads remaining";
+      } else {
+        leadsLeftEl.style.display = 'none';
       }
+    } else {
+      // Not logged in: Login to View + Join as Tutor
+      contactBox.classList.add("blurred");
+      loginBtn.style.display = "flex";
+      joinBtn.style.display = "flex";
+      addCartBtn.style.display = "none";
+      leadPrice.style.display = "none";
+      purchasedMask.style.display = "none";
+      leadsLeftEl.style.display = "none";
     }
   }
 });
 </script>
 <script>
 // Lead-gated contact info
+function addToCartFromData() {
+  if (!isLoggedIn()) {
+    Swal.fire({ icon: "info", title: "Login Required", text: "Please login to add profiles to cart", confirmButtonText: "Login", confirmButtonColor: "#0f766e", showCancelButton: true, cancelButtonText: "Sign Up Free" })
+      .then(function(r) { if (r.isConfirmed) window.location.href = "login.html"; else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html"; });
+    return;
+  }
+  var qp = new URLSearchParams(window.location.search);
+  var pid = qp.get("id");
+  var ptype = qp.get("type");
+  var d = currentData || {};
+  var btn = document.getElementById("addCartBtn");
+  if (isInCart(pid, ptype)) {
+    removeProfileFromCart(pid, ptype);
+    btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> <span id="addCartLabel">Add to Cart</span>';
+    Swal.fire({ icon: "info", title: "Removed from Cart", timer: 1000, showConfirmButton: false, toast: true, position: "top-end" });
+  } else {
+    addProfileToCart({ id: pid, type: ptype, name: d.name, city: d.city, course: d.course, subject: d.subject, experience: d.experience_years, preferred_mode: d.preferred_mode, language: d.language });
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> <span id="addCartLabel">In Cart</span>';
+    var count = getCartCount();
+    var pricing = calculateSmartPrice(count);
+    Swal.fire({ icon: "success", title: (d.name || "Profile") + " added to cart!", text: count + " profile" + (count > 1 ? "s" : "") + " in cart — Total: ₹" + pricing.total, timer: 2000, showConfirmButton: false, toast: true, position: "top-end" });
+  }
+  if (typeof updateCartBadge === "function") updateCartBadge();
+}
 function revealContact() {
   if (!isLoggedIn()) {
     Swal.fire({ icon: "info", title: "Login Required", text: "Please login to view contact details", confirmButtonText: "Login", confirmButtonColor: "#0f766e" })
