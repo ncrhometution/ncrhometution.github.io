@@ -357,6 +357,15 @@ function proceedToPayment(){
           Swal.close();
           // Grant leads locally
           addLeads(cart.length);
+          // Record purchased profiles so the user can reopen them anytime
+          addPurchasedLeads(cart.map(function(item) {
+            return {
+              id: item.id, type: item.type, name: item.name, city: item.city,
+              course: item.course, subject: item.subject, experience: item.experience,
+              preferred_mode: item.preferred_mode, language: item.language,
+              purchasedAt: new Date().toISOString()
+            };
+          }));
           saveCart([]);
           syncCartToFirestore();
           try { localStorage.setItem('__NCR_LAST_PAYMENTS__', JSON.stringify(verified.payment || verified)); } catch(e) {}
@@ -398,6 +407,18 @@ function checkPaymentStatus(){
         if (data && data.payment && data.payment.status === 'paid') {
           var n = (data.payment.user_ids || []).length || 1;
           addLeads(n);
+          // Record purchased profiles from the payment record
+          var cartItems = getCart();
+          if (cartItems.length > 0) {
+            addPurchasedLeads(cartItems.map(function(item) {
+              return {
+                id: item.id, type: item.type, name: item.name, city: item.city,
+                course: item.course, subject: item.subject, experience: item.experience,
+                preferred_mode: item.preferred_mode, language: item.language,
+                purchasedAt: new Date().toISOString()
+              };
+            }));
+          }
           saveCart([]);
           syncCartToFirestore();
           renderCartPage();

@@ -32,6 +32,7 @@ function clearProfile() {
   localStorage.removeItem("user_leads");
   localStorage.removeItem("user_cart");
   localStorage.removeItem("user_saved_profiles");
+  localStorage.removeItem("user_purchased_leads");
 }
 function isLoggedIn() { return !!getProfile(); }
 function requireAuth() {
@@ -224,6 +225,28 @@ function isProfileSaved(id, type) {
 }
 
 // ============================================================
+// PURCHASED LEADS (profiles bought via payment)
+// Each entry = a profile whose contact was paid for.
+// ============================================================
+function getPurchasedLeads() {
+  try { var r = localStorage.getItem("user_purchased_leads"); return r ? JSON.parse(r) : []; } catch(e) { return []; }
+}
+function savePurchasedLeads(list) { localStorage.setItem("user_purchased_leads", JSON.stringify(list)); }
+function addPurchasedLeads(profiles) {
+  var list = getPurchasedLeads();
+  (profiles || []).forEach(function(p) {
+    if (p && p.id && !list.find(function(x) { return x.id === p.id && x.type === p.type; })) {
+      list.push(p);
+    }
+  });
+  savePurchasedLeads(list);
+  syncCartToFirestore();
+}
+function isPurchased(id, type) {
+  return getPurchasedLeads().some(function(p) { return p.id === id && p.type === type; });
+}
+
+// ============================================================
 // FIRESTORE SYNC
 // ============================================================
 function syncCartToFirestore() {
@@ -235,6 +258,7 @@ function syncCartToFirestore() {
     cart: getCart(),
     leads: getLeads(),
     savedProfiles: getSavedProfiles(),
+    purchasedLeads: getPurchasedLeads(),
     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
   }, { merge: true }).catch(function(err) { console.warn("Firestore sync failed:", err.message); });
 }
@@ -251,6 +275,7 @@ function syncProfileToFirestore() {
   if (typeof profile.leads === 'number') fields.leads = profile.leads;
   fields.cart = getCart();
   fields.savedProfiles = getSavedProfiles();
+  fields.purchasedLeads = getPurchasedLeads();
   firebase.firestore().collection("users").doc(profile.uid).set(fields, { merge: true }).catch(function(err) { console.warn("Firestore profile sync failed:", err.message); });
 }
 
@@ -274,6 +299,9 @@ function loadFromFirestore() {
           if (typeof data.leads === 'number') setLeads(data.leads);
           if (data.savedProfiles && data.savedProfiles.length > 0) {
             localStorage.setItem("user_saved_profiles", JSON.stringify(data.savedProfiles));
+          }
+          if (data.purchasedLeads && data.purchasedLeads.length > 0) {
+            localStorage.setItem("user_purchased_leads", JSON.stringify(data.purchasedLeads));
           }
         }
         resolve();

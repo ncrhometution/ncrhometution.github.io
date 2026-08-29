@@ -286,12 +286,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const contactBox = document.getElementById("contactBox");
     const isAdmin = !!adminToken && typeof data.email === "string" && typeof data.mobile_no === "string";
+    const isPurchasedLead = params.get("purchased") === "1" || isPurchased(id, type);
 
     if (isAdmin) {
       contactBox.classList.remove("blurred");
       contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + data.mobile_no + '</p><p><i class="fa-solid fa-envelope"></i> ' + data.email + '</p><p><i class="fa-solid fa-location-dot"></i> ' + data.city + ', ' + (data.country||'') + '</p>';
       document.getElementById("loginBtn").style.display = "none";
       document.getElementById("joinBtn").style.display = "none";
+    } else if (isPurchasedLead) {
+      // Purchased lead - full details unlocked, no lead spent
+      contactBox.classList.remove("blurred");
+      document.getElementById("loginBtn").style.display = "none";
+      document.getElementById("joinBtn").style.display = "none";
+      if (data.mobile_no || data.email) {
+        contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (data.mobile_no || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (data.email || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (data.city || "N/A") + '</p>';
+      } else {
+        contactBox.innerHTML = '<p style="font-size:13px;margin:0"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> <b>Purchased lead</b> — this profile is in your purchased list.</p>';
+      }
+      var badge = document.getElementById("profileBadge");
+      if (badge) badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Purchased';
     } else {
       contactBox.classList.add("blurred");
       // Show leads remaining if logged in
