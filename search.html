@@ -13,7 +13,7 @@
 </head>
 <body><nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><i class="fa-solid fa-bars"></i></button>
     <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
@@ -66,6 +66,12 @@
     .btn-add-cart:hover{background:var(--accent);color:#fff;transform:translateY(-1px)}
     .btn-add-cart.in-cart{background:#e8f5e9;border-color:var(--success);color:var(--success)}
     .btn-add-cart.in-cart:hover{background:#ffcdd2;border-color:var(--danger);color:var(--danger)}
+    .tutor-card.purchased{opacity:0.72;background:#f6f8f7;border-color:var(--border);filter:grayscale(0.35)}
+    .tutor-card.purchased:hover{transform:none;box-shadow:var(--shadow-sm);border-color:var(--border)}
+    .tc-badge.purchased-badge{top:12px;right:auto;left:12px;background:#e8f5e9;color:var(--success);border:1px solid #a5d6a7}
+    .btn-view-profile.disabled{background:#cbd5d1;box-shadow:none;cursor:not-allowed;pointer-events:none}
+    .btn-add-cart:disabled{background:#e8f5e9;border-color:var(--success);color:var(--success);cursor:not-allowed;opacity:0.9}
+    .btn-add-cart:disabled:hover{background:#e8f5e9;color:var(--success);transform:none}
     .search-header-bar{background:var(--bg-white);padding:12px 0;border-bottom:1px solid var(--border-light)}
     .btn-apply-filter{width:100%;height:42px;border:none;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),#14b8a6);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
     .btn-apply-filter:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(15,118,110,0.3)}
@@ -186,10 +192,12 @@ function renderResults(items){
     var isTutor=(item.type||"tutor")==="tutor";
     var cardType=isTutor?"tutor":"student";
     var inCart=isInCart(item.id,item.type);
+    var purchased=isPurchased(item.id,item.type);
     var card=document.createElement("div");
     card.className="col-lg-6 col-md-6 fade-in";
-    card.innerHTML='<div class="tutor-card">'+
+    card.innerHTML='<div class="tutor-card'+(purchased?' purchased':'')+'">'+
       '<span class="tc-badge '+cardType+'">'+(item.type||"tutor").toUpperCase()+'</span>'+
+      (purchased?'<span class="tc-badge purchased-badge"><i class="fa-solid fa-circle-check"></i> Purchased</span>':'')+
       '<div class="tc-header"><div class="tc-avatar '+cardType+'">'+initial+'</div>'+
       '<div style="min-width:0"><div class="tc-name">'+(item.name||"")+'</div>'+
       '<div class="tc-location"><i class="fa-solid fa-location-dot"></i> '+(item.city||"N/A")+'</div></div></div>'+
@@ -207,8 +215,11 @@ function renderResults(items){
         '</div>'+
       '</div>'+
       '<div class="tc-footer">'+
-        '<a href="data.html?id='+item.id+'&type='+item.type+'" class="btn-view-profile"><i class="fa-solid fa-eye"></i> View Profile</a>'+
-        '<button class="btn-add-cart '+(inCart?'in-cart':'')+'" id="cartBtn_'+item.id+'_'+item.type+'" onclick="toggleCart(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\',\''+(item.experience||"").replace(/'/g,"\\'")+'\',\''+(item.preferred_mode||"").replace(/'/g,"\\'")+'\',\''+(item.language||"").replace(/'/g,"\\'")+'\')">'+(inCart?'<i class="fa-solid fa-check"></i> In Cart':'<i class="fa-solid fa-cart-plus"></i> ₹99')+'</button>'+
+        (purchased
+          ? '<a href="data.html?id='+item.id+'&type='+item.type+'&purchased=1" class="btn-view-profile disabled" onclick="return false"><i class="fa-solid fa-circle-check"></i> Purchased</a>'+
+            '<button class="btn-add-cart in-cart" disabled><i class="fa-solid fa-circle-check"></i> Purchased</button>'
+          : '<a href="data.html?id='+item.id+'&type='+item.type+'" class="btn-view-profile"><i class="fa-solid fa-eye"></i> View Profile</a>'+
+            '<button class="btn-add-cart '+(inCart?'in-cart':'')+'" id="cartBtn_'+item.id+'_'+item.type+'" onclick="toggleCart(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\',\''+(item.experience||"").replace(/'/g,"\\'")+'\',\''+(item.preferred_mode||"").replace(/'/g,"\\'")+'\',\''+(item.language||"").replace(/'/g,"\\'")+'\')">'+(inCart?'<i class="fa-solid fa-check"></i> In Cart':'<i class="fa-solid fa-cart-plus"></i> ₹99')+'</button>')+
       '</div></div>';
     box.appendChild(card);
   });

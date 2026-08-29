@@ -734,6 +734,14 @@ def home():
 
             "GET /payments/my/profiles",
 
+            "GET /admin/leads",
+
+            "PUT /admin/leads/{lead_type}/{user_id}",
+
+            "PATCH /admin/leads/{lead_type}/{user_id}/status",
+
+            "DELETE /admin/leads/{lead_type}/{user_id}",
+
             "GET /payments/{payment_id}",
 
             "GET /payments/order/{razorpay_order_id}",
@@ -3515,6 +3523,436 @@ def parse_user_ids(value):
         ]
 
     return []
+
+
+# ============================================================
+# ADMIN: LIST LEADS
+# ============================================================
+#
+# GET /admin/leads?type=tutor|student&page=1&per_page=20
+#     &status=active&q=search
+#
+# Admin only. Lists all leads (tutors or students) with
+# pagination, optional status filter and keyword search.
+#
+# ============================================================
+
+@app.get("/admin/leads")
+def admin_list_leads(
+
+    type: str = "tutor",
+
+    page: int = 1,
+
+    per_page: int = DEFAULT_PAGE_SIZE,
+
+    status: Optional[str] = None,
+
+    q: Optional[str] = None,
+
+    session=Depends(
+        get_admin_session
+    )
+):
+
+    if session is None:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Admin authentication required"
+        )
+
+
+    if type not in ("tutor", "student"):
+
+        raise HTTPException(
+            status_code=400,
+            detail="type must be 'tutor' or 'student'"
+        )
+
+
+    page, per_page, start, end = (
+        normalize_pagination(
+            page,
+            per_page
+        )
+    )
+
+
+    table_name = (
+        "tutors"
+        if type == "tutor"
+        else "students"
+    )
+
+
+    qb = (
+        supabase
+        .table(table_name)
+        .select(
+            "*",
+            count="exact"
+        )
+    )
+
+
+    if status:
+
+        qb = qb.eq(
+            "status",
+            status.strip()
+        )
+
+
+    if q:
+
+        qb = qb.or_(
+            "name.ilike.%{0}%,city.ilike.%{0}%,course.ilike.%{0}%,subject.ilike.%{0}%".format(
+                q.strip()
+            )
+        )
+
+
+    try:
+
+        res = (
+            qb
+            .order(
+                "created_at",
+                desc=True
+            )
+            .range(
+                start,
+                end
+            )
+            .execute()
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+    return {
+
+        "status": "success",
+
+        "type": type,
+
+        "page": page,
+
+        "per_page": per_page,
+
+        "total": (
+            res.count
+            if res.count is not None
+            else len(res.data)
+        ),
+
+        "data": res.data
+    }
+
+
+# ============================================================
+# ADMIN: UPDATE ANY LEAD
+# ============================================================
+#
+# PUT /admin/leads/{lead_type}/{user_id}
+#
+# Admin only. Updates any field of a tutor or student lead.
+#
+# ============================================================
+
+@app.put("/admin/leads/{lead_type}/{user_id}")
+def admin_update_lead(
+
+    lead_type: str,
+
+    user_id: str,
+
+    data: UpdateUser,
+
+    session=Depends(
+        get_admin_session
+    )
+):
+
+    if session is None:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Admin authentication required"
+        )
+
+
+    if lead_type not in ("tutor", "student"):
+
+        raise HTTPException(
+            status_code=400,
+            detail="lead_type must be 'tutor' or 'student'"
+        )
+
+
+    updates = data.dict(
+        exclude_unset=True
+    )
+
+
+    if not updates:
+
+        raise HTTPException(
+            status_code=400,
+            detail="No fields to update"
+        )
+
+
+    updates["updated_at"] = (
+        datetime.utcnow()
+        .isoformat()
+    )
+
+
+    table_name = (
+        "tutors"
+        if lead_type == "tutor"
+        else "students"
+    )
+
+
+    try:
+
+        res = (
+            supabase
+            .table(table_name)
+            .update(updates)
+            .eq("id", user_id)
+            .execute()
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+    if not res.data:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Lead not found"
+        )
+
+
+    return {
+
+        "status": "success",
+
+        "message":
+            "Lead updated",
+
+        "data":
+            res.data[0]
+    }
+
+
+# ============================================================
+# ADMIN: CHANGE LEAD STATUS
+# ============================================================
+#
+# PATCH /admin/leads/{lead_type}/{user_id}/status
+#
+# Admin only. Changes the status of a lead
+# (e.g. active / inactive / blocked).
+#
+# ============================================================
+
+class LeadStatusUpdate(BaseModel):
+
+    status: str
+
+
+@app.patch("/admin/leads/{lead_type}/{user_id}/status")
+def admin_change_lead_status(
+
+    lead_type: str,
+
+    user_id: str,
+
+    data: LeadStatusUpdate,
+
+    session=Depends(
+        get_admin_session
+    )
+):
+
+    if session is None:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Admin authentication required"
+        )
+
+
+    if lead_type not in ("tutor", "student"):
+
+        raise HTTPException(
+            status_code=400,
+            detail="lead_type must be 'tutor' or 'student'"
+        )
+
+
+    status = (
+        data.status.strip().lower()
+        if data.status
+        else ""
+    )
+
+
+    if not status:
+
+        raise HTTPException(
+            status_code=400,
+            detail="status is required"
+        )
+
+
+    table_name = (
+        "tutors"
+        if lead_type == "tutor"
+        else "students"
+    )
+
+
+    try:
+
+        res = (
+            supabase
+            .table(table_name)
+            .update({
+                "status": status,
+                "updated_at": (
+                    datetime.utcnow()
+                    .isoformat()
+                )
+            })
+            .eq("id", user_id)
+            .execute()
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+    if not res.data:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Lead not found"
+        )
+
+
+    return {
+
+        "status": "success",
+
+        "message":
+            "Lead status updated",
+
+        "data":
+            res.data[0]
+    }
+
+
+# ============================================================
+# ADMIN: DELETE LEAD
+# ============================================================
+#
+# DELETE /admin/leads/{lead_type}/{user_id}
+#
+# Admin only. Deletes a tutor or student lead.
+#
+# ============================================================
+
+@app.delete("/admin/leads/{lead_type}/{user_id}")
+def admin_delete_lead(
+
+    lead_type: str,
+
+    user_id: str,
+
+    session=Depends(
+        get_admin_session
+    )
+):
+
+    if session is None:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Admin authentication required"
+        )
+
+
+    if lead_type not in ("tutor", "student"):
+
+        raise HTTPException(
+            status_code=400,
+            detail="lead_type must be 'tutor' or 'student'"
+        )
+
+
+    table_name = (
+        "tutors"
+        if lead_type == "tutor"
+        else "students"
+    )
+
+
+    try:
+
+        res = (
+            supabase
+            .table(table_name)
+            .delete()
+            .eq("id", user_id)
+            .execute()
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+    if not res.data:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Lead not found"
+        )
+
+
+    return {
+
+        "status": "success",
+
+        "message":
+            "Lead deleted",
+
+        "data":
+            res.data[0]
+    }
 
 
 # ============================================================

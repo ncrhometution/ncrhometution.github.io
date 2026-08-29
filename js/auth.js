@@ -447,7 +447,7 @@ function logoutUser() {
 function getNavHTML(activePage) {
   return '<nav class="navbar navbar-expand-lg navbar-modern">' +
     '<div class="container">' +
-      '<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><span class="navbar-toggler-icon"></span></button>' +
+      '<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><i class="fa-solid fa-bars"></i></button>' +
       '<a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>' +
       '<div class="collapse navbar-collapse" id="navMenu">' +
         '<ul class="navbar-nav mx-auto">' +

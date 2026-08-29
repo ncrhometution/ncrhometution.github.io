@@ -114,44 +114,21 @@
       font-size: 13px;
       color: var(--text-secondary);
     }
-    /* Purchased success banner (closed-mask style) */
-    .closed-mask {
-      background: #e8f5e9;
-      border: 1.5px solid #a5d6a7;
-      border-radius: 12px;
-      padding: 14px;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-    .closed-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--success, #16a34a);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-    }
-    .closed-tag p { margin: 0; font-size: 11px; color: #fff; }
-    .dot-white {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #fff;
-      display: inline-block;
-    }
-    .closed-text {
+    /* Purchased notice */
+    .purchased-notice {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      background: #e8f5e9;
+      border: 1.5px solid #a5d6a7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
       font-size: 13px;
       color: var(--text-primary);
-      font-weight: 600;
     }
+    .purchased-notice i { color: var(--success); font-size: 16px; }
   </style>
 </head>
 <body>
@@ -159,7 +136,7 @@
 <nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
+      <i class="fa-solid fa-bars"></i>
     </button>
     <a href="index.html" class="navbar-brand">
       <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
@@ -241,12 +218,8 @@
       <!-- Contact Sidebar -->
       <div class="col-lg-4">
         <div class="contact-sidebar">
-          <div class="closed-mask" id="purchasedMask" style="display:none">
-            <div class="closed-tag tuition"><span class="dot-white"></span><p>Closed</p></div>
-            <span class="closed-text">
-              <i class="fa-solid fa-circle-check" style="color:var(--success);font-size:20px"></i>
-              <b id="purchasedMsg">Home Tutor found successfully.</b>
-            </span>
+          <div class="purchased-notice" id="purchasedNotice" style="display:none">
+            <i class="fa-solid fa-circle-check"></i> <b>Purchased</b> — contact unlocked
           </div>
           <h6><i class="fa-solid fa-lock" style="color:var(--text-muted)"></i> Contact Information</h6>
           <div class="contact-info blurred" id="contactBox">
@@ -342,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const joinBtn = document.getElementById("joinBtn");
     const addCartBtn = document.getElementById("addCartBtn");
     const leadPrice = document.getElementById("leadPrice");
-    const purchasedMask = document.getElementById("purchasedMask");
+    const purchasedNotice = document.getElementById("purchasedNotice");
     const leadsLeftEl = document.getElementById("leadsLeft");
 
     if (isAdmin) {
@@ -352,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function() {
       joinBtn.style.display = "none";
       addCartBtn.style.display = "none";
       leadPrice.style.display = "none";
-      purchasedMask.style.display = "none";
+      purchasedNotice.style.display = "none";
       leadsLeftEl.style.display = "none";
     } else if (isPurchasedLead) {
       // Purchased lead - full details unlocked, no lead spent
@@ -362,9 +335,7 @@ document.addEventListener("DOMContentLoaded", function() {
       addCartBtn.style.display = "none";
       leadPrice.style.display = "none";
       leadsLeftEl.style.display = "none";
-      // Green success banner (closed-mask style): tutor -> "Home Tutor found successfully", student -> "Student found successfully"
-      purchasedMask.style.display = "block";
-      document.getElementById("purchasedMsg").textContent = (type === "student" ? "Student found successfully." : "Home Tutor found successfully.");
+      purchasedNotice.style.display = "flex";
       var purchased = getPurchasedLeads().find(function(p) { return p.id === id && p.type === type; });
       var phone = (purchased && purchased.mobile_no) || data.mobile_no || "";
       var mail = (purchased && purchased.email) || data.email || "";
@@ -380,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function() {
       contactBox.classList.add("blurred");
       loginBtn.style.display = "none";
       joinBtn.style.display = "none";
-      purchasedMask.style.display = "none";
+      purchasedNotice.style.display = "none";
       addCartBtn.style.display = "flex";
       leadPrice.style.display = "block";
       var inCart = isInCart(id, type);
@@ -400,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function() {
       joinBtn.style.display = "flex";
       addCartBtn.style.display = "none";
       leadPrice.style.display = "none";
-      purchasedMask.style.display = "none";
+      purchasedNotice.style.display = "none";
       leadsLeftEl.style.display = "none";
     }
   }

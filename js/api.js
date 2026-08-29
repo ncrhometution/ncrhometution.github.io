@@ -26,6 +26,9 @@ var APIS = {
   payments:        API_BASE + "payments",
   myPayments:      API_BASE + "payments/my",
   myPurchased:     API_BASE + "payments/my/profiles",
+  adminLeads:      API_BASE + "admin/leads",
+  adminLead:       function(leadType, id) { return API_BASE + "admin/leads/" + encodeURIComponent(leadType) + "/" + encodeURIComponent(id); },
+  adminLeadStatus: function(leadType, id) { return API_BASE + "admin/leads/" + encodeURIComponent(leadType) + "/" + encodeURIComponent(id) + "/status"; },
   paymentById:     function(id) { return API_BASE + "payments/" + encodeURIComponent(id); },
   paymentByOrder:  function(id) { return API_BASE + "payments/order/" + encodeURIComponent(id); },
   paymentByRzp:    function(id) { return API_BASE + "payments/razorpay/" + encodeURIComponent(id); }
@@ -162,6 +165,24 @@ function getMyPayments(email, mobileNo, status) {
 // getMyPurchasedProfiles(email, mobileNo) - public: purchased profiles (full records incl. contact)
 function getMyPurchasedProfiles(email, mobileNo) {
   return api(APIS.myPurchased, { params: { email: email, mobile_no: mobileNo } });
+}
+
+// ---- Admin: lead management ----
+// listAdminLeads({ type: 'tutor'|'student', page, per_page, status, q }) - admin only
+function listAdminLeads(params) {
+  return api(APIS.adminLeads, { params: params, admin: true });
+}
+// updateAdminLead(leadType, id, fields) - admin only
+function updateAdminLead(leadType, id, fields) {
+  return api(APIS.adminLead(leadType, id), { method: "PUT", body: fields, admin: true });
+}
+// changeAdminLeadStatus(leadType, id, status) - admin only
+function changeAdminLeadStatus(leadType, id, status) {
+  return api(APIS.adminLeadStatus(leadType, id), { method: "PATCH", body: { status: status }, admin: true });
+}
+// deleteAdminLead(leadType, id) - admin only
+function deleteAdminLead(leadType, id) {
+  return api(APIS.adminLead(leadType, id), { method: "DELETE", admin: true });
 }
 
 // ---- Razorpay checkout ----

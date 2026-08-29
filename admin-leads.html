@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Leads Panel | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .admin-page{padding:40px 0 60px;background:var(--bg);min-height:100vh}
+    .admin-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .admin-top h4{font-weight:800;margin:0}
+    .admin-top p{font-size:13px;color:var(--text-muted);margin:2px 0 0}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:var(--bg-white);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+    .stat-card .sc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+    .stat-card .sc-value{font-size:24px;font-weight:800}
+    .stat-card .sc-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .admin-card{background:var(--bg-white);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);border:1px solid var(--border-light);overflow:hidden}
+    .admin-card .card-head{padding:18px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .admin-card .card-head h6{font-weight:700;margin:0}
+    .table-wrap{overflow-x:auto}
+    table.admin-table{width:100%;font-size:13px;border-collapse:collapse}
+    .admin-table th{background:var(--bg);padding:12px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);white-space:nowrap}
+    .admin-table td{padding:12px 16px;border-top:1px solid var(--border-light);vertical-align:middle}
+    .admin-table tr:hover td{background:#f8f9fa}
+    .badge-status{padding:4px 12px;border-radius:var(--radius-full);font-size:11px;font-weight:700;text-transform:uppercase}
+    .badge-status.active{background:#e8f5e9;color:#1b5e20}
+    .badge-status.inactive{background:#fff3e0;color:#e65100}
+    .badge-status.blocked{background:#ffebee;color:#b71c1c}
+    .badge-status.other{background:var(--bg);color:var(--text-muted)}
+    .pager{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px}
+    .pager button{height:36px;padding:0 16px;border-radius:var(--radius-md);border:1.5px solid var(--border);background:var(--bg-white);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition)}
+    .pager button:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+    .pager button:disabled{opacity:0.4;cursor:not-allowed}
+    .pager span{font-size:13px;color:var(--text-muted);font-weight:600}
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap}
+    .filter-bar select,.filter-bar input{height:38px;border-radius:var(--radius-md);font-size:13px;border:1.5px solid var(--border);padding:0 12px}
+    .btn-logout-admin{height:38px;padding:0 16px;border-radius:var(--radius-md);border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition)}
+    .btn-logout-admin:hover{background:var(--danger);color:#fff}
+    .empty-state{text-align:center;padding:60px 24px;color:var(--text-muted)}
+    .empty-state i{font-size:48px;display:block;margin-bottom:12px;color:var(--border)}
+    .type-tabs{display:inline-flex;background:var(--bg);border-radius:var(--radius-full);padding:4px;gap:4px}
+    .type-tabs button{border:none;background:transparent;padding:8px 20px;border-radius:var(--radius-full);font-weight:700;font-size:13px;color:var(--text-muted);cursor:pointer;transition:var(--transition)}
+    .type-tabs button.active{background:var(--bg-white);color:var(--primary);box-shadow:var(--shadow-sm)}
+    .action-btn{height:30px;padding:0 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-white);font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);margin-right:4px}
+    .action-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .action-btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+    .lead-name{font-weight:700;color:var(--text-primary)}
+    .lead-sub{font-size:11px;color:var(--text-muted)}
+    @media(max-width:991px){.stat-cards{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:576px){.stat-cards{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-modern">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
+    <div class="d-flex align-items-center gap-2">
+      <a href="admin-payments.html" class="btn-logout-admin" style="border-color:var(--primary);color:var(--primary);text-decoration:none"><i class="fa-solid fa-receipt"></i> Payments</a>
+      <span style="font-size:12px;color:var(--text-muted);font-weight:600"><i class="fa-solid fa-shield-halved" style="color:var(--accent)"></i> Admin</span>
+      <button class="btn-logout-admin" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </div>
+</nav>
+
+<section class="admin-page">
+  <div class="container">
+    <div class="admin-top">
+      <div>
+        <h4><i class="fa-solid fa-users-gear" style="color:var(--accent)"></i> Leads Panel</h4>
+        <p>Edit any lead or change its state (active / inactive / blocked)</p>
+      </div>
+      <div class="filter-bar">
+        <div class="type-tabs">
+          <button id="tabTutor" class="active" onclick="switchType('tutor')"><i class="fa-solid fa-chalkboard-user"></i> Tutors</button>
+          <button id="tabStudent" onclick="switchType('student')"><i class="fa-solid fa-user-graduate"></i> Students</button>
+        </div>
+        <select id="filterStatus" onchange="loadLeads(1)">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="blocked">Blocked</option>
+        </select>
+        <input type="text" id="searchQ" placeholder="Search name / city / course..." style="width:200px" onkeydown="if(event.key==='Enter')loadLeads(1)">
+        <button class="btn btn-accent-custom btn-sm" onclick="loadLeads(1)" style="height:38px;padding:0 16px"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        <button class="btn btn-accent-custom btn-sm" onclick="loadLeads(1)" style="height:38px;padding:0 16px"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="sc-icon" style="background:var(--primary-light);color:var(--primary)"><i class="fa-solid fa-users"></i></div>
+        <div class="sc-value" id="statTotal">-</div>
+        <div class="sc-label" id="statTotalLabel">Total Leads</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#e8f5e9;color:var(--success)"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="sc-value" id="statActive">-</div>
+        <div class="sc-label">Active</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#fff3e0;color:var(--accent)"><i class="fa-solid fa-pause"></i></div>
+        <div class="sc-value" id="statInactive">-</div>
+        <div class="sc-label">Inactive</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#ffebee;color:var(--danger)"><i class="fa-solid fa-ban"></i></div>
+        <div class="sc-value" id="statBlocked">-</div>
+        <div class="sc-label">Blocked</div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-head">
+        <h6><i class="fa-solid fa-list" style="color:var(--primary)"></i> <span id="listTitle">Tutors</span></h6>
+        <span style="font-size:12px;color:var(--text-muted)" id="totalLabel"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>City</th>
+              <th>Course</th>
+              <th>Subject</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+            <tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading leads...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button id="prevBtn" onclick="loadLeads(page-1)"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextBtn" onclick="loadLeads(page+1)">Next <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/api.js"></script>
+<script>
+var page = 1;
+var totalPages = 1;
+var leadType = "tutor";
+
+if (!isAdminLoggedIn()) {
+  window.location.href = "admin-login-page.html";
+}
+
+function adminLogout() {
+  Swal.fire({
+    title: "Logout?", text: "End this admin session?", icon: "warning",
+    showCancelButton: true, confirmButtonColor: "#dc3545", cancelButtonColor: "#6c757d", confirmButtonText: "Yes, Logout"
+  }).then(function(result) {
+    if (result.isConfirmed) {
+      clearAdminToken();
+      window.location.href = "admin-login-page.html";
+    }
+  });
+}
+
+function switchType(t) {
+  leadType = t;
+  document.getElementById("tabTutor").classList.toggle("active", t === "tutor");
+  document.getElementById("tabStudent").classList.toggle("active", t === "student");
+  document.getElementById("listTitle").textContent = t === "tutor" ? "Tutors" : "Students";
+  document.getElementById("statTotalLabel").textContent = t === "tutor" ? "Total Tutors" : "Total Students";
+  loadLeads(1);
+}
+
+function badgeClass(status) {
+  var s = (status || "").toLowerCase();
+  if (s === "active") return "active";
+  if (s === "inactive") return "inactive";
+  if (s === "blocked") return "blocked";
+  return "other";
+}
+
+function fmtDate(s) {
+  if (!s) return "-";
+  try { return new Date(s).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }); } catch (e) { return "-"; }
+}
+
+function loadLeads(p) {
+  if (p < 1) return;
+  page = p;
+  var status = document.getElementById("filterStatus").value;
+  var q = document.getElementById("searchQ").value.trim();
+  document.getElementById("leadsBody").innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading leads...</div></td></tr>';
+  listAdminLeads({ type: leadType, page: page, per_page: 15, status: status, q: q })
+    .then(function(data) {
+      currentLeads = data.data || [];
+      var rows = currentLeads;
+      totalPages = Math.max(1, Math.ceil((data.total || 0) / 15));
+      document.getElementById("totalLabel").textContent = (data.total || 0) + " lead(s)";
+      document.getElementById("pageInfo").textContent = "Page " + page + " of " + totalPages;
+      document.getElementById("prevBtn").disabled = page <= 1;
+      document.getElementById("nextBtn").disabled = page >= totalPages;
+      updateStats(rows);
+      if (rows.length === 0) {
+        document.getElementById("leadsBody").innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-inbox"></i> No leads found</div></td></tr>';
+        return;
+      }
+      document.getElementById("leadsBody").innerHTML = rows.map(function(r) {
+        var name = r.name || "Unknown";
+        var initial = name.charAt(0).toUpperCase();
+        return '<tr data-id="' + r.id + '">' +
+          '<td><div style="display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#14b8a6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">' + initial + '</div><div><div class="lead-name">' + name + '</div><div class="lead-sub">' + (r.mobile_no || "") + (r.email ? " · " + r.email : "") + '</div></div></div></td>' +
+          '<td>' + (r.city || "-") + '</td>' +
+          '<td>' + (r.course || "-") + '</td>' +
+          '<td style="max-width:180px">' + (r.subject || "-") + '</td>' +
+          '<td><span class="badge-status ' + badgeClass(r.status) + '">' + (r.status || "unknown") + '</span></td>' +
+          '<td>' + fmtDate(r.created_at || r.joined_date) + '</td>' +
+          '<td style="white-space:nowrap">' +
+            '<button class="action-btn" onclick="openEdit(\'' + r.id + '\')"><i class="fa-solid fa-pen"></i> Edit</button>' +
+            '<button class="action-btn" onclick="changeStatus(\'' + r.id + '\',\'' + (r.status || "active") + '\')"><i class="fa-solid fa-toggle-on"></i> Status</button>' +
+            '<button class="action-btn danger" onclick="deleteLead(\'' + r.id + '\',\'' + (r.name || "").replace(/'/g, "\\'") + '\')"><i class="fa-solid fa-trash"></i></button>' +
+          '</td>' +
+        '</tr>';
+      }).join("");
+    })
+    .catch(function(err) {
+      document.getElementById("leadsBody").innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i> ' + getErrorMessage(err) + '</div></td></tr>';
+    });
+}
+
+function updateStats(rows) {
+  var total = rows.length;
+  var active = rows.filter(function(r) { return (r.status || "").toLowerCase() === "active"; }).length;
+  var inactive = rows.filter(function(r) { return (r.status || "").toLowerCase() === "inactive"; }).length;
+  var blocked = rows.filter(function(r) { return (r.status || "").toLowerCase() === "blocked"; }).length;
+  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statActive").textContent = active;
+  document.getElementById("statInactive").textContent = inactive;
+  document.getElementById("statBlocked").textContent = blocked;
+}
+
+function openEdit(id) {
+  var row = document.querySelector('#leadsBody tr[data-id="' + id + '"]');
+  var lead = currentLeads.find(function(l) { return l.id === id; });
+  if (!lead) return;
+  Swal.fire({
+    title: "Edit " + (leadType === "tutor" ? "Tutor" : "Student") + " Lead",
+    html:
+      '<div style="text-align:left;font-size:13px">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Name</label><input id="f_name" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.name || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Mobile</label><input id="f_mobile" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.mobile_no || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Email</label><input id="f_email" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.email || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Course</label><input id="f_course" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.course || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Subject</label><input id="f_subject" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.subject || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Qualification</label><input id="f_qual" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.qualification || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Experience (years)</label><input id="f_exp" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.experience_years != null ? lead.experience_years : "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Fee (₹)</label><input id="f_payment" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.payment != null ? lead.payment : "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Mode</label><select id="f_mode" class="swal2-select" style="width:100%;height:38px;font-size:13px"><option value="online">Online</option><option value="offline">Offline</option></select>' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Language</label><input id="f_lang" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.language || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">City</label><input id="f_city" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.city || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Country</label><input id="f_country" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.country || "") + '">' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Status</label><select id="f_status" class="swal2-select" style="width:100%;height:38px;font-size:13px"><option value="active">Active</option><option value="inactive">Inactive</option><option value="blocked">Blocked</option></select>' +
+      '</div>',
+    showCancelButton: true,
+    confirmButtonText: "Save Changes",
+    confirmButtonColor: "#0f766e",
+    cancelButtonText: "Cancel",
+    focusConfirm: false,
+    didOpen: function() {
+      document.getElementById("f_mode").value = lead.preferred_mode || "offline";
+      document.getElementById("f_status").value = lead.status || "active";
+    },
+    preConfirm: function() {
+      var payload = {
+        name: document.getElementById("f_name").value.trim(),
+        mobile_no: document.getElementById("f_mobile").value.trim(),
+        email: document.getElementById("f_email").value.trim(),
+        course: document.getElementById("f_course").value.trim(),
+        subject: document.getElementById("f_subject").value.trim(),
+        qualification: document.getElementById("f_qual").value.trim(),
+        preferred_mode: document.getElementById("f_mode").value,
+        language: document.getElementById("f_lang").value.trim(),
+        city: document.getElementById("f_city").value.trim(),
+        country: document.getElementById("f_country").value.trim(),
+        status: document.getElementById("f_status").value
+      };
+      var exp = document.getElementById("f_exp").value.trim();
+      if (exp !== "") payload.experience_years = parseFloat(exp);
+      var pay = document.getElementById("f_payment").value.trim();
+      if (pay !== "") payload.payment = parseFloat(pay);
+      return payload;
+    }
+  }).then(function(result) {
+    if (result.isConfirmed) {
+      Swal.fire({ title: "Saving...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+      updateAdminLead(leadType, id, result.value)
+        .then(function() {
+          Swal.close();
+          Swal.fire({ icon: "success", title: "Lead Updated", timer: 1200, showConfirmButton: false });
+          loadLeads(page);
+        })
+        .catch(function(err) {
+          Swal.close();
+          Swal.fire({ icon: "error", title: "Update Failed", text: getErrorMessage(err) });
+        });
+    }
+  });
+}
+
+function changeStatus(id, current) {
+  var next = current === "active" ? "inactive" : "active";
+  Swal.fire({
+    title: "Change Status?",
+    text: "Set this lead to '" + next + "'?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, set " + next,
+    confirmButtonColor: "#0f766e",
+    cancelButtonText: "Cancel"
+  }).then(function(result) {
+    if (!result.isConfirmed) return;
+    changeAdminLeadStatus(leadType, id, next)
+      .then(function() {
+        Swal.fire({ icon: "success", title: "Status changed to " + next, timer: 1200, showConfirmButton: false });
+        loadLeads(page);
+      })
+      .catch(function(err) {
+        Swal.fire({ icon: "error", title: "Failed", text: getErrorMessage(err) });
+      });
+  });
+}
+
+function deleteLead(id, name) {
+  Swal.fire({
+    title: "Delete Lead?",
+    text: "Permanently delete '" + name + "'? This cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete",
+    confirmButtonColor: "#dc3545",
+    cancelButtonText: "Cancel"
+  }).then(function(result) {
+    if (!result.isConfirmed) return;
+    deleteAdminLead(leadType, id)
+      .then(function() {
+        Swal.fire({ icon: "success", title: "Lead Deleted", timer: 1200, showConfirmButton: false });
+        loadLeads(page);
+      })
+      .catch(function(err) {
+        Swal.fire({ icon: "error", title: "Delete Failed", text: getErrorMessage(err) });
+      });
+  });
+}
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+var currentLeads = [];
+
+loadLeads(1);
+</script>
+</body>
+</html>

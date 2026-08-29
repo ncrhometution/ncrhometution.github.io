@@ -152,6 +152,12 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: 4px;
 }
 .navbar-modern .navbar-toggler:focus { box-shadow: 0 0 0 3px rgba(245,158,11,0.35); }
+.navbar-modern .navbar-toggler i {
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  display: block;
+}
 .navbar-modern .navbar-toggler-icon {
   filter: invert(1) brightness(1.6);
 }
@@ -1385,6 +1391,30 @@ h1, h2, h3, h4, h5, h6 {
 /* ---------- Responsive ---------- */
 @media (max-width: 991px) {
   .cta-banner-grid, .compare-grid { grid-template-columns: 1fr; }
+  /* Expanded mobile menu: nav links + auth buttons LEFT-aligned so Login/Sign Up stay stable */
+  .navbar-modern .container { flex-wrap: wrap; }
+  .navbar-modern .navbar-collapse.show,
+  .navbar-modern .navbar-collapse.collapsing {
+    flex-basis: 100%;
+    order: 3;
+  }
+  .navbar-modern .navbar-collapse.show .navbar-nav,
+  .navbar-modern .navbar-collapse.collapsing .navbar-nav {
+    margin-left: 0 !important;
+    margin-right: 0;
+    padding: 8px 0 4px;
+  }
+  .navbar-modern .navbar-collapse.show + .auth-actions,
+  .navbar-modern .navbar-collapse.collapsing + .auth-actions {
+    order: 4;
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    justify-content: flex-start;
+    padding-top: 10px;
+    padding-bottom: 12px;
+    border-top: 1px solid rgba(255,255,255,0.14);
+  }
 }
 @media (max-width: 575px) {
   .navbar-modern .navbar-brand { font-size: 15px; gap: 5px; }

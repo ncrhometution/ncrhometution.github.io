@@ -81,7 +81,7 @@ function adminLogin() {
       if (data.status === "success" && data.session_token) {
         setAdminToken(data.session_token);
         Swal.fire({ icon: "success", title: "Admin Access Granted", timer: 1500, showConfirmButton: false })
-          .then(function() { window.location.href = "admin-payments.html"; });
+          .then(function() { window.location.href = "admin-leads.html"; });
       } else {
         errEl.textContent = data.detail || "Invalid admin credentials";
         errEl.style.display = "block";
