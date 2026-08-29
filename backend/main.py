@@ -3225,9 +3225,15 @@ def list_payments(
 #
 # GET /payments/my?email=...&mobile_no=...
 #
-# Public endpoint used by the "My Purchased Leads" feature.
-# Returns all PAID payments that match the given email AND
-# mobile_no (the logged-in user's credentials).
+# Public endpoint used by the "My Payment History" feature.
+# Returns ALL payments that match the given email AND
+# mobile_no (the logged-in user's credentials) - tried,
+# paid, failed, authorized, refunded - so the user can
+# track every payment attempt.
+#
+# Optional query param:
+#
+#   status   (created, paid, authorized, failed, refunded)
 #
 # NOTE: Must be defined BEFORE /payments/{payment_id} so
 # FastAPI does not treat "my" as a payment id.
@@ -3237,24 +3243,36 @@ def list_payments(
 @app.get("/payments/my")
 def get_my_payments(
     email: str,
-    mobile_no: str
+    mobile_no: str,
+    status: Optional[str] = None
 ):
 
     email = email.strip().lower()
     mobile_no = mobile_no.strip()
 
+    qb = (
+        supabase
+        .table("payments")
+        .select("*")
+        .ilike("email", email)
+        .eq("mobile_no", mobile_no)
+    )
+
+    if status:
+
+        qb = qb.eq(
+            "status",
+            status.strip()
+        )
+
+    qb = qb.order(
+        "created_at",
+        desc=True
+    )
+
     try:
 
-        res = (
-            supabase
-            .table("payments")
-            .select("*")
-            .ilike("email", email)
-            .eq("mobile_no", mobile_no)
-            .eq("status", "paid")
-            .order("paid_at", desc=True)
-            .execute()
-        )
+        res = qb.execute()
 
     except Exception as e:
 
@@ -3274,27 +3292,6 @@ def get_my_payments(
             res.data
     }
 
-
-# ============================================================
-# GET MY PURCHASED PROFILES (PUBLIC)
-# ============================================================
-#
-# GET /payments/my/profiles?email=...&mobile_no=...
-#
-# Public endpoint used by the "My Purchased Leads" feature.
-#
-# 1. Finds all PAID payments matching the given email AND
-#    mobile_no (the logged-in user's credentials).
-# 2. Collects the user_ids from those payments.
-# 3. Resolves each id against the tutors and students
-#    tables.
-# 4. Returns the FULL profile records (including email and
-#    mobile_no) because the user paid for them.
-#
-# NOTE: Must be defined BEFORE /payments/{payment_id} so
-# FastAPI does not treat "my" as a payment id.
-#
-# ============================================================
 
 @app.get("/payments/my/profiles")
 def get_my_purchased_profiles(

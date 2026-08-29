@@ -83,6 +83,11 @@
           <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Profiles you paid for — open any lead to see full details anytime.</p>
           <div id="purchasedList"><p style="font-size:13px;color:var(--text-muted)">No purchased leads yet. Add profiles to cart and pay to unlock contact details.</p></div>
         </div>
+        <div class="saved-section">
+          <h3 style="font-weight:700;font-size:16px;margin-bottom:12px"><i class="fa-solid fa-receipt" style="color:var(--accent)"></i> My Payment History</h3>
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">All your payment attempts — completed, failed, and not completed.</p>
+          <div id="paymentsList"><p style="font-size:13px;color:var(--text-muted)">No payments yet. Buy leads from the cart to see your payment history here.</p></div>
+        </div>
         <div class="quick-actions">
           <a href="cart.html" class="qa-btn"><i class="fa-solid fa-shopping-cart" style="color:var(--accent)"></i> Buy Leads</a>
           <a href="student-register.html" class="qa-btn"><i class="fa-solid fa-graduation-cap" style="color:var(--primary)"></i> Find Tutor</a>
@@ -107,7 +112,7 @@
 
     if(!isLoggedIn()){window.location.href="login.html";}
     else{
-      loadFromFirestore().then(function(){renderProfile();renderSaved();renderAuthButtons("authButtons");renderPurchased();fetchPurchasedLeads().then(renderPurchased);});
+      loadFromFirestore().then(function(){renderProfile();renderSaved();renderAuthButtons("authButtons");renderPurchased();fetchPurchasedLeads().then(renderPurchased);renderPayments();fetchMyPayments().then(renderPayments);});
     }
 
     function renderProfile(){
@@ -134,6 +139,23 @@
     }
 
     function removeSaved(id,type){removeSavedProfile(id,type);renderSaved();}
+
+    function renderPayments(){
+      var list=getMyPaymentsCache();var el=document.getElementById("paymentsList");
+      if(!list||list.length===0){el.innerHTML='<p style="font-size:13px;color:var(--text-muted)">No payments yet. Buy leads from the cart to see your payment history here.</p>';return;}
+      el.innerHTML=list.map(function(p){
+        var st=(p.status||"created").toLowerCase();
+        var badgeColor=st==="paid"?"var(--success)":(st==="failed"?"#dc3545":(st==="refunded"?"#6c757d":"var(--accent)"));
+        var label=st==="paid"?"Paid":(st==="failed"?"Failed":(st==="refunded"?"Refunded":(st==="authorized"?"Authorized":"Not Completed")));
+        var date=p.paid_at||p.created_at||"";
+        var d=date?new Date(date).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}):"";
+        var ids=p.user_ids||[];
+        var count=Array.isArray(ids)?ids.length:0;
+        var orderId=p.razorpay_order_id||p.id||"";
+        var action='<a href="verify-payment.html?order_id='+encodeURIComponent(orderId)+'"><i class="fa-solid fa-receipt"></i> '+(st==="paid"?"Details":"Verify")+'</a>';
+        return '<div class="saved-item"><div class="si-info"><div class="si-avatar" style="background:rgba(245,158,11,0.15);color:var(--accent)"><i class="fa-solid fa-indian-rupee-sign"></i></div><div><div class="si-name">₹'+(p.amount||0)+' <span style="font-size:11px;color:var(--text-muted)">'+(p.user_type||"")+'</span></div><div class="si-meta">'+(d||"")+(count>0?" · "+count+" lead"+(count>1?"s":""):"")+' · <span style="color:'+badgeColor+';font-weight:700">'+label+'</span><br><span style="font-size:11px;color:var(--text-muted)">'+orderId+'</span></div></div></div><div class="si-actions">'+action+'</div></div>';
+      }).join("");
+    }
 
     function renderPurchased(){
       var list=getPurchasedLeads();var el=document.getElementById("purchasedList");

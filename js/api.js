@@ -154,9 +154,10 @@ function getPaymentByOrder(orderId) {
 function getPaymentByRazorpay(paymentId) {
   return api(APIS.paymentByRzp(paymentId));
 }
-// getMyPayments(email, mobileNo) - public: paid payments matching this buyer
-function getMyPayments(email, mobileNo) {
-  return api(APIS.myPayments, { params: { email: email, mobile_no: mobileNo } });
+// getMyPayments(email, mobileNo, status) - public: all payment attempts for this buyer
+// status optional: created, paid, authorized, failed, refunded
+function getMyPayments(email, mobileNo, status) {
+  return api(APIS.myPayments, { params: { email: email, mobile_no: mobileNo, status: status } });
 }
 // getMyPurchasedProfiles(email, mobileNo) - public: purchased profiles (full records incl. contact)
 function getMyPurchasedProfiles(email, mobileNo) {

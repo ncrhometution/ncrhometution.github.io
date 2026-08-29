@@ -73,6 +73,27 @@ renderAuthButtons('authButtons');
 
 var currentMethod = "razorpay";
 
+// Prefill from URL params (?order_id=...&payment_id=...&id=...) and auto-check
+(function() {
+  var q = new URLSearchParams(window.location.search);
+  var orderId = q.get("order_id");
+  var paymentId = q.get("payment_id");
+  var internalId = q.get("id");
+  if (orderId) {
+    setMethod("order");
+    document.getElementById("verifyInput").value = orderId;
+    verifyNow();
+  } else if (paymentId) {
+    setMethod("razorpay");
+    document.getElementById("verifyInput").value = paymentId;
+    verifyNow();
+  } else if (internalId) {
+    setMethod("internal");
+    document.getElementById("verifyInput").value = internalId;
+    verifyNow();
+  }
+})();
+
 function setMethod(m) {
   currentMethod = m;
   document.querySelectorAll(".method-tab").forEach(function(t) {
@@ -112,7 +133,7 @@ function verifyNow() {
     var ok = (p.status || "").toLowerCase() === "paid";
     box.className = "result-box " + (ok ? "success" : "fail");
     box.style.display = "block";
-    var amt = (p.amount || 0) / 100;
+    var amt = p.amount_paise ? (p.amount_paise / 100) : (p.amount || 0);
     box.innerHTML =
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">' +
         '<i class="fa-solid ' + (ok ? "fa-circle-check" : "fa-circle-info") + '" style="font-size:28px;color:' + (ok ? "var(--success)" : "var(--accent)") + '"></i>' +

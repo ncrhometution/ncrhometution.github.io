@@ -289,6 +289,32 @@ function fetchPurchasedLeads() {
 }
 
 // ============================================================
+// MY PAYMENT HISTORY (all attempts: tried, paid, failed, etc.)
+// Source of truth: backend GET /payments/my (matched by the
+// logged-in user's email + mobile_no). localStorage is a cache.
+// ============================================================
+function getMyPaymentsCache() {
+  try { var r = localStorage.getItem("user_payments"); return r ? JSON.parse(r) : []; } catch(e) { return []; }
+}
+function saveMyPaymentsCache(list) { localStorage.setItem("user_payments", JSON.stringify(list)); }
+
+// Fetch ALL payment attempts for the logged-in user from the backend.
+// Returns a Promise resolving to the payment list (also cached).
+function fetchMyPayments() {
+  return new Promise(function(resolve) {
+    var profile = getProfile();
+    if (!profile || !profile.email || !profile.mobile_no) { resolve(getMyPaymentsCache()); return; }
+    getMyPayments(profile.email, profile.mobile_no)
+      .then(function(res) {
+        var list = (res && res.data) || [];
+        saveMyPaymentsCache(list);
+        resolve(list);
+      })
+      .catch(function() { resolve(getMyPaymentsCache()); });
+  });
+}
+
+// ============================================================
 // FIRESTORE SYNC
 // ============================================================
 function syncCartToFirestore() {
