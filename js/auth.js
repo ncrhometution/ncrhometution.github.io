@@ -397,6 +397,10 @@ function renderAuthButtons(containerId) {
   var cartCount = getCartCount();
   if (profile) {
     var initial = (profile.displayName || profile.email || "U").charAt(0).toUpperCase();
+    var name = profile.displayName || "Account";
+    var email = profile.email || "";
+    var mobile = profile.mobile_no || "";
+    var role = profile.role ? (profile.role === "tutor" ? "Home Tutor" : "Student / Parent") : "";
     box.innerHTML =
       '<div class="auth-actions">' +
         '<a href="cart.html" class="btn-nav-login" style="display:flex;align-items:center;gap:6px;position:relative;text-decoration:none">' +
@@ -404,13 +408,29 @@ function renderAuthButtons(containerId) {
           '<span>Cart</span>' +
           (cartCount > 0 ? '<span class="cart-badge" style="background:var(--accent);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;min-width:18px;text-align:center">' + cartCount + '</span>' : '') +
         '</a>' +
-        '<a href="profile.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;padding:6px 12px;border-radius:var(--radius-full);transition:var(--transition)" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'">' +
-          '<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#2979ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">' + initial + '</div>' +
-          '<span class="acct-label" style="font-size:13px;font-weight:600;color:var(--text-primary);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (profile.displayName || "Account") + '</span>' +
-        '</a>' +
-        '<button class="btn-nav-login" onclick="logoutUser()" style="color:var(--danger);border:none;font-size:12px;padding:6px 10px">' +
-          '<i class="fa-solid fa-right-from-bracket"></i>' +
-        '</button>' +
+        '<div class="dropdown">' +
+          '<button class="profile-avatar-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+            '<div class="profile-avatar">' + initial + '</div>' +
+            '<span class="acct-label">' + name + '</span>' +
+            '<i class="fa-solid fa-chevron-down dd-caret"></i>' +
+          '</button>' +
+          '<ul class="dropdown-menu dropdown-menu-end profile-menu">' +
+            '<li class="profile-head">' +
+              '<div class="profile-avatar-lg">' + initial + '</div>' +
+              '<div style="min-width:0">' +
+                '<div class="profile-name">' + name + '</div>' +
+                (email ? '<div class="profile-email">' + email + '</div>' : '') +
+                '<div class="profile-meta">' + (mobile ? '<i class="fa-solid fa-phone"></i> ' + mobile + ' ' : '') + (role ? '<i class="fa-solid fa-user-tag"></i> ' + role : '') + '</div>' +
+              '</div>' +
+            '</li>' +
+            '<li><hr class="dropdown-divider"></li>' +
+            '<li><a class="dropdown-item" href="profile.html"><i class="fa-solid fa-user"></i> My Profile</a></li>' +
+            '<li><a class="dropdown-item" href="cart.html"><i class="fa-solid fa-shopping-cart"></i> My Cart' + (cartCount > 0 ? ' <span class="cart-badge" style="background:var(--accent);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700">' + cartCount + '</span>' : '') + '</a></li>' +
+            '<li><a class="dropdown-item" href="profile.html#purchased"><i class="fa-solid fa-circle-check"></i> Purchased Leads</a></li>' +
+            '<li><hr class="dropdown-divider"></li>' +
+            '<li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>' +
+          '</ul>' +
+        '</div>' +
       '</div>';
   } else {
     box.innerHTML =
