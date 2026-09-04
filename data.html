@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("gender").textContent = data.gender || "Any";
     document.getElementById("preferredTime").textContent = data.preferred_time || "Flexible";
     document.getElementById("hourlyFee").textContent = data.hourly_fee || "Negotiable";
-    document.getElementById("description").textContent = (data.type === "student" ? "Wanted" : "Available") + " tutor for " + (data.course||"") + ", " + (data.subject||"");
+    document.getElementById("description").textContent = (String(data.type||type).toLowerCase() === "student" ? "Wanted" : "Available") + " tutor for " + (data.course||"") + ", " + (data.subject||"");
 
     const contactBox = document.getElementById("contactBox");
     const isAdmin = !!adminToken && typeof data.email === "string" && typeof data.mobile_no === "string";

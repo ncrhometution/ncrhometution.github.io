@@ -189,7 +189,7 @@ function loadResults(){
 function renderResults(items){
   items.forEach(function(item){
     var initial=(item.name||"N").charAt(0).toUpperCase();
-    var isTutor=(item.type||"tutor")==="tutor";
+    var isTutor=String(item.type||"tutor").toLowerCase()==="tutor";
     var cardType=isTutor?"tutor":"student";
     var inCart=isInCart(item.id,item.type);
     var purchased=isPurchased(item.id,item.type);
@@ -228,7 +228,12 @@ function renderResults(items){
 function toggleCart(btn,id,type,name,city,course,subject,experience,mode,language){
   if(!isLoggedIn()){
     Swal.fire({icon:"info",title:"Login Required",text:"Please login to add profiles to cart",
-      confirmButtonText:"Login",confirmButtonColor:"#0f766e",showCancelButton:true,cancelButtonText:"Sign Up Free"
+      confirmButtonText:"Login",confirmButtonColor:"#0f766e",showCancelButton:true,cancelButtonText:"Sign Up Free",
+      allowOutsideClick:true,
+      didOpen:function(){
+        var container=document.querySelector(".swal2-container");
+        if(container){container.addEventListener("click",function(e){if(e.target===container)Swal.close();});}
+      }
     }).then(function(r){if(r.isConfirmed)window.location.href="login.html";else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html";});
     return;
   }
