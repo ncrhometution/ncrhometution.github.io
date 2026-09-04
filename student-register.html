@@ -137,12 +137,12 @@
     </a>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
-        <li class="nav-item"><a class="nav-link active" href="student-register.html">I Need a Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Tutor</a></li>
-        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Tuition</a></li>
+        <li class="nav-item"><a class="nav-link active" href="student-register.html">I Need a Teacher</a></li>
+        <li class="nav-item"><a class="nav-link" href="tutor-register.html">Join as Teacher</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtutor.html">Find Teacher</a></li>
+        <li class="nav-item"><a class="nav-link" href="findbyidtution.html">Find Students</a></li>
       </ul>
     </div>
       <div class="auth-actions" id="authButtons">
@@ -200,10 +200,22 @@
                 <input type="email" name="email" class="form-control" placeholder="e.g. priya@email.com" required>
               </div>
               <div class="form-group">
-                <label>Address / City</label>
-                <input type="text" name="city" class="form-control" placeholder="e.g. Sector 84, Faridabad" required>
+                <label>City</label>
+                <input type="text" name="city" class="form-control" placeholder="e.g. Faridabad" required>
               </div>
             </div>
+
+            <div class="form-row-pair">
+              <div class="form-group">
+                <label>Address</label>
+                <input type="email" name="addreess" class="form-control" placeholder="e.g.  Sector 84, Faridabad" required>
+              </div>
+              <div class="form-group">
+                <label>Map Location</label>
+                <input type="text" name="maploacation" class="form-control" placeholder="e.g. Map Share Loaction" required>
+              </div>
+            </div>
+
             <div class="form-row-pair">
               <div class="form-group">
                 <label>Course</label>
@@ -225,6 +237,7 @@
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
+                  <option value="Any">Any</option>
                 </select>
               </div>
             </div>
@@ -247,16 +260,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-row-pair">
-              <div class="form-group">
-                <label>Country</label>
-                <input type="text" name="country" class="form-control" value="India" readonly>
-              </div>
-              <div class="form-group">
-                <label>Timezone</label>
-                <input type="text" name="timezone" class="form-control" value="Asia/Kolkata" readonly>
-              </div>
-            </div>
+            
             <button type="submit" class="btn btn-accent-custom w-100 justify-content-center mt-2" style="height:50px;font-size:16px">
               <i class="fa-solid fa-paper-plane"></i> Submit & Get Free Demo
             </button>
