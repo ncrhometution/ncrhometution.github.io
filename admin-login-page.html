@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -50,7 +50,7 @@
 
     <div id="adminAuthError" class="error-text" style="text-align:center;margin-top:8px"></div>
 
-    <button class="btn-submit" onclick="adminLogin()">
+    <button class="btn-submit" onclick="handleAdminLogin()">
       <i class="fa-solid fa-right-to-bracket"></i>&nbsp; Login to Dashboard
     </button>
 
@@ -59,12 +59,12 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="js/api.js"></script>
+<script src="js/api.js?v=2"></script>
 <script>
-document.getElementById("adminPass").addEventListener("keydown", function(e){ if(e.key === "Enter") adminLogin(); });
-document.getElementById("adminUser").addEventListener("keydown", function(e){ if(e.key === "Enter") adminLogin(); });
+document.getElementById("adminPass").addEventListener("keydown", function(e){ if(e.key === "Enter") handleAdminLogin(); });
+document.getElementById("adminUser").addEventListener("keydown", function(e){ if(e.key === "Enter") handleAdminLogin(); });
 
-function adminLogin() {
+function handleAdminLogin() {
   var username = document.getElementById("adminUser").value.trim();
   var password = document.getElementById("adminPass").value;
   var errEl = document.getElementById("adminAuthError");

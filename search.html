@@ -113,8 +113,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/api.js"></script>
+<script src="js/auth.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
 <script>try{initFirebase();}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -229,7 +229,7 @@ function toggleCart(btn,id,type,name,city,course,subject,experience,mode,languag
   if(!isLoggedIn()){
     Swal.fire({icon:"info",title:"Login Required",text:"Please login to add profiles to cart",
       confirmButtonText:"Login",confirmButtonColor:"#0f766e",showCancelButton:true,cancelButtonText:"Sign Up Free",
-      allowOutsideClick:true,
+      allowOutsideClick:true,animation:false,
       didOpen:function(){
         var container=document.querySelector(".swal2-container");
         if(container){container.addEventListener("click",function(e){if(e.target===container)Swal.close();});}
