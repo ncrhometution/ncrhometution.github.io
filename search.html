@@ -188,6 +188,16 @@ function loadResults(){
   }).catch(function(e){console.error(e)}).finally(function(){hideLoader();loading=false});
 }
 
+function formatJoinedDate(iso) {
+  if (!iso) return "";
+  try {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+  } catch(e) { return iso; }
+}
+
 function renderResults(items){
   items.forEach(function(item){
     var initial=(item.name||"N").charAt(0).toUpperCase();
@@ -210,6 +220,7 @@ function renderResults(items){
         '<div class="tc-info"><i class="fa-solid fa-laptop"></i> '+(item.preferred_mode||"N/A")+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-language"></i> '+(item.language||"N/A")+'</div>'+
         (item.payment!=null?'<div class="tc-info"><i class="fa-solid fa-indian-rupee-sign"></i> ₹'+item.payment+(item.payment_type?" / "+item.payment_type:"")+'</div>':'')+
+        (item.joined_date?'<div class="tc-info"><i class="fa-solid fa-calendar-days"></i> Joined '+formatJoinedDate(item.joined_date)+'</div>':'')+
         '<div class="tc-tags">'+
           (item.course?'<span class="tc-tag">'+item.course+'</span>':'')+
           (item.subject?'<span class="tc-tag">'+item.subject+'</span>':'')+
