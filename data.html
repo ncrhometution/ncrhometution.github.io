@@ -192,8 +192,9 @@
               <div class="info-row"><div class="label">Subjects</div><div class="value" id="subject">--</div></div>
               <div class="info-row"><div class="label">Mode</div><div class="value" id="tuitionType">--</div></div>
               <div class="info-row"><div class="label">City</div><div class="value" id="city">--</div></div>
-              <div class="info-row"><div class="label">Location</div><div class="value" id="location">--</div></div>
+              <div class="info-row"><div class="label">Address</div><div class="value" id="address">--</div></div>
               <div class="info-row"><div class="label">Pincode</div><div class="value" id="pincode">--</div></div>
+              <div class="info-row"><div class="label">Joined</div><div class="value" id="joinedDate">--</div></div>
             </div>
 
             <hr style="margin:20px 0;border-color:var(--border-light)">
@@ -263,6 +264,15 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 renderAuthButtons("authButtons");
+function formatJoinedDate(iso) {
+  if (!iso) return "N/A";
+  try {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+  } catch(e) { return iso; }
+}
 document.addEventListener("DOMContentLoaded", function() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -281,7 +291,7 @@ document.addEventListener("DOMContentLoaded", function() {
   .then(data => {
     Swal.close();
     document.getElementById("profileHeader").style.display = "block";
-    Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#f59e0b" });
+    Swal.fire({ icon: "success", title: "Profile Found!", html: '<div style="text-align:left;font-size:14px"><b>Name:</b> ' + data.name + '<br><b>Type:</b> ' + (data.type||type).toUpperCase() + '<br><b>Course:</b> ' + data.course + '<br><b>Subject:</b> ' + data.subject + '<br><b>City:</b> ' + (data.city||"N/A") + '<br><b>Address:</b> ' + (data.address||"N/A") + '<br><b>Joined:</b> ' + formatJoinedDate(data.joined_date) + '</div>', confirmButtonText: "View Details", confirmButtonColor: "#f59e0b" });
     fillData(data);
     // Refresh purchased-lead cache from backend (matched by login email + mobile + status=paid)
     fetchPurchasedLeads().then(function() { fillData(data); });
@@ -301,8 +311,9 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("subject").textContent = data.subject || "N/A";
     document.getElementById("tuitionType").textContent = data.preferred_mode || "N/A";
     document.getElementById("city").textContent = data.city || "N/A";
-    document.getElementById("location").textContent = data.city || "N/A";
+    document.getElementById("address").textContent = data.address || data.city || "N/A";
     document.getElementById("pincode").textContent = data.pincode || "N/A";
+    document.getElementById("joinedDate").textContent = formatJoinedDate(data.joined_date);
     document.getElementById("gender").textContent = data.gender || "Any";
     document.getElementById("preferredTime").textContent = data.preferred_time || "Flexible";
     document.getElementById("hourlyFee").textContent = data.hourly_fee || "Negotiable";
@@ -320,7 +331,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (isAdmin) {
       contactBox.classList.remove("blurred");
-      contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + data.mobile_no + '</p><p><i class="fa-solid fa-envelope"></i> ' + data.email + '</p><p><i class="fa-solid fa-location-dot"></i> ' + data.city + ', ' + (data.country||'') + '</p>';
+      contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + data.mobile_no + '</p><p><i class="fa-solid fa-envelope"></i> ' + data.email + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (data.address ? data.address + ', ' : '') + data.city + ', ' + (data.country||'') + '</p>';
       loginBtn.style.display = "none";
       joinBtn.style.display = "none";
       addCartBtn.style.display = "none";
@@ -340,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function() {
       var phone = (purchased && purchased.mobile_no) || data.mobile_no || "";
       var mail = (purchased && purchased.email) || data.email || "";
       if (phone || mail) {
-        contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (phone || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (mail || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (data.city || "N/A") + '</p>';
+        contactBox.innerHTML = '<p><i class="fa-solid fa-phone"></i> ' + (phone || "N/A") + '</p><p><i class="fa-solid fa-envelope"></i> ' + (mail || "N/A") + '</p><p><i class="fa-solid fa-location-dot"></i> ' + (data.address ? data.address + ', ' : '') + (data.city || "N/A") + '</p>';
       } else {
         contactBox.innerHTML = '<p style="font-size:13px;margin:0"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> <b>Purchased lead</b> — this profile is in your purchased list.</p>';
       }
