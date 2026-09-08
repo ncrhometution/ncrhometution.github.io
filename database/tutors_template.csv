@@ -1,0 +1,4 @@
+type,name,mobile_no,email,course,subject,qualification,experience_years,preferred_mode,address,city,status,created_at,joined_date,ip_address,user_agent,source
+tutor,NIKHIL RAJPUT,9458492500,nikhilrajput05892@gmail.com,mathematics & science,"Trigonometry, algebra, mensuration",B.Tech. in mechanical engineering,2,offline,Sec 78,Faridabad,active,2026-03-09 18:34:59+00,23-05-2026,157.49.12.65,Mozilla/5.0 (Linux; Android 10; K) Chrome/145.0.0.0 Mobile Safari/537.36,website
+tutor,Rahul Verma,9876543211,rahul@email.com,physics,Mechanics & Thermodynamics,M.Sc. Physics,5,online,"Sector 45, Gurgaon",Gurgaon,active,2026-03-10 09:20:00+00,24-05-2026,117.24.36.150,Chrome/121.0,website
+tutor,Sunita Patel,8765432110,sunita@email.com,english,Grammar & Writing,B.A. English,3,offline,"Dwarka Sector 12",Delhi,active,2026-03-11 11:45:00+00,25-05-2026,49.36.128.201,Firefox/122.0,website

@@ -27,6 +27,7 @@ var APIS = {
   myPayments:      API_BASE + "payments/my",
   myPurchased:     API_BASE + "payments/my/profiles",
   adminLeads:      API_BASE + "admin/leads",
+  adminLeadsBulk:  API_BASE + "admin/leads/bulk",
   adminLead:       function(leadType, id) { return API_BASE + "admin/leads/" + encodeURIComponent(leadType) + "/" + encodeURIComponent(id); },
   adminLeadStatus: function(leadType, id) { return API_BASE + "admin/leads/" + encodeURIComponent(leadType) + "/" + encodeURIComponent(id) + "/status"; },
   paymentById:     function(id) { return API_BASE + "payments/" + encodeURIComponent(id); },
@@ -124,6 +125,35 @@ function adminLogin(username, password) {
 function submitLead(type, payload) {
   var endpoint = type === "tutor" ? APIS.tutor : APIS.student;
   return api(endpoint, { method: "POST", body: payload });
+}
+// bulkCreateLeads(type, leads) - admin only
+// Tries POST /admin/leads/bulk; falls back to individual POST /tutor or /student calls.
+function bulkCreateLeads(type, leads) {
+  return api(APIS.adminLeadsBulk, { method: "POST", body: { type: type, leads: leads }, admin: true }).catch(function(err) {
+    if (err.status === 404) {
+      var results = [];
+      var chain = Promise.resolve();
+      leads.forEach(function(lead) {
+        chain = chain.then(function() {
+          return submitLead(type, lead).then(function(d) {
+            results.push({ ok: true, id: (d && (d.id || d.data && d.data.id)) || null });
+          }).catch(function(e2) {
+            results.push({ ok: false, error: getErrorMessage(e2), name: lead.name || "" });
+          });
+        });
+      });
+      return chain.then(function() {
+        var okCount = results.filter(function(r) { return r.ok; }).length;
+        return {
+          status: "success",
+          message: okCount + " of " + leads.length + " created",
+          created: okCount,
+          data: results
+        };
+      });
+    }
+    throw err;
+  });
 }
 
 // ---- Search ----

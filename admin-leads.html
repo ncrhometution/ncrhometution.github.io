@@ -119,7 +119,12 @@
     <div class="admin-card">
       <div class="card-head">
         <h6><i class="fa-solid fa-list" style="color:var(--primary)"></i> <span id="listTitle">Tutors</span></h6>
-        <span style="font-size:12px;color:var(--text-muted)" id="totalLabel"></span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-accent-custom btn-sm" onclick="openAddLead()" style="height:36px;padding:0 14px"><i class="fa-solid fa-plus"></i> Add Lead</button>
+          <button class="btn btn-accent-custom btn-sm" onclick="document.getElementById('importFile').click()" style="height:36px;padding:0 14px"><i class="fa-solid fa-file-import"></i> Import Excel/CSV</button>
+          <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleImportFile(this)">
+          <span style="font-size:12px;color:var(--text-muted)" id="totalLabel"></span>
+        </div>
       </div>
       <div class="table-wrap">
         <table class="admin-table">
@@ -151,6 +156,7 @@
 <footer class="footer"><div class="container"><div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div></div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 <script src="js/api.js?v=2"></script>
 <script>
 var page = 1;
@@ -159,6 +165,184 @@ var leadType = "tutor";
 
 if (!isAdminLoggedIn()) {
   window.location.href = "admin-login-page.html";
+}
+
+// ============================================================
+// ADD SINGLE LEAD
+// ============================================================
+function openAddLead() {
+  var isTutor = leadType === "tutor";
+  Swal.fire({
+    title: (isTutor ? "Add Tutor" : "Add Student") + " Lead",
+    html:
+      '<div style="text-align:left;font-size:13px">' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Name *</label><input id="alName" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="Full name"></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Mobile *</label><input id="alMobile" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="10-digit mobile" maxlength="10"></div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Email</label><input id="alEmail" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="email@example.com"></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">City</label><input id="alCity" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. Faridabad"></div>' +
+        '</div>' +
+        '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Address</label><input id="alAddress" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. Sector 75, Faridabad"></div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Course</label><input id="alCourse" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. Class 10 / Maths"></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Subject</label><input id="alSubject" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. Maths, Science"></div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Qualification</label><input id="alQual" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. B.Sc, M.Ed"></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Experience (yrs)</label><input id="alExp" type="number" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. 3" min="0"></div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Mode</label><select id="alMode" class="swal2-input" style="width:100%;height:38px;font-size:13px"><option value="online">Online</option><option value="offline">Offline</option></select></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Language</label><select id="alLang" class="swal2-input" style="width:100%;height:38px;font-size:13px"><option>English</option><option>Hindi</option><option>Tamil</option><option>Telugu</option><option>Kannada</option><option>Malayalam</option><option>Marathi</option><option>Bengali</option><option>Gujarati</option><option>Punjabi</option></select></div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Fee (₹)</label><input id="alPay" type="number" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. 500" min="0"></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Fee Type</label><select id="alPayType" class="swal2-input" style="width:100%;height:38px;font-size:13px"><option value="per_hour">Per Hour</option><option value="per_month">Per Month</option></select></div>' +
+        '</div>' +
+      '</div>',
+    showCancelButton: true,
+    confirmButtonText: "Save Lead",
+    confirmButtonColor: "#0f766e",
+    cancelButtonText: "Cancel",
+    width: 560,
+    preConfirm: function() {
+      var name = document.getElementById("alName").value.trim();
+      var mobile = document.getElementById("alMobile").value.trim();
+      if (!name) { Swal.showValidationMessage("Name is required"); return false; }
+      if (!mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) { Swal.showValidationMessage("Enter a valid 10-digit mobile"); return false; }
+      var payload = {
+        name: name,
+        mobile_no: mobile,
+        email: document.getElementById("alEmail").value.trim() || undefined,
+        city: document.getElementById("alCity").value.trim() || undefined,
+        address: document.getElementById("alAddress").value.trim() || undefined,
+        course: document.getElementById("alCourse").value.trim() || undefined,
+        subject: document.getElementById("alSubject").value.trim() || undefined,
+        qualification: document.getElementById("alQual").value.trim() || undefined,
+        experience_years: parseFloat(document.getElementById("alExp").value) || undefined,
+        preferred_mode: document.getElementById("alMode").value,
+        language: document.getElementById("alLang").value,
+        payment: parseFloat(document.getElementById("alPay").value) || undefined,
+        payment_type: document.getElementById("alPayType").value
+      };
+      return payload;
+    }
+  }).then(function(result) {
+    if (!result.isConfirmed) return;
+    Swal.fire({ title: "Saving...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+    submitLead(leadType, result.value).then(function(d) {
+      Swal.close();
+      Swal.fire({ icon: "success", title: "Lead Added!", text: "ID: " + (d.id || (d.data && d.data.id) || "created"), timer: 2000, showConfirmButton: false });
+      loadLeads(1);
+    }).catch(function(err) {
+      Swal.close();
+      Swal.fire({ icon: "error", title: "Failed", text: getErrorMessage(err), confirmButtonColor: "#dc3545" });
+    });
+  });
+}
+
+// ============================================================
+// IMPORT EXCEL / CSV
+// ============================================================
+function handleImportFile(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var wb = XLSX.read(e.target.result, { type: "array" });
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
+      if (!rows.length) {
+        Swal.fire({ icon: "warning", title: "Empty File", text: "No data rows found in the file", confirmButtonColor: "#f59e0b" });
+        input.value = "";
+        return;
+      }
+      showImportPreview(rows, file.name);
+    } catch (err) {
+      Swal.fire({ icon: "error", title: "Parse Error", text: "Could not read the file. Use .xlsx, .xls or .csv format.", confirmButtonColor: "#dc3545" });
+      input.value = "";
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function normalizeLeadRow(row) {
+  function pick() {
+    var keys = Array.prototype.slice.call(arguments);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      if (row[k] !== undefined && row[k] !== null && String(row[k]).trim() !== "") return String(row[k]).trim();
+    }
+    return "";
+  }
+  function pickNum() {
+    var v = pick.apply(null, arguments);
+    if (!v) return undefined;
+    var n = parseFloat(v);
+    return isNaN(n) ? undefined : n;
+  }
+  return {
+    name: pick("name", "Name", "NAME", "full name", "Full Name", "student name", "tutor name"),
+    mobile_no: pick("mobile_no", "mobile", "Mobile", "Mobile No", "mobile number", "phone", "Phone", "contact", "Contact"),
+    email: pick("email", "Email", "EMAIL", "email address"),
+    city: pick("city", "City", "CITY", "location", "Location"),
+    address: pick("address", "Address", "ADDRESS", "full address"),
+    course: pick("course", "Course", "COURSE", "class", "Class", "standard"),
+    subject: pick("subject", "Subject", "SUBJECT", "subjects"),
+    qualification: pick("qualification", "Qualification", "QUALIFICATION", "education", "Education"),
+    experience_years: pickNum("experience_years", "experience", "Experience", "Experience (Years)", "years of experience"),
+    payment: pickNum("payment", "Payment", "fee", "Fee", "Fees", "expected fee", "hourly fee", "amount"),
+    payment_type: pick("payment_type", "Payment Type", "fee type", "Fee Type") || "per_hour",
+    preferred_mode: pick("preferred_mode", "mode", "Mode", "Preferred Mode", "teaching mode") || "online",
+    language: pick("language", "Language", "LANGUAGE") || "English",
+    country: pick("country", "Country", "COUNTRY") || "India"
+  };
+}
+
+function showImportPreview(rows, fileName) {
+  var sample = rows.slice(0, 5).map(function(r) {
+    var n = normalizeLeadRow(r);
+    return "<tr><td>" + (n.name || "-") + "</td><td>" + (n.mobile_no || "-") + "</td><td>" + (n.city || "-") + "</td><td>" + (n.course || "-") + "</td></tr>";
+  }).join("");
+  Swal.fire({
+    title: "Import Preview",
+    html:
+      '<p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">File: <b>' + fileName + '</b> — ' + rows.length + ' row(s) found. Importing as <b>' + (leadType === "tutor" ? "Tutors" : "Students") + '</b>.</p>' +
+      '<div style="max-height:220px;overflow:auto;border:1px solid var(--border-light);border-radius:8px">' +
+        '<table style="width:100%;font-size:12px;border-collapse:collapse">' +
+          '<thead><tr style="background:var(--bg)"><th style="padding:8px;text-align:left">Name</th><th style="padding:8px;text-align:left">Mobile</th><th style="padding:8px;text-align:left">City</th><th style="padding:8px;text-align:left">Course</th></tr></thead>' +
+          '<tbody>' + sample + '</tbody>' +
+        '</table>' +
+      '</div>' +
+      '<p style="font-size:12px;color:var(--text-muted);margin-top:10px">Columns matched: name, mobile, email, city, address, course, subject, qualification, experience, fee, mode, language.</p>',
+    showCancelButton: true,
+    confirmButtonText: "Import " + rows.length + " Lead" + (rows.length > 1 ? "s" : ""),
+    confirmButtonColor: "#0f766e",
+    cancelButtonText: "Cancel",
+    width: 620
+  }).then(function(result) {
+    if (!result.isConfirmed) { document.getElementById("importFile").value = ""; return; }
+    var leads = rows.map(normalizeLeadRow).filter(function(l) { return l.name; });
+    if (!leads.length) {
+      Swal.fire({ icon: "warning", title: "No Valid Rows", text: "No rows with a Name were found", confirmButtonColor: "#f59e0b" });
+      document.getElementById("importFile").value = "";
+      return;
+    }
+    Swal.fire({ title: "Importing " + leads.length + " lead(s)...", text: "Please wait", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+    bulkCreateLeads(leadType, leads).then(function(d) {
+      Swal.close();
+      Swal.fire({ icon: "success", title: "Import Complete", text: d.message || (d.created + " created"), confirmButtonColor: "#0f766e" });
+      document.getElementById("importFile").value = "";
+      loadLeads(1);
+    }).catch(function(err) {
+      Swal.close();
+      Swal.fire({ icon: "error", title: "Import Failed", text: getErrorMessage(err), confirmButtonColor: "#dc3545" });
+      document.getElementById("importFile").value = "";
+    });
+  });
 }
 
 function adminLogout() {

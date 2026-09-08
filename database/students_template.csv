@@ -1,0 +1,4 @@
+type,name,mobile_no,email,course,subject,qualification,Preferred_Gender,preferred_mode,address,city,status,created_at,joined_date,ip_address,user_agent,source
+student,Dhruv,9818271412,abc@email.com,Class 10,Mathematics,DC Model School,Male,offline,"Sector 80, Badauli",Faridabad,active,2026-01-22 18:41:52+00,22/01/26,223.188.34.138,python-requests/2.32.4,website
+student,Priya Sharma,9876543210,priya@email.com,Class 12,Physics,Modern School,Female,online,"Sector 14, Faridabad",Faridabad,active,2026-01-23 10:15:30+00,23/01/26,103.21.244.12,Chrome/120.0,website
+student,Amit Kumar,8765432109,amit@email.com,Class 8,Science,DPS,Any,offline,"Noida Sector 62",Noida,active,2026-01-24 14:22:10+00,24/01/26,49.36.128.200,Safari/17.0,website
