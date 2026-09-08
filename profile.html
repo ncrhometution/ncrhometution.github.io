@@ -104,13 +104,13 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="js/api.js?v=2"></script>
-  <script src="js/auth.js?v=2"></script>
+  <script src="js/auth.js?v=3"></script>
   <script>
     initFirebase();
     document.getElementById("navbar-placeholder").innerHTML = getNavHTML("");
     renderAuthButtons("authButtons");
 
-    if(!isLoggedIn()){window.location.href="login.html";}
+    if(!isLoggedIn()){window.location.href="login.html"+loginRedirectQuery();}
     else{
       loadFromFirestore().then(function(){renderProfile();renderSaved();renderAuthButtons("authButtons");renderPurchased();fetchPurchasedLeads().then(renderPurchased);renderPayments();fetchMyPayments().then(renderPayments);});
     }

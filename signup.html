@@ -163,7 +163,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=2"></script>
+<script src="js/auth.js?v=3"></script>
 
 <script>
 initFirebase();
@@ -171,6 +171,12 @@ const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 let pendingUser = null;
 let pendingEmail = "";
+
+// Where to go after signup (default: home page)
+var redirectAfterSignup = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+function afterSignupUrl() {
+  return redirectAfterSignup + (redirectAfterSignup.indexOf("?") === -1 ? "?welcome=1" : "&welcome=1");
+}
 
 if (isLoggedIn()) window.location.href = "profile.html";
 
@@ -293,7 +299,7 @@ function completeProfile() {
   syncProfileToFirestore();
 
   Swal.fire({ icon: "success", title: "Welcome to NCR Home Tuition!", text: "Your profile is ready", confirmButtonColor: "#0d9e6c" })
-    .then(() => { window.location.href = "index.html?welcome=1"; });
+    .then(() => { window.location.href = afterSignupUrl(); });
 }
 
 // ---- Step navigation ----

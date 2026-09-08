@@ -139,7 +139,7 @@
       <i class="fa-solid fa-bars"></i>
     </button>
     <a href="index.html" class="navbar-brand">
-      <span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+      <span class="brand-icon"><img src="favicon.png" width="30px" height="30px"></span>
       NCR Home Tuition
     </a>
     <div class="collapse navbar-collapse" id="navMenu">
@@ -257,7 +257,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=2"></script>
+<script src="js/auth.js?v=3"></script>
 <script>try{initFirebase();}catch(e){}</script>
 <script src="js/api.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -382,13 +382,9 @@ document.addEventListener("DOMContentLoaded", function() {
 function addToCartFromData() {
   if (!isLoggedIn()) {
     Swal.fire({ icon: "info", title: "Login Required", text: "Please login to add profiles to cart", confirmButtonText: "Login", confirmButtonColor: "#0f766e", showCancelButton: true, cancelButtonText: "Sign Up Free",
-      allowOutsideClick: true, animation: false,
-      didOpen: function() {
-        var container = document.querySelector(".swal2-container");
-        if (container) { container.addEventListener("click", function(e) { if (e.target === container) Swal.close(); }); }
-      }
+      allowOutsideClick: false, allowEscapeKey: false, showCloseButton: false, animation: false
     })
-      .then(function(r) { if (r.isConfirmed) window.location.href = "login.html"; else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html"; });
+      .then(function(r) { if (r.isConfirmed) window.location.href = "login.html" + loginRedirectQuery(); else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html" + loginRedirectQuery(); });
     return;
   }
   var qp = new URLSearchParams(window.location.search);
@@ -412,13 +408,9 @@ function addToCartFromData() {
 function revealContact() {
   if (!isLoggedIn()) {
     Swal.fire({ icon: "info", title: "Login Required", text: "Please login to view contact details", confirmButtonText: "Login", confirmButtonColor: "#0f766e",
-      allowOutsideClick: true, animation: false,
-      didOpen: function() {
-        var container = document.querySelector(".swal2-container");
-        if (container) { container.addEventListener("click", function(e) { if (e.target === container) Swal.close(); }); }
-      }
+      allowOutsideClick: false, allowEscapeKey: false, showCloseButton: false, animation: false
     })
-      .then(r => { if (r.isConfirmed) window.location.href = "login.html"; });
+      .then(r => { if (r.isConfirmed) window.location.href = "login.html" + loginRedirectQuery(); });
     return;
   }
   if (getLeads() <= 0) {

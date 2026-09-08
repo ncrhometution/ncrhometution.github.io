@@ -35,30 +35,59 @@ function clearProfile() {
   localStorage.removeItem("user_purchased_leads");
 }
 function isLoggedIn() { return !!getProfile(); }
+
+// Current page name (for ?redirect= back-navigation after login/signup)
+function currentPageName() {
+  return window.location.pathname.split("/").pop() || "index.html";
+}
+function loginRedirectQuery() {
+  return "?redirect=" + encodeURIComponent(currentPageName());
+}
+
+// STRICT login prompt: cannot be dismissed by outside click, Escape, or the
+// close button. The user must choose Login or Sign Up Free.
 function requireAuth() {
   if (!isLoggedIn()) {
     Swal.fire({
       icon: "info", title: "Login Required", text: "Please login or sign up to continue",
-      confirmButtonText: "Login", confirmButtonColor: "#1a73e8",
+      confirmButtonText: "Login", confirmButtonColor: "#0f766e",
       showCancelButton: true, cancelButtonText: "Sign Up Free",
-      allowOutsideClick: true,
-      animation: false,
-      didOpen: function() {
-        // Ensure backdrop click closes the popup reliably
-        var container = document.querySelector(".swal2-container");
-        if (container) {
-          container.addEventListener("click", function(e) {
-            if (e.target === container) Swal.close();
-          });
-        }
-      }
+      allowOutsideClick: false, allowEscapeKey: false, showCloseButton: false,
+      animation: false
     }).then(function(r) {
-      if (r.isConfirmed) window.location.href = "login.html";
-      else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html";
+      if (r.isConfirmed) window.location.href = "login.html" + loginRedirectQuery();
+      else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html" + loginRedirectQuery();
     });
     return false;
   }
   return true;
+}
+
+// PAGE-LEVEL GATE: call on protected pages. Without login the page content is
+// hidden and a STRICT modal is shown (no outside click / Escape / close button).
+// Returns true when the visitor is logged in, false otherwise.
+function requireLoginPage() {
+  if (isLoggedIn()) return true;
+  Swal.fire({
+    icon: "info", title: "Login Required", text: "Please login or sign up to continue",
+    confirmButtonText: "Login", confirmButtonColor: "#0f766e",
+    showCancelButton: true, cancelButtonText: "Sign Up Free",
+    allowOutsideClick: false, allowEscapeKey: false, showCloseButton: false,
+    animation: false,
+    didOpen: function() {
+      // Hide all page content so nothing is accessible without login
+      var container = document.querySelector(".swal2-container");
+      Array.prototype.forEach.call(document.body.children, function(child) {
+        if (child !== container && child.tagName !== "SCRIPT" && child.tagName !== "STYLE" && child.tagName !== "LINK") {
+          child.style.display = "none";
+        }
+      });
+    }
+  }).then(function(r) {
+    if (r.isConfirmed) window.location.href = "login.html" + loginRedirectQuery();
+    else if (r.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html" + loginRedirectQuery();
+  });
+  return false;
 }
 
 // ---- Welcome toast on reload after login ----

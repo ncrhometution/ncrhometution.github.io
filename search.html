@@ -14,8 +14,10 @@
 <body><nav class="navbar navbar-expand-lg navbar-modern">
   <div class="container">
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu"><i class="fa-solid fa-bars"></i></button>
-    <a href="index.html" class="navbar-brand"><span class="brand-icon"><i class="fa-solid fa-graduation-cap"></i></span>NCR Home Tuition</a>
-    <div class="collapse navbar-collapse" id="navMenu">
+<a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><img src="favicon.png" width="30px" height="30px"></span>
+      NCR Home Tuition
+    </a>    <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
@@ -113,7 +115,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=2"></script>
+<script src="js/auth.js?v=3"></script>
 <script src="js/api.js?v=2"></script>
 <script>try{initFirebase();}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -229,12 +231,8 @@ function toggleCart(btn,id,type,name,city,course,subject,experience,mode,languag
   if(!isLoggedIn()){
     Swal.fire({icon:"info",title:"Login Required",text:"Please login to add profiles to cart",
       confirmButtonText:"Login",confirmButtonColor:"#0f766e",showCancelButton:true,cancelButtonText:"Sign Up Free",
-      allowOutsideClick:true,animation:false,
-      didOpen:function(){
-        var container=document.querySelector(".swal2-container");
-        if(container){container.addEventListener("click",function(e){if(e.target===container)Swal.close();});}
-      }
-    }).then(function(r){if(r.isConfirmed)window.location.href="login.html";else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html";});
+      allowOutsideClick:false,allowEscapeKey:false,showCloseButton:false,animation:false
+    }).then(function(r){if(r.isConfirmed)window.location.href="login.html"+loginRedirectQuery();else if(r.dismiss===Swal.DismissReason.cancel)window.location.href="signup.html"+loginRedirectQuery();});
     return;
   }
   if(isInCart(id,type)){

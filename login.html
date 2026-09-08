@@ -97,11 +97,17 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=2"></script>
+<script src="js/auth.js?v=3"></script>
 <script>
 initFirebase();
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+// Where to go after login (default: home page)
+var redirectAfterLogin = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+function afterLoginUrl() {
+  return redirectAfterLogin + (redirectAfterLogin.indexOf("?") === -1 ? "?welcome=1" : "&welcome=1");
+}
 
 // Restore session from Firestore on page load
 auth.onAuthStateChanged(function(user) {
@@ -158,14 +164,14 @@ function loginWithGoogle() {
       if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
       syncProfileToFirestore();
       Swal.close();
-      Swal.fire({ icon: "success", title: "Welcome, " + (profile.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+      Swal.fire({ icon: "success", title: "Welcome, " + (profile.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     }).catch(function() {
       // Firestore failed - save basic Auth profile only
       var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: u.emailVerified, leads: 0 };
       saveProfile(profile);
       syncProfileToFirestore();
       Swal.close();
-      Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+      Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     });
   }).catch(function(err) {
     Swal.close();
@@ -215,13 +221,13 @@ function loginWithEmail() {
       if (ex.cart) saveCart(ex.cart);
       if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
       syncProfileToFirestore();
-      Swal.fire({ icon: "success", title: "Welcome back, " + (profile.displayName || "") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+      Swal.fire({ icon: "success", title: "Welcome back, " + (profile.displayName || "") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     }).catch(function() {
       // Firestore failed - save basic Auth profile only
       var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: true, leads: 0 };
       saveProfile(profile);
       syncProfileToFirestore();
-      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = "index.html?welcome=1"; });
+      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     });
   }).catch(function(err) {
     Swal.close();
