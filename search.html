@@ -212,11 +212,11 @@ function renderResults(items){
       (purchased?'<span class="tc-badge purchased-badge"><i class="fa-solid fa-circle-check"></i> Purchased</span>':'')+
       '<div class="tc-header"><div class="tc-avatar '+cardType+'">'+initial+'</div>'+
       '<div style="min-width:0"><div class="tc-name">'+(item.name||"")+'</div>'+
-      '<div class="tc-location"><i class="fa-solid fa-location-dot"></i> '+(item.city||"N/A")+'</div></div></div>'+
+      '<div class="tc-location"><i class="fa-solid fa-location-dot"></i> '+(item.address || item.city || "N/A")+'</div></div></div>'+
       '<div class="tc-body">'+
         '<div class="tc-info"><i class="fa-solid fa-book"></i> '+(item.course||"N/A")+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-pen"></i> '+(item.subject||"N/A")+'</div>'+
-        '<div class="tc-info"><i class="fa-solid fa-briefcase"></i> '+(item.experience_years!=null?item.experience_years+" yrs":(item.experience||"N/A"))+'</div>'+
+        '<div class="tc-info"><i class="fa-solid fa-city"></i> '+(item.city||"N/A")+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-laptop"></i> '+(item.preferred_mode||"N/A")+'</div>'+
         '<div class="tc-info"><i class="fa-solid fa-language"></i> '+(item.language||"N/A")+'</div>'+
         (item.payment!=null?'<div class="tc-info"><i class="fa-solid fa-indian-rupee-sign"></i> ₹'+item.payment+(item.payment_type?" / "+item.payment_type:"")+'</div>':'')+
