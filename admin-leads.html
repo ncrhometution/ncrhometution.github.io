@@ -452,6 +452,7 @@ function openEdit(id) {
       '<label style="font-weight:600;display:block;margin:6px 0 4px">Experience (years)</label><input id="f_exp" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.experience_years != null ? lead.experience_years : "") + '">' +
       '<label style="font-weight:600;display:block;margin:6px 0 4px">Fee (₹)</label><input id="f_payment" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.payment != null ? lead.payment : "") + '">' +
       '<label style="font-weight:600;display:block;margin:6px 0 4px">Mode</label><select id="f_mode" class="swal2-select" style="width:100%;height:38px;font-size:13px"><option value="online">Online</option><option value="offline">Offline</option></select>' +
+      '<label style="font-weight:600;display:block;margin:6px 0 4px">Preferred Gender</label><select id="f_gender" class="swal2-select" style="width:100%;height:38px;font-size:13px"><option value="">Any</option><option value="Male">Male</option><option value="Female">Female</option><option value="Any">Any</option></select>' +
       '<label style="font-weight:600;display:block;margin:6px 0 4px">Language</label><input id="f_lang" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.language || "") + '">' +
       '<label style="font-weight:600;display:block;margin:6px 0 4px">City</label><input id="f_city" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.city || "") + '">' +
       '<label style="font-weight:600;display:block;margin:6px 0 4px">Country</label><input id="f_country" class="swal2-input" style="width:100%;height:38px;font-size:13px" value="' + esc(lead.country || "") + '">' +
@@ -464,6 +465,7 @@ function openEdit(id) {
     focusConfirm: false,
     didOpen: function() {
       document.getElementById("f_mode").value = lead.preferred_mode || "offline";
+      document.getElementById("f_gender").value = lead.Preferred_Gender || lead.gender || "";
       document.getElementById("f_status").value = lead.status || "active";
     },
     preConfirm: function() {
@@ -475,6 +477,7 @@ function openEdit(id) {
         subject: document.getElementById("f_subject").value.trim(),
         qualification: document.getElementById("f_qual").value.trim(),
         preferred_mode: document.getElementById("f_mode").value,
+        Preferred_Gender: document.getElementById("f_gender").value || "Any",
         language: document.getElementById("f_lang").value.trim(),
         city: document.getElementById("f_city").value.trim(),
         country: document.getElementById("f_country").value.trim(),
