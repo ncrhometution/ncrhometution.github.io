@@ -195,8 +195,9 @@ function openAddLead() {
           '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Qualification</label><input id="alQual" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. B.Sc, M.Ed"></div>' +
           '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Experience (yrs)</label><input id="alExp" type="number" class="swal2-input" style="width:100%;height:38px;font-size:13px" placeholder="e.g. 3" min="0"></div>' +
         '</div>' +
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">' +
           '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Mode</label><select id="alMode" class="swal2-input" style="width:100%;height:38px;font-size:13px"><option value="online">Online</option><option value="offline">Offline</option></select></div>' +
+          '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Preferred Gender</label><select id="alGender" class="swal2-input" style="width:100%;height:38px;font-size:13px"><option value="">Any</option><option value="Male">Male</option><option value="Female">Female</option><option value="Any">Any</option></select></div>' +
           '<div><label style="font-size:11px;font-weight:700;color:var(--text-muted)">Language</label><select id="alLang" class="swal2-input" style="width:100%;height:38px;font-size:13px"><option>English</option><option>Hindi</option><option>Tamil</option><option>Telugu</option><option>Kannada</option><option>Malayalam</option><option>Marathi</option><option>Bengali</option><option>Gujarati</option><option>Punjabi</option></select></div>' +
         '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
@@ -225,6 +226,7 @@ function openAddLead() {
         qualification: document.getElementById("alQual").value.trim() || undefined,
         experience_years: parseFloat(document.getElementById("alExp").value) || undefined,
         preferred_mode: document.getElementById("alMode").value,
+        Preferred_Gender: document.getElementById("alGender").value || "Any",
         language: document.getElementById("alLang").value,
         payment: parseFloat(document.getElementById("alPay").value) || undefined,
         payment_type: document.getElementById("alPayType").value
@@ -299,6 +301,7 @@ function normalizeLeadRow(row) {
     payment: pickNum("payment", "Payment", "fee", "Fee", "Fees", "expected fee", "hourly fee", "amount"),
     payment_type: pick("payment_type", "Payment Type", "fee type", "Fee Type") || "per_hour",
     preferred_mode: pick("preferred_mode", "mode", "Mode", "Preferred Mode", "teaching mode") || "online",
+    Preferred_Gender: pick("Preferred_Gender", "preferred_gender", "gender", "Gender", "Preferred Gender") || "Any",
     language: pick("language", "Language", "LANGUAGE") || "English",
     country: pick("country", "Country", "COUNTRY") || "India"
   };
