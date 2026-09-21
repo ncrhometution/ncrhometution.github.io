@@ -97,7 +97,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=5"></script>
+<script src="js/auth.js?v=6"></script>
 <script>
 initFirebase();
 const auth = firebase.auth();
@@ -149,6 +149,16 @@ auth.onAuthStateChanged(function(user) {
   }
 });
 
+// Record a login event so the admin panel can show who logged in today
+function recordLoginEvent(u, method) {
+  try {
+    fetch("https://ncrhomr.vercel.app/login-event", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid: u.uid, email: u.email, display_name: u.displayName || "", method: method })
+    }).catch(function() {});
+  } catch(e) {}
+}
+
 function loginWithGoogle() {
   Swal.fire({ title: "Connecting to Google...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
   auth.signInWithPopup(googleProvider).then(function(result) {
@@ -170,6 +180,7 @@ function loginWithGoogle() {
       if (ex.cart) saveCart(ex.cart);
       if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
       syncProfileToFirestore();
+      recordLoginEvent(u, "google");
       Swal.close();
       Swal.fire({ icon: "success", title: "Welcome, " + (profile.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     }).catch(function() {
@@ -177,6 +188,7 @@ function loginWithGoogle() {
       var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: u.emailVerified, leads: 0 };
       saveProfile(profile);
       syncProfileToFirestore();
+      recordLoginEvent(u, "google");
       Swal.close();
       Swal.fire({ icon: "success", title: "Welcome, " + (u.displayName || "there") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     });
@@ -228,12 +240,14 @@ function loginWithEmail() {
       if (ex.cart) saveCart(ex.cart);
       if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
       syncProfileToFirestore();
+      recordLoginEvent(u, "email");
       Swal.fire({ icon: "success", title: "Welcome back, " + (profile.displayName || "") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     }).catch(function() {
       // Firestore failed - save basic Auth profile only
       var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: true, leads: 0 };
       saveProfile(profile);
       syncProfileToFirestore();
+      recordLoginEvent(u, "email");
       Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
     });
   }).catch(function(err) {

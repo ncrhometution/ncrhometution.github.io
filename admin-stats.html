@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site Stats | NCR Home Tuition</title>
+  <link rel="icon" type="image/png" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .admin-page{padding:40px 0 60px;background:var(--bg);min-height:100vh}
+    .admin-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .admin-top h4{font-weight:800;margin:0}
+    .admin-top p{font-size:13px;color:var(--text-muted);margin:2px 0 0}
+    .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:var(--bg-white);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border-light);box-shadow:var(--shadow-sm)}
+    .stat-card .sc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+    .stat-card .sc-value{font-size:24px;font-weight:800}
+    .stat-card .sc-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .admin-card{background:var(--bg-white);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);border:1px solid var(--border-light);overflow:hidden;margin-bottom:24px}
+    .admin-card .card-head{padding:18px 24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .admin-card .card-head h6{font-weight:700;margin:0}
+    .table-wrap{overflow-x:auto}
+    table.admin-table{width:100%;font-size:13px;border-collapse:collapse}
+    .admin-table th{background:var(--bg);padding:12px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);white-space:nowrap}
+    .admin-table td{padding:12px 16px;border-top:1px solid var(--border-light);vertical-align:middle}
+    .admin-table tr:hover td{background:#f8f9fa}
+    .badge-status{padding:4px 12px;border-radius:var(--radius-full);font-size:11px;font-weight:700;text-transform:uppercase}
+    .badge-status.login{background:#e8f5e9;color:#1b5e20}
+    .badge-status.signup{background:#e3f2fd;color:#0d47a1}
+    .badge-status.google{background:#fff3e0;color:#e65100}
+    .badge-status.email{background:#ede7f6;color:#4527a0}
+    .btn-logout-admin{height:38px;padding:0 16px;border-radius:var(--radius-md);border:1.5px solid var(--danger);background:transparent;color:var(--danger);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition)}
+    .btn-logout-admin:hover{background:var(--danger);color:#fff}
+    .empty-state{text-align:center;padding:40px 24px;color:var(--text-muted)}
+    .empty-state i{font-size:40px;display:block;margin-bottom:10px;color:var(--border)}
+    .trend-bar{display:flex;align-items:flex-end;gap:8px;padding:20px 24px;min-height:120px}
+    .trend-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .trend-col .bar{width:100%;max-width:46px;background:linear-gradient(180deg,var(--primary),#14b8a6);border-radius:6px 6px 0 0;min-height:4px}
+    .trend-col .bar-label{font-size:11px;color:var(--text-muted);font-weight:600}
+    .trend-col .bar-val{font-size:12px;font-weight:700;color:var(--text-primary)}
+    @media(max-width:991px){.stat-cards{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:576px){.stat-cards{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-modern">
+  <div class="container">
+    <a href="index.html" class="navbar-brand">
+      <span class="brand-icon"><img src="favicon.png" width="30px" height="30px"></span>
+      NCR Home Tuition
+    </a>
+    <div class="d-flex align-items-center gap-2">
+      <a href="admin-leads.html" class="btn-logout-admin" style="border-color:var(--primary);color:var(--primary);text-decoration:none"><i class="fa-solid fa-users-gear"></i> Leads</a>
+      <a href="admin-payments.html" class="btn-logout-admin" style="border-color:var(--primary);color:var(--primary);text-decoration:none"><i class="fa-solid fa-receipt"></i> Payments</a>
+      <span style="font-size:12px;color:var(--text-muted);font-weight:600"><i class="fa-solid fa-shield-halved" style="color:var(--accent)"></i> Admin</span>
+      <button class="btn-logout-admin" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </div>
+</nav>
+
+<section class="admin-page">
+  <div class="container">
+    <div class="admin-top">
+      <div>
+        <h4><i class="fa-solid fa-chart-line" style="color:var(--accent)"></i> Site Stats</h4>
+        <p>Website visits and who logged in today (IST)</p>
+      </div>
+      <div class="filter-bar" style="display:flex;gap:10px;flex-wrap:wrap">
+        <select id="daysSel" onchange="loadStats()" style="height:38px;border-radius:var(--radius-md);font-size:13px;border:1.5px solid var(--border)">
+          <option value="1">Today</option>
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+        <button class="btn btn-accent-custom btn-sm" onclick="loadStats()" style="height:38px;padding:0 16px"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="sc-icon" style="background:var(--primary-light);color:var(--primary)"><i class="fa-solid fa-eye"></i></div>
+        <div class="sc-value" id="statVisitsToday">-</div>
+        <div class="sc-label">Visits Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#e8f5e9;color:var(--success)"><i class="fa-solid fa-user-group"></i></div>
+        <div class="sc-value" id="statUniqueToday">-</div>
+        <div class="sc-label">Unique Visitors Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#fff3e0;color:var(--accent)"><i class="fa-solid fa-right-to-bracket"></i></div>
+        <div class="sc-value" id="statLoginsToday">-</div>
+        <div class="sc-label">Logins Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#ede7f6;color:#4527a0"><i class="fa-solid fa-calendar-days"></i></div>
+        <div class="sc-value" id="statVisitsPeriod">-</div>
+        <div class="sc-label" id="statVisitsPeriodLabel">Visits (7 days)</div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-head">
+        <h6><i class="fa-solid fa-calendar-week" style="color:var(--primary)"></i> Daily Visits Trend</h6>
+      </div>
+      <div class="trend-bar" id="trendBar">
+        <div class="empty-state" style="padding:20px"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="admin-card">
+          <div class="card-head">
+            <h6><i class="fa-solid fa-file-lines" style="color:var(--primary)"></i> Visits by Page (Today)</h6>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr><th>Page</th><th>Visits</th></tr>
+              </thead>
+              <tbody id="byPageBody">
+                <tr><td colspan="2"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="admin-card">
+          <div class="card-head">
+            <h6><i class="fa-solid fa-user-clock" style="color:var(--accent)"></i> Who Logged In Today</h6>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr><th>User</th><th>Method</th><th>Time</th></tr>
+              </thead>
+              <tbody id="loginsBody">
+                <tr><td colspan="3"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom">&copy; 2026 NCR Home Tuition. All rights reserved.</div></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/api.js?v=3"></script>
+<script>
+if (!isAdminLoggedIn()) {
+  window.location.href = "admin-login-page.html";
+}
+
+function adminLogout() {
+  clearAdminToken();
+  window.location.href = "admin-login-page.html";
+}
+
+function fmtTime(iso) {
+  if (!iso) return "-";
+  try {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+  } catch(e) { return iso; }
+}
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function loadStats() {
+  var days = parseInt(document.getElementById("daysSel").value || "1", 10);
+  document.getElementById("statVisitsPeriodLabel").textContent = "Visits (" + days + " days)";
+  getAdminStats(days)
+    .then(function(res) {
+      var v = res.visits || {};
+      var l = res.logins || {};
+      document.getElementById("statVisitsToday").textContent = v.today != null ? v.today : "-";
+      document.getElementById("statUniqueToday").textContent = v.unique_today != null ? v.unique_today : "-";
+      document.getElementById("statLoginsToday").textContent = l.today != null ? l.today : "-";
+      document.getElementById("statVisitsPeriod").textContent = v.total != null ? v.total : "-";
+
+      // Trend bars
+      var trend = document.getElementById("trendBar");
+      var perDay = v.per_day || [];
+      if (!perDay.length) {
+        trend.innerHTML = '<div class="empty-state" style="padding:20px"><i class="fa-solid fa-chart-simple"></i> No visit data yet</div>';
+      } else {
+        var max = Math.max.apply(null, perDay.map(function(d) { return d.count; })) || 1;
+        trend.innerHTML = perDay.map(function(d) {
+          var h = Math.max(8, Math.round((d.count / max) * 80));
+          return '<div class="trend-col"><div class="bar" style="height:' + h + 'px"></div><div class="bar-val">' + d.count + '</div><div class="bar-label">' + esc(d.date.slice(5)) + '</div></div>';
+        }).join("");
+      }
+
+      // By page
+      var byPage = v.by_page || [];
+      var bpBody = document.getElementById("byPageBody");
+      if (!byPage.length) {
+        bpBody.innerHTML = '<tr><td colspan="2"><div class="empty-state"><i class="fa-solid fa-eye-slash"></i> No visits recorded today yet</div></td></tr>';
+      } else {
+        bpBody.innerHTML = byPage.map(function(p) {
+          return '<tr><td>' + esc(p.page) + '</td><td><b>' + p.count + '</b></td></tr>';
+        }).join("");
+      }
+
+      // Logins today
+      var logins = l.today_list || [];
+      var lgBody = document.getElementById("loginsBody");
+      if (!logins.length) {
+        lgBody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><i class="fa-solid fa-user-slash"></i> No logins recorded today yet</div></td></tr>';
+      } else {
+        lgBody.innerHTML = logins.map(function(x) {
+          var name = x.display_name || x.email || "Unknown";
+          var method = (x.method || "email").toLowerCase();
+          var badge = method === "signup" ? "signup" : (method === "google" ? "google" : "email");
+          var label = method === "signup" ? "Sign Up" : (method === "google" ? "Google" : "Email");
+          return '<tr><td><div style="font-weight:600">' + esc(name) + '</div><div style="font-size:11px;color:var(--text-muted)">' + esc(x.email || "") + '</div></td>' +
+            '<td><span class="badge-status ' + badge + '">' + label + '</span></td>' +
+            '<td style="white-space:nowrap">' + fmtTime(x.logged_in_at) + '</td></tr>';
+        }).join("");
+      }
+    })
+    .catch(function(err) {
+      Swal.fire({ icon: "error", title: "Failed to load stats", text: getErrorMessage(err), confirmButtonColor: "#dc3545" });
+    });
+}
+
+loadStats();
+</script>
+</body>
+</html>

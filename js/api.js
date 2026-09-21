@@ -32,7 +32,10 @@ var APIS = {
   adminLeadStatus: function(leadType, id) { return API_BASE + "admin/leads/" + encodeURIComponent(leadType) + "/" + encodeURIComponent(id) + "/status"; },
   paymentById:     function(id) { return API_BASE + "payments/" + encodeURIComponent(id); },
   paymentByOrder:  function(id) { return API_BASE + "payments/order/" + encodeURIComponent(id); },
-  paymentByRzp:    function(id) { return API_BASE + "payments/razorpay/" + encodeURIComponent(id); }
+  paymentByRzp:    function(id) { return API_BASE + "payments/razorpay/" + encodeURIComponent(id); },
+  visit:           API_BASE + "visit",
+  loginEvent:      API_BASE + "login-event",
+  adminStats:      function(days) { return API_BASE + "admin/stats?days=" + days; }
 };
 
 // ---- Error type ----
@@ -299,4 +302,32 @@ function getLeadsLocal() {
 }
 function addLeadsLocal(count) {
   try { localStorage.setItem("user_leads", String(getLeadsLocal() + count)); } catch (e) {}
+}
+
+// ---- Visit tracking (fire-and-forget) ----
+function trackPageVisit(page, referrer, userId) {
+  try {
+    var payload = { page: page || "index.html", referrer: referrer || "" };
+    if (userId) payload.user_id = userId;
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(APIS.visit, new Blob([JSON.stringify(payload)], { type: "application/json" }));
+    } else {
+      fetch(APIS.visit, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }).catch(function() {});
+    }
+  } catch(e) {}
+}
+
+// ---- Login event (fire-and-forget) ----
+function recordLoginEventApi(data) {
+  try {
+    fetch(APIS.loginEvent, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data || {})
+    }).catch(function() {});
+  } catch(e) {}
+}
+
+// ---- Admin stats ----
+function getAdminStats(days) {
+  return api(APIS.adminStats(days || 1), { admin: true });
 }

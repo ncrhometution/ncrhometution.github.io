@@ -163,7 +163,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=5"></script>
+<script src="js/auth.js?v=6"></script>
 
 <script>
 initFirebase();
@@ -304,6 +304,14 @@ function completeProfile() {
   saveProfile(profile);
   setLeads(0);
   syncProfileToFirestore();
+
+  // Record signup so the admin panel can show who joined today
+  try {
+    fetch("https://ncrhomr.vercel.app/login-event", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid: profile.uid || "", email: profile.email || "", display_name: name, method: "signup" })
+    }).catch(function() {});
+  } catch(e) {}
 
   Swal.fire({ icon: "success", title: "Welcome to NCR Home Tuition!", text: "Your profile is ready", confirmButtonColor: "#0d9e6c" })
     .then(() => { window.location.href = afterSignupUrl(); });

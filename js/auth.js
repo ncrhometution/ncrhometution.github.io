@@ -99,6 +99,29 @@ function requireLoginPage() {
   return false;
 }
 
+// ---- Visit tracking (fire-and-forget, never blocks the page) ----
+// Sends one POST /visit per page load so the admin panel can show
+// website visits and which pages are popular.
+function trackVisit() {
+  try {
+    var payload = { page: currentPageName(), referrer: document.referrer || "" };
+    var profile = getProfile();
+    if (profile && profile.uid) payload.user_id = profile.uid;
+    var url = "https://ncrhomr.vercel.app/visit";
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+      navigator.sendBeacon(url, blob);
+    } else {
+      fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }).catch(function() {});
+    }
+  } catch(e) {}
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", trackVisit);
+} else {
+  trackVisit();
+}
+
 // ---- Welcome toast on reload after login ----
 function checkWelcomeToast() {
   var params = new URLSearchParams(window.location.search);
