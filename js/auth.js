@@ -40,8 +40,13 @@ function isLoggedIn() { return !!getProfile(); }
 function currentPageName() {
   return window.location.pathname.split("/").pop() || "index.html";
 }
+// Full back-navigation target: page name + query string (e.g. data.html?id=TECH255&type=tutor),
+// so after login/signup the user returns to the SAME lead/page instead of a blank page.
+// Any existing redirect= param is stripped to avoid nested redirects.
 function loginRedirectQuery() {
-  return "?redirect=" + encodeURIComponent(currentPageName());
+  var page = currentPageName();
+  var q = (window.location.search || "").replace(/[?&]redirect=[^&]*/g, "");
+  return "?redirect=" + encodeURIComponent(page + q);
 }
 
 // STRICT login prompt: cannot be dismissed by outside click, Escape, or the
