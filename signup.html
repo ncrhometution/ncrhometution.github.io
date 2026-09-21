@@ -163,7 +163,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=4"></script>
+<script src="js/auth.js?v=5"></script>
 
 <script>
 initFirebase();
@@ -172,8 +172,15 @@ const provider = new firebase.auth.GoogleAuthProvider();
 let pendingUser = null;
 let pendingEmail = "";
 
-// Where to go after signup (default: home page)
-var redirectAfterSignup = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+// Where to go after signup: 1) stage saved in localStorage (auth_return_to) by the
+// page the user was on, 2) ?redirect= URL param, 3) home page.
+var redirectAfterSignup = (function() {
+  try {
+    var saved = localStorage.getItem("auth_return_to");
+    if (saved) { localStorage.removeItem("auth_return_to"); return saved; }
+  } catch(e) {}
+  return new URLSearchParams(window.location.search).get("redirect") || "index.html";
+})();
 function afterSignupUrl() {
   return redirectAfterSignup + (redirectAfterSignup.indexOf("?") === -1 ? "?welcome=1" : "&welcome=1");
 }

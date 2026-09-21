@@ -43,10 +43,14 @@ function currentPageName() {
 // Full back-navigation target: page name + query string (e.g. data.html?id=TECH255&type=tutor),
 // so after login/signup the user returns to the SAME lead/page instead of a blank page.
 // Any existing redirect= param is stripped to avoid nested redirects.
+// ALSO stores the target in localStorage (auth_return_to) so the stage survives even if
+// the URL param is lost (redirects, popups, direct login.html visits).
 function loginRedirectQuery() {
   var page = currentPageName();
   var q = (window.location.search || "").replace(/[?&]redirect=[^&]*/g, "");
-  return "?redirect=" + encodeURIComponent(page + q);
+  var target = page + q;
+  try { localStorage.setItem("auth_return_to", target); } catch(e) {}
+  return "?redirect=" + encodeURIComponent(target);
 }
 
 // STRICT login prompt: cannot be dismissed by outside click, Escape, or the
@@ -485,9 +489,9 @@ function renderAuthButtons(containerId) {
           '<i class="fa-solid fa-chevron-down dd-caret"></i>' +
         '</button>' +
         '<ul class="dropdown-menu dropdown-menu-end auth-menu">' +
-          '<li><a class="dropdown-item" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>' +
+          '<li><a class="dropdown-item" href="login.html' + loginRedirectQuery() + '"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>' +
           '<li><hr class="dropdown-divider"></li>' +
-          '<li><a class="dropdown-item" href="signup.html"><i class="fa-solid fa-user-plus"></i> Sign Up Free</a></li>' +
+          '<li><a class="dropdown-item" href="signup.html' + loginRedirectQuery() + '"><i class="fa-solid fa-user-plus"></i> Sign Up Free</a></li>' +
         '</ul>' +
       '</div>';
   }
@@ -503,6 +507,7 @@ function logoutUser() {
       if (typeof firebase !== 'undefined' && firebase.auth) firebase.auth().signOut();
       clearProfile();
       localStorage.removeItem("admin_token");
+      try { localStorage.removeItem("auth_return_to"); } catch(e) {}
       Swal.fire({ icon: "success", title: "Logged Out", timer: 1000, showConfirmButton: false });
       setTimeout(function() { window.location.href = "index.html"; }, 1000);
     }

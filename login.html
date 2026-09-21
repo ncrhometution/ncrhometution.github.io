@@ -97,14 +97,21 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=4"></script>
+<script src="js/auth.js?v=5"></script>
 <script>
 initFirebase();
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-// Where to go after login (default: home page)
-var redirectAfterLogin = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+// Where to go after login: 1) stage saved in localStorage (auth_return_to) by the
+// page the user was on, 2) ?redirect= URL param, 3) home page.
+var redirectAfterLogin = (function() {
+  try {
+    var saved = localStorage.getItem("auth_return_to");
+    if (saved) { localStorage.removeItem("auth_return_to"); return saved; }
+  } catch(e) {}
+  return new URLSearchParams(window.location.search).get("redirect") || "index.html";
+})();
 function afterLoginUrl() {
   return redirectAfterLogin + (redirectAfterLogin.indexOf("?") === -1 ? "?welcome=1" : "&welcome=1");
 }
