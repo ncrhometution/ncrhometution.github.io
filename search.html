@@ -41,7 +41,14 @@
 </div>
 <style>
     .search-page{padding:30px 0 60px;background:var(--bg);min-height:calc(100vh - 64px)}
-    .filter-panel{background:var(--bg-white);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--border-light);position:sticky;top:80px}
+    .filter-panel{background:transparent;padding:0}
+    #filterModal .modal-content{border:none;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg)}
+    #filterModal .modal-header{border-bottom:1px solid var(--border-light);padding:16px 24px}
+    #filterModal .modal-body{padding:20px 24px}
+    #filterModal .modal-footer{border-top:1px solid var(--border-light);padding:14px 24px}
+    .btn-open-filter{display:flex;align-items:center;gap:6px;height:38px;padding:0 16px;border:1.5px solid var(--border);background:var(--bg-white);color:var(--text-primary);border-radius:var(--radius-md);font-weight:600;font-size:13px;cursor:pointer;transition:var(--transition)}
+    .btn-open-filter:hover{border-color:var(--primary);color:var(--primary)}
+    .filter-count-badge{background:var(--primary);color:#fff;border-radius:var(--radius-full);font-size:10px;font-weight:700;padding:1px 7px;min-width:18px}
     .filter-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
     .result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
     .result-count{font-size:14px;color:var(--text-secondary)}
@@ -81,31 +88,47 @@
     .btn-clear-filter:hover{border-color:var(--danger);color:var(--danger)}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .fade-in{animation:fadeUp 0.4s ease forwards}
-    @media(max-width:768px){.filter-panel{position:static;margin-bottom:20px}}
+    @media(max-width:576px){#filterModal .modal-footer{flex-direction:column}#filterModal .modal-footer .btn-apply-filter,#filterModal .modal-footer .btn-clear-filter{width:100%}}
 </style>
 <section class="search-page">
   <div class="container">
     <div class="row g-4">
-      <div class="col-lg-3 col-md-4">
-        <div class="filter-panel">
-          <h6 style="font-weight:700;margin-bottom:16px;font-size:15px"><i class="fa-solid fa-sliders"></i> Refine Search</h6>
-          <div class="mb-3"><div class="filter-title">City</div><select id="filterCity" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">All Cities</option></select></div>
-          <div class="mb-3"><div class="filter-title">Subject</div><input id="filterSubject" class="form-control" placeholder="e.g. Mathematics" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"></div>
-          <div class="mb-3"><div class="filter-title">Experience</div><select id="filterExperience" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">Any Experience</option><option value="0-2">0-2 years</option><option value="2-5">2-5 years</option><option value="5-10">5-10 years</option><option value="10+">10+ years</option></select></div>
-          <div class="mb-3"><div class="filter-title">Payment Range</div><div class="d-flex gap-2"><input id="filterPayMin" type="number" class="form-control" placeholder="Min" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><input id="filterPayMax" type="number" class="form-control" placeholder="Max" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"></div></div>
-          <div class="mb-3"><div class="filter-title">Sort By</div><select id="filterSort" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">Default</option><option value="payment_low">Price: Low to High</option><option value="payment_high">Price: High to Low</option><option value="experience_high">Experience: Most</option></select></div>
-          <button class="btn-apply-filter" onclick="applyFilters()"><i class="fa-solid fa-search"></i> Apply Filters</button>
-          <button class="btn-clear-filter" onclick="clearFilters()"><i class="fa-solid fa-xmark"></i> Clear All</button>
-        </div>
-      </div>
-      <div class="col-lg-9 col-md-8">
+      <div class="col-12">
         <div class="result-header">
           <div><h5 style="font-weight:700;margin:0" id="resultTitle">Search Results</h5><div class="result-count" id="resultCount"></div></div>
-          <a href="cart.html" class="btn btn-accent-custom btn-sm" style="display:flex;align-items:center;gap:6px;text-decoration:none">
-            <i class="fa-solid fa-shopping-cart"></i> View Cart <span id="headerCartCount" style="background:rgba(255,255,255,0.3);padding:2px 8px;border-radius:10px;font-size:11px"></span>
-          </a>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <button type="button" class="btn-open-filter" data-bs-toggle="modal" data-bs-target="#filterModal">
+              <i class="fa-solid fa-sliders"></i> Filters <span class="filter-count-badge" id="filterBadge" style="display:none">0</span>
+            </button>
+            <a href="cart.html" class="btn btn-accent-custom btn-sm" style="display:flex;align-items:center;gap:6px;text-decoration:none">
+              <i class="fa-solid fa-shopping-cart"></i> View Cart <span id="headerCartCount" style="background:rgba(255,255,255,0.3);padding:2px 8px;border-radius:10px;font-size:11px"></span>
+            </a>
+          </div>
         </div>
         <div class="row g-4" id="results"></div>
+      </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="filterModalLabel" style="font-weight:700"><i class="fa-solid fa-sliders"></i> Refine Search</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3"><div class="filter-title">City</div><select id="filterCity" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">All Cities</option></select></div>
+            <div class="mb-3"><div class="filter-title">Subject</div><input id="filterSubject" class="form-control" placeholder="e.g. Mathematics" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"></div>
+            <div class="mb-3"><div class="filter-title">Experience</div><select id="filterExperience" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">Any Experience</option><option value="0-2">0-2 years</option><option value="2-5">2-5 years</option><option value="5-10">5-10 years</option><option value="10+">10+ years</option></select></div>
+            <div class="mb-3"><div class="filter-title">Payment Range</div><div class="d-flex gap-2"><input id="filterPayMin" type="number" class="form-control" placeholder="Min" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><input id="filterPayMax" type="number" class="form-control" placeholder="Max" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"></div></div>
+            <div class="mb-0"><div class="filter-title">Sort By</div><select id="filterSort" class="form-select" style="height:38px;font-size:13px;border-radius:var(--radius-sm)"><option value="">Default</option><option value="payment_low">Price: Low to High</option><option value="payment_high">Price: High to Low</option><option value="experience_high">Experience: Most</option></select></div>
+          </div>
+          <div class="modal-footer" style="display:block">
+            <button class="btn-apply-filter" onclick="applyFilters()"><i class="fa-solid fa-search"></i> Apply Filters</button>
+            <button class="btn-clear-filter" onclick="clearFilters()"><i class="fa-solid fa-xmark"></i> Clear All</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -147,6 +170,7 @@ fetch("https://ncrhomr.vercel.app/cities").then(function(r){return r.json()}).th
   if(d.cities) d.cities.forEach(function(c){
     if(c && c.trim()!==""){var o=document.createElement("option");o.value=c;o.textContent=c;if(c===searchCity)o.selected=true;sel.appendChild(o);}
   });
+  updateFilterBadge();
 }).catch(function(e){console.error("Error loading cities:",e);});
 
 document.getElementById("typeSelect").value = searchType;
@@ -291,7 +315,22 @@ function applyFilters(){
   if(searchPayMin)p.append("payment_min",searchPayMin);if(searchPayMax)p.append("payment_max",searchPayMax);
   if(searchSort)p.append("sort",searchSort);
   window.history.replaceState({},"","search.html?"+p.toString());
+  updateFilterBadge();
   updateTitle();loadResults();
+  var mEl=document.getElementById("filterModal");
+  var mInst=bootstrap.Modal.getInstance(mEl);
+  if(mInst) mInst.hide();
+}
+function updateFilterBadge(){
+  var n=0;
+  if(document.getElementById("filterCity").value)n++;
+  if(document.getElementById("filterSubject").value.trim())n++;
+  if(document.getElementById("filterExperience").value)n++;
+  if(document.getElementById("filterPayMin").value||document.getElementById("filterPayMax").value)n++;
+  if(document.getElementById("filterSort").value)n++;
+  var b=document.getElementById("filterBadge");
+  b.textContent=n;
+  b.style.display=n>0?"inline-block":"none";
 }
 function clearFilters(){
   document.getElementById("filterCity").value="";document.getElementById("filterSubject").value="";
@@ -299,7 +338,7 @@ function clearFilters(){
   document.getElementById("filterPayMax").value="";document.getElementById("filterSort").value="";
   applyFilters();
 }
-updateTitle();loadResults();
+updateTitle();updateFilterBadge();loadResults();
 </script>
 </body>
 </html>
