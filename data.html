@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("address").textContent = data.address || data.city || "N/A";
     document.getElementById("pincode").textContent = data.pincode || "N/A";
     document.getElementById("joinedDate").textContent = formatJoinedDate(data.joined_date);
-    document.getElementById("gender").textContent = data.gender || "Any";
+    document.getElementById("gender").textContent = data.Preferred_Gender || "Any";
     document.getElementById("preferredTime").textContent = data.preferred_time || "Flexible";
     document.getElementById("hourlyFee").textContent = data.hourly_fee || "Negotiable";
     document.getElementById("description").textContent = (String(data.type||type).toLowerCase() === "student" ? "Wanted" : "Available") + " tutor for " + (data.course||"") + ", " + (data.subject||"");
