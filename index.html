@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -40,6 +40,14 @@
     </div>
   </div>
 </nav>
+
+<!-- Quick CTA Buttons -->
+<div class="container">
+  <div class="cta-btn-row">
+    <a href="student-register.html" class="btn-banner btn-banner-teal"><i class="fa-solid fa-paper-plane"></i> Post Tuition Need — Free</a>
+    <a href="tutor-register.html" class="btn-banner btn-banner-amber"><i class="fa-solid fa-user-plus"></i> Join as Teacher — Free</a>
+  </div>
+</div>
 
 <!-- Search First -->
 <section class="search-top">
@@ -104,7 +112,7 @@
     <div class="audience-cards mt-2">
       <div class="audience-card student animate-in">
         <div class="audience-icon"><i class="fa-solid fa-user-graduate"></i></div>
-        <h3>Looking for Tutors?</h3>
+        <h3>Looking for a Home Tution?</h3>
         <p>Tell us what you need and get matched with verified tutors near you. First demo class is always free.</p>
         <a href="student-register.html" class="btn btn-primary-custom" style="width:100%;justify-content:center">
           <i class="fa-solid fa-magnifying-glass"></i> I am a Student
@@ -165,6 +173,7 @@
 </section>
 
 <!-- Why Home Tuition -->
+<section class="py-5">
 <section class="py-5">
   <div class="container">
     <div class="text-center mb-5">
@@ -416,7 +425,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=6"></script>
+<script src="js/auth.js?v=7"></script>
 <script>try{initFirebase();}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -446,7 +455,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         saveProfile(profile);
         renderAuthButtons("authButtons");
       });
-  } else if (!user && isLoggedIn()) {
+  } else if (!user && isLoggedIn() && !isOtpSession()) {
     clearProfile();
     renderAuthButtons("authButtons");
   }

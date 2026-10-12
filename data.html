@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -234,7 +234,7 @@
           <a href="javascript:void(0)" class="btn btn-primary-custom w-100 justify-content-center mb-2" id="addCartBtn" style="display:none" onclick="addToCartFromData()">
             <i class="fa-solid fa-cart-plus"></i> <span id="addCartLabel">Add to Cart</span>
           </a>
-          <p id="leadPrice" style="display:none;text-align:center;font-size:13px;font-weight:700;color:var(--accent);margin:0 0 8px"><i class="fa-solid fa-tag"></i> ₹99 per lead</p>
+          <p id="leadPrice" style="display:none;text-align:center;font-size:13px;font-weight:700;color:var(--accent);margin:0 0 8px"><i class="fa-solid fa-tag"></i> <span id="leadPriceText">₹99 per lead</span></p>
           <a href="tutor-register.html" class="btn btn-outline-custom w-100 justify-content-center" id="joinBtn" style="font-size:13px">
             <i class="fa-solid fa-user-plus"></i> Join as Tutor Free
           </a>
@@ -258,9 +258,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=6"></script>
+<script src="js/auth.js?v=7"></script>
 <script>try{initFirebase();}catch(e){}</script>
-<script src="js/api.js?v=3"></script>
+<script src="js/api.js?v=8"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 renderAuthButtons("authButtons");
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("address").textContent = data.address || data.city || "N/A";
     document.getElementById("pincode").textContent = data.pincode || "N/A";
     document.getElementById("joinedDate").textContent = formatJoinedDate(data.joined_date);
-    document.getElementById("gender").textContent = data.Preferred_Gender || "Any";
+    document.getElementById("gender").textContent = data.gender || "Any";
     document.getElementById("preferredTime").textContent = data.preferred_time || "Flexible";
     document.getElementById("hourlyFee").textContent = data.hourly_fee || "Negotiable";
     document.getElementById("description").textContent = (String(data.type||type).toLowerCase() === "student" ? "Wanted" : "Available") + " tutor for " + (data.course||"") + ", " + (data.subject||"");
@@ -369,6 +369,8 @@ document.addEventListener("DOMContentLoaded", function() {
       purchasedNotice.style.display = "none";
       addCartBtn.style.display = "flex";
       leadPrice.style.display = "block";
+      var leadPriceText = document.getElementById("leadPriceText");
+      if (leadPriceText) leadPriceText.textContent = "₹" + leadBasePrice(type) + " per lead";
       var inCart = isInCart(id, type);
       document.getElementById("addCartLabel").textContent = inCart ? "In Cart" : "Add to Cart";
       addCartBtn.innerHTML = '<i class="fa-solid ' + (inCart ? 'fa-check' : 'fa-cart-plus') + '"></i> <span id="addCartLabel">' + (inCart ? "In Cart" : "Add to Cart") + '</span>';
@@ -415,7 +417,7 @@ function addToCartFromData() {
     addProfileToCart({ id: pid, type: ptype, name: d.name, city: d.city, course: d.course, subject: d.subject, experience: d.experience_years, preferred_mode: d.preferred_mode, language: d.language });
     btn.innerHTML = '<i class="fa-solid fa-check"></i> <span id="addCartLabel">In Cart</span>';
     var count = getCartCount();
-    var pricing = calculateSmartPrice(count);
+    var pricing = calculateSmartPrice(getCart());
     Swal.fire({ icon: "success", title: (d.name || "Profile") + " added to cart!", text: count + " profile" + (count > 1 ? "s" : "") + " in cart — Total: ₹" + pricing.total, timer: 2000, showConfirmButton: false, toast: true, position: "top-end" });
   }
   if (typeof updateCartBadge === "function") updateCartBadge();

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -35,15 +35,13 @@
     .btn-submit { width:100%; height:50px; background:linear-gradient(135deg,var(--primary),#14b8a6); color:#fff; border:none; border-radius:var(--radius-md); font-weight:700; font-size:15px; transition:var(--transition); box-shadow:0 2px 10px rgba(15,118,110,0.3); cursor:pointer; }
     .btn-submit:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,118,110,0.4); color:#fff; }
     .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+    .btn-inline { position:absolute; right:8px; top:50%; transform:translateY(-50%); height:34px; padding:0 14px; border:none; border-radius:var(--radius-sm); background:linear-gradient(135deg,var(--primary),#14b8a6); color:#fff; font-weight:600; font-size:12px; cursor:pointer; z-index:6; }
+    .btn-inline:disabled { background:#cbd5d1; cursor:not-allowed; }
     .error-text { color:var(--danger); font-size:12px; margin-top:-8px; margin-bottom:10px; display:none; }
-    .step-indicator { display:flex; justify-content:center; gap:8px; margin-bottom:24px; }
-    .step-dot { width:36px; height:4px; border-radius:2px; background:var(--border); transition:var(--transition); }
-    .step-dot.active { background:var(--primary); width:48px; }
+    .otp-hint { font-size:12px; color:var(--text-muted); text-align:center; margin:-4px 0 12px; }
+    .otp-section { display:none; }
     .profile-step { display:none; }
     .profile-step.active { display:block; }
-    .verify-step { display:none; }
-    .verify-step.active { display:block; text-align:center; }
-    .verify-icon { width:80px; height:80px; border-radius:50%; background:var(--primary-light); display:inline-flex; align-items:center; justify-content:center; font-size:36px; color:var(--primary); margin-bottom:20px; }
   </style>
 </head>
 <body>
@@ -54,73 +52,72 @@
       <div class="logo-circle"><i class="fa-solid fa-graduation-cap"></i></div>
     </div>
 
-    <div class="step-indicator">
-      <div class="step-dot active" id="stepDot1"></div>
-      <div class="step-dot" id="stepDot2"></div>
-      <div class="step-dot" id="stepDot3"></div>
-    </div>
-
-    <!-- ============ STEP 1: Auth ============ -->
+    <!-- ============ STEP 1: Mobile + OTP + Password ============ -->
     <div id="step1">
       <h3>Create Account</h3>
-      <p class="subtitle">Join NCR Home Tuition in 3 easy steps</p>
+      <p class="subtitle">Sign up with your mobile number</p>
 
       <button class="btn-google" onclick="signupWithGoogle()">
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continue with Google
       </button>
 
-      <div class="divider-line"><span>or sign up with email</span></div>
+      <div class="divider-line"><span>or sign up with mobile</span></div>
 
-      <div class="input-group-modern">
-        <i class="fa-solid fa-user input-icon"></i>
-        <input type="text" id="signupName" class="form-control" placeholder="Full Name">
-      </div>
-      <div id="nameError" class="error-text">Please enter your name</div>
+      <!-- Mobile + send OTP -->
+      <div id="mobileSection">
+        <div class="input-group-modern">
+          <i class="fa-solid fa-phone input-icon"></i>
+          <input type="tel" id="signupMobile" class="form-control" placeholder="Mobile Number" maxlength="10" inputmode="numeric" style="padding-right:118px">
+          <button type="button" id="sendOtpBtn" class="btn-inline" onclick="sendSignupOtp()">Send OTP</button>
+        </div>
+        <div id="signupMobileError" class="error-text">Enter a valid 10-digit mobile number</div>
+        <div class="otp-hint" id="otpHint" style="display:none"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> OTP sent to your mobile</div>
 
-      <div class="input-group-modern">
-        <i class="fa-solid fa-envelope input-icon"></i>
-        <input type="email" id="signupEmail" class="form-control" placeholder="Email Address">
+        <button class="btn-submit" onclick="showOtpStep()">
+          <i class="fa-solid fa-arrow-right"></i>&nbsp; Continue
+        </button>
       </div>
-      <div id="emailError" class="error-text">Please enter a valid email</div>
 
-      <div class="input-group-modern">
-        <i class="fa-solid fa-lock input-icon"></i>
-        <input type="password" id="signupPass" class="form-control" placeholder="Password (min 6 chars)">
+      <!-- OTP + password -->
+      <div id="otpSection" class="otp-section">
+        <div class="otp-hint" style="display:block"><i class="fa-solid fa-mobile-screen"></i> Enter the OTP sent to <b id="otpMobileLabel"></b></div>
+
+        <div class="input-group-modern">
+          <i class="fa-solid fa-key input-icon"></i>
+          <input type="tel" id="signupOtp" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6" inputmode="numeric">
+        </div>
+        <div id="signupOtpError" class="error-text">Enter the 6-digit OTP</div>
+
+        <div class="input-group-modern">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input type="password" id="signupPass" class="form-control" placeholder="Create Password (min 6 characters)">
+        </div>
+        <div id="signupPassError" class="error-text">Password must be at least 6 characters</div>
+
+        <div class="input-group-modern">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input type="password" id="signupPass2" class="form-control" placeholder="Confirm Password">
+        </div>
+        <div id="signupPass2Error" class="error-text">Passwords do not match</div>
+
+        <button class="btn-submit" id="createAccountBtn" onclick="createAccount()">
+          <i class="fa-solid fa-rocket"></i>&nbsp; Create Account
+        </button>
+        <div style="text-align:center;margin-top:12px">
+          <a href="javascript:void(0)" onclick="showMobileStep()" style="font-size:12px;font-weight:600;color:var(--text-muted)">Change mobile number</a>
+        </div>
       </div>
-      <div id="passError" class="error-text">Password must be at least 6 characters</div>
 
       <div id="authError" class="error-text" style="text-align:center;margin-top:8px"></div>
-
-      <button class="btn-submit" onclick="signupWithEmail()" id="emailSignupBtn">
-        <i class="fa-solid fa-rocket"></i>&nbsp; Create Account
-      </button>
 
       <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted)">
         Already have an account? <a href="login.html" style="font-weight:600">Login</a>
       </p>
     </div>
 
-    <!-- ============ STEP 2: Verify Email ============ -->
-    <div id="step2" class="verify-step">
-      <div class="verify-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
-      <h3 style="font-weight:800">Verify Your Email</h3>
-      <p class="subtitle" id="verifyMsg">We sent a verification link to your email. Please check your inbox and click the link to verify.</p>
-      <p style="font-size:14px;font-weight:600;color:var(--primary);margin-bottom:24px" id="verifyEmail">user@email.com</p>
-      <button class="btn-submit" onclick="checkEmailVerified()" style="height:46px;font-size:14px">
-        <i class="fa-solid fa-rotate"></i>&nbsp; I have verified — Continue
-      </button>
-      <p style="margin-top:16px;font-size:12px;color:var(--text-muted)">
-        Didn't receive? Check spam folder or
-        <a href="#" onclick="resendVerification()" style="font-weight:600">resend email</a>
-      </p>
-      <button onclick="goToStep(1)" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;margin-top:8px">
-        <i class="fa-solid fa-arrow-left"></i> Go back
-      </button>
-    </div>
-
-    <!-- ============ STEP 3: Profile (Mobile No) ============ -->
-    <div id="step3" class="profile-step">
+    <!-- ============ STEP 2: Google profile completion ============ -->
+    <div id="step2" class="profile-step">
       <div style="text-align:center;margin-bottom:20px">
         <div style="width:64px;height:64px;border-radius:50%;background:var(--success-light);display:inline-flex;align-items:center;justify-content:center;font-size:28px;color:var(--success)">
           <i class="fa-solid fa-user-check"></i>
@@ -131,9 +128,9 @@
 
       <div class="input-group-modern">
         <i class="fa-solid fa-phone input-icon"></i>
-        <input type="tel" id="profileMobile" class="form-control" placeholder="Mobile Number (10 digits)" maxlength="10">
+        <input type="tel" id="profileMobile" class="form-control" placeholder="Mobile Number (10 digits)" maxlength="10" inputmode="numeric">
       </div>
-      <div id="mobileError" class="error-text">Enter a valid 10-digit mobile number</div>
+      <div id="profileMobileError" class="error-text">Enter a valid 10-digit mobile number</div>
 
       <div class="input-group-modern">
         <i class="fa-solid fa-user input-icon"></i>
@@ -142,16 +139,16 @@
       <div id="profileNameError" class="error-text">Please enter your name</div>
 
       <div class="input-group-modern">
-        <label style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">I am a</label>
-        <select id="profileRole" class="form-control" style="padding-left:16px">
+        <i class="fa-solid fa-user-tag input-icon"></i>
+        <select id="profileRole" class="form-control" style="padding-left:44px">
           <option value="">Select your role</option>
           <option value="student">Student / Parent</option>
           <option value="tutor">Home Tutor</option>
         </select>
       </div>
-      <div id="roleError" class="error-text">Please select a role</div>
+      <div id="profileRoleError" class="error-text">Please select a role</div>
 
-      <button class="btn-submit" onclick="completeProfile()">
+      <button class="btn-submit" onclick="completeGoogleProfile()">
         <i class="fa-solid fa-check-circle"></i>&nbsp; Complete Profile
       </button>
     </div>
@@ -163,17 +160,20 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=6"></script>
+<script src="js/auth.js?v=7"></script>
+<script src="js/api.js?v=8"></script>
 
 <script>
-initFirebase();
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-let pendingUser = null;
-let pendingEmail = "";
+var auth = null, provider = null;
+try {
+  initFirebase();
+  auth = firebase.auth();
+  provider = new firebase.auth.GoogleAuthProvider();
+} catch (e) { console.warn("Firebase init failed:", e); }
 
-// Where to go after signup: 1) stage saved in localStorage (auth_return_to) by the
-// page the user was on, 2) ?redirect= URL param, 3) home page.
+var pendingGoogleUser = null;
+var otpCooldownTimer = null;
+
 var redirectAfterSignup = (function() {
   try {
     var saved = localStorage.getItem("auth_return_to");
@@ -187,21 +187,129 @@ function afterSignupUrl() {
 
 if (isLoggedIn()) window.location.href = "profile.html";
 
-// ---- Google Signup ----
+function validMobile(m) { return /^[6-9]\d{9}$/.test(m); }
+
+function showMobileStep() {
+  document.getElementById("mobileSection").style.display = "block";
+  document.getElementById("otpSection").style.display = "none";
+  clearAuthError();
+}
+function showOtpStep() {
+  var mobile = document.getElementById("signupMobile").value.trim();
+  if (!validMobile(mobile)) { showField("signupMobileError"); return; }
+  hideField("signupMobileError");
+  clearAuthError();
+  document.getElementById("otpMobileLabel").textContent = mobile;
+  document.getElementById("mobileSection").style.display = "none";
+  document.getElementById("otpSection").style.display = "block";
+  document.getElementById("signupOtp").focus();
+}
+
+function startOtpCooldown(seconds) {
+  var btn = document.getElementById("sendOtpBtn");
+  var left = seconds;
+  btn.disabled = true;
+  btn.textContent = left + "s";
+  if (otpCooldownTimer) clearInterval(otpCooldownTimer);
+  otpCooldownTimer = setInterval(function() {
+    left--;
+    if (left <= 0) {
+      clearInterval(otpCooldownTimer);
+      otpCooldownTimer = null;
+      btn.disabled = false;
+      btn.textContent = "Resend OTP";
+    } else {
+      btn.textContent = left + "s";
+    }
+  }, 1000);
+}
+
+function sendSignupOtp() {
+  var mobile = document.getElementById("signupMobile").value.trim();
+  if (!validMobile(mobile)) { showField("signupMobileError"); return; }
+  hideField("signupMobileError");
+  clearAuthError();
+  Swal.fire({ title: "Sending OTP...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  requestOtp(mobile, "signup").then(function() {
+    Swal.close();
+    document.getElementById("otpHint").style.display = "block";
+    startOtpCooldown(60);
+    showOtpStep();
+  }).catch(function(err) {
+    Swal.close();
+    if (err && err.status === 409) {
+      Swal.fire({ icon: "info", title: "Already registered", text: "This mobile number already has an account. Please login.", confirmButtonColor: "#0d9488" })
+        .then(function() { window.location.href = "login.html"; });
+      return;
+    }
+    showAuthError(getErrorMessage(err));
+    if (err && err.status === 429) startOtpCooldown(60);
+  });
+}
+
+function createAccount() {
+  var mobile = document.getElementById("signupMobile").value.trim();
+  var otp = document.getElementById("signupOtp").value.trim();
+  var pass = document.getElementById("signupPass").value;
+  var pass2 = document.getElementById("signupPass2").value;
+
+  if (!validMobile(mobile)) { showMobileStep(); showField("signupMobileError"); return; }
+  if (!/^\d{6}$/.test(otp)) { showField("signupOtpError"); return; } else hideField("signupOtpError");
+  if (!pass || pass.length < 6) { showField("signupPassError"); return; } else hideField("signupPassError");
+  if (pass !== pass2) { showField("signupPass2Error"); return; } else hideField("signupPass2Error");
+  clearAuthError();
+
+  var btn = document.getElementById("createAccountBtn");
+  btn.disabled = true;
+  Swal.fire({ title: "Creating Account...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+
+  verifyOtp(mobile, otp).then(function(res) {
+    if (res && res.session_token) setUserToken(res.session_token);
+    return setPassword(pass).then(function() { return res; });
+  }).then(function(res) {
+    Swal.close();
+    btn.disabled = false;
+    if (otpCooldownTimer) { clearInterval(otpCooldownTimer); otpCooldownTimer = null; }
+    var sp = (res && res.profile) ? res.profile : {};
+    var profile = {
+      uid: sp.id ? ("ph_" + sp.id) : ("ph_" + mobile),
+      displayName: sp.name || "",
+      email: sp.email || "",
+      mobile_no: sp.mobile_no || mobile,
+      role: sp.role || "student",
+      emailVerified: true,
+      leads: 0
+    };
+    if (res && res.expires_at) {
+      profile.expires_at = new Date(res.expires_at).getTime();
+      profile.session_started = Date.now();
+    }
+    saveProfile(profile);
+    setLeads(0);
+    recordSignupEvent(profile, "signup");
+    Swal.fire({ icon: "success", title: "Welcome to NCR Home Tuition!", text: "Your account is ready", confirmButtonColor: "#0d9e6c" })
+      .then(function() { window.location.href = afterSignupUrl(); });
+  }).catch(function(err) {
+    Swal.close();
+    btn.disabled = false;
+    showAuthError(getErrorMessage(err));
+  });
+}
+
+// ---- Google signup ----
 function signupWithGoogle() {
-  Swal.fire({ title: "Connecting to Google...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+  if (!auth) { showAuthError("Google signup is unavailable right now. Please sign up with your mobile number."); return; }
+  Swal.fire({ title: "Connecting to Google...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
   auth.signInWithPopup(provider)
-    .then(result => {
+    .then(function(result) {
       Swal.close();
-      const user = result.user;
-      // Google accounts are pre-verified
-      pendingUser = user;
-      pendingEmail = user.email;
-      goToStep(3);
+      var user = result.user;
+      pendingGoogleUser = user;
+      goToStep(2);
       document.getElementById("profileName").value = user.displayName || "";
-      document.getElementById("verifyEmail").textContent = user.email;
+      document.getElementById("profileMobile").focus();
     })
-    .catch(err => {
+    .catch(function(err) {
       Swal.close();
       if (err.code === "auth/popup-closed-by-user") return;
       if (err.code === "auth/account-exists-with-different-credential") {
@@ -212,125 +320,56 @@ function signupWithGoogle() {
     });
 }
 
-// ---- Email Signup ----
-function signupWithEmail() {
-  const name = document.getElementById("signupName").value.trim();
-  const email = document.getElementById("signupEmail").value.trim();
-  const pass = document.getElementById("signupPass").value;
-  let valid = true;
-  if (!name) { showField("nameError"); valid = false; } else hideField("nameError");
-  if (!email || !email.includes("@")) { showField("emailError"); valid = false; } else hideField("emailError");
-  if (!pass || pass.length < 6) { showField("passError"); valid = false; } else hideField("passError");
-  if (!valid) return;
-
-  Swal.fire({ title: "Creating Account...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-  auth.createUserWithEmailAndPassword(email, pass)
-    .then(result => {
-      return result.user.updateProfile({ displayName: name }).then(() => result);
-    })
-    .then(result => {
-      // Send verification email
-      return result.user.sendEmailVerification().then(() => result);
-    })
-    .then(result => {
-      Swal.close();
-      pendingUser = result.user;
-      pendingEmail = email;
-      goToStep(2);
-      document.getElementById("verifyEmail").textContent = email;
-    })
-    .catch(err => {
-      Swal.close();
-      let msg = err.message;
-      if (err.code === "auth/email-already-in-use") msg = "An account with this email already exists. Please login.";
-      showAuthError(msg);
-    });
-}
-
-// ---- Check Email Verified ----
-function checkEmailVerified() {
-  if (!pendingUser) { showAuthError("Something went wrong. Please try again."); return; }
-  Swal.fire({ title: "Checking verification...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-  pendingUser.reload().then(() => {
-    Swal.close();
-    if (pendingUser.emailVerified) {
-      goToStep(3);
-      document.getElementById("profileName").value = pendingUser.displayName || "";
-    } else {
-      Swal.fire({
-        icon: "warning",
-        title: "Email Not Verified",
-        text: "Please click the verification link in your email first. Check your spam folder too.",
-        confirmButtonColor: "#f59e0b"
-      });
-    }
-  });
-}
-
-function resendVerification() {
-  if (!pendingUser) return;
-  pendingUser.sendEmailVerification()
-    .then(() => {
-      Swal.fire({ icon: "success", title: "Verification email sent!", text: "Check your inbox (and spam folder)", timer: 2500, showConfirmButton: false });
-    })
-    .catch(err => {
-      Swal.fire({ icon: "error", title: "Failed to send", text: err.message, confirmButtonColor: "#dc3545" });
-    });
-}
-
-// ---- Complete Profile ----
-function completeProfile() {
-  const mobile = document.getElementById("profileMobile").value.trim();
-  const name = document.getElementById("profileName").value.trim();
-  const role = document.getElementById("profileRole").value;
-  let valid = true;
-  if (!mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) { showField("mobileError"); valid = false; } else hideField("mobileError");
+function completeGoogleProfile() {
+  var mobile = document.getElementById("profileMobile").value.trim();
+  var name = document.getElementById("profileName").value.trim();
+  var role = document.getElementById("profileRole").value;
+  var valid = true;
+  if (!validMobile(mobile)) { showField("profileMobileError"); valid = false; } else hideField("profileMobileError");
   if (!name) { showField("profileNameError"); valid = false; } else hideField("profileNameError");
-  if (!role) { showField("roleError"); valid = false; } else hideField("roleError");
+  if (!role) { showField("profileRoleError"); valid = false; } else hideField("profileRoleError");
   if (!valid) return;
+  if (!pendingGoogleUser) { showAuthError("Your Google session expired. Please sign up again."); return; }
 
-  const profile = {
-    uid: pendingUser ? pendingUser.uid : null,
+  var profile = {
+    uid: pendingGoogleUser.uid,
     displayName: name,
-    email: pendingUser ? pendingUser.email : document.getElementById("signupEmail").value.trim(),
+    email: pendingGoogleUser.email,
     mobile_no: mobile,
     role: role,
-    emailVerified: pendingUser ? pendingUser.emailVerified : false,
-    createdAt: new Date().toISOString(),
+    emailVerified: pendingGoogleUser.emailVerified,
     leads: 0
   };
 
   saveProfile(profile);
   setLeads(0);
   syncProfileToFirestore();
+  recordSignupEvent(profile, "google");
 
-  // Record signup so the admin panel can show who joined today
+  Swal.fire({ icon: "success", title: "Welcome to NCR Home Tuition!", text: "Your profile is ready", confirmButtonColor: "#0d9e6c" })
+    .then(function() { window.location.href = afterSignupUrl(); });
+}
+
+function recordSignupEvent(profile, method) {
   try {
     fetch("https://ncrhomr.vercel.app/login-event", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uid: profile.uid || "", email: profile.email || "", display_name: name, method: "signup" })
+      body: JSON.stringify({ uid: profile.uid || "", email: profile.email || "", display_name: profile.displayName || "", method: method || "signup" })
     }).catch(function() {});
   } catch(e) {}
-
-  Swal.fire({ icon: "success", title: "Welcome to NCR Home Tuition!", text: "Your profile is ready", confirmButtonColor: "#0d9e6c" })
-    .then(() => { window.location.href = afterSignupUrl(); });
 }
 
-// ---- Step navigation ----
 function goToStep(n) {
   document.getElementById("step1").style.display = "none";
   document.getElementById("step2").classList.remove("active");
-  document.getElementById("step3").classList.remove("active");
-  document.querySelectorAll(".step-dot").forEach(d => d.classList.remove("active"));
-  if (n === 1) { document.getElementById("step1").style.display = "block"; document.getElementById("stepDot1").classList.add("active"); }
-  if (n === 2) { document.getElementById("step2").classList.add("active"); document.getElementById("stepDot1").classList.add("active"); document.getElementById("stepDot2").classList.add("active"); }
-  if (n === 3) { document.getElementById("step3").classList.add("active"); document.getElementById("stepDot1").classList.add("active"); document.getElementById("stepDot2").classList.add("active"); document.getElementById("stepDot3").classList.add("active"); }
+  if (n === 1) { document.getElementById("step1").style.display = "block"; }
+  if (n === 2) { document.getElementById("step2").classList.add("active"); }
 }
 
 function showField(id) { document.getElementById(id).style.display = "block"; }
 function hideField(id) { document.getElementById(id).style.display = "none"; }
-function showAuthError(msg) { const el = document.getElementById("authError"); el.textContent = msg; el.style.display = "block"; }
+function showAuthError(msg) { var el = document.getElementById("authError"); el.textContent = msg; el.style.display = "block"; }
+function clearAuthError() { var el = document.getElementById("authError"); el.textContent = ""; el.style.display = "none"; }
 </script>
 </body>
 </html>

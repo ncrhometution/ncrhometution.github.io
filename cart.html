@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -139,22 +139,25 @@
         <!-- Pricing Info -->
         <div class="pricing-info">
           <h4><i class="fa-solid fa-tags" style="color:var(--accent)"></i> Lead Pricing</h4>
+          <p style="font-size:12px;color:var(--text-muted);margin:-8px 0 12px">
+            ₹99 per <b>student</b> lead &nbsp;·&nbsp; ₹49 per <b>teacher</b> lead
+          </p>
           <div class="pi-grid">
             <div class="pi-card">
               <div class="pi-leads">1-4</div>
-              <div class="pi-price">₹99</div>
-              <div class="pi-per">per lead</div>
+              <div class="pi-price">Full price</div>
+              <div class="pi-per">no discount</div>
             </div>
             <div class="pi-card popular">
               <div class="pi-badge">POPULAR</div>
-              <div class="pi-leads">5</div>
-              <div class="pi-price">₹399</div>
-              <div class="pi-per">₹80/lead — Save 20%</div>
+              <div class="pi-leads">5+</div>
+              <div class="pi-price">20% OFF</div>
+              <div class="pi-per">on total</div>
             </div>
             <div class="pi-card">
-              <div class="pi-leads">10</div>
-              <div class="pi-price">₹699</div>
-              <div class="pi-per">₹70/lead — Save 30%</div>
+              <div class="pi-leads">10+</div>
+              <div class="pi-price">30% OFF</div>
+              <div class="pi-per">best value</div>
             </div>
           </div>
         </div>
@@ -169,8 +172,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=6"></script>
-<script src="js/api.js?v=3"></script>
+<script src="js/auth.js?v=7"></script>
+<script src="js/api.js?v=8"></script>
 <script>
 initFirebase();
 document.getElementById('navbar-placeholder').innerHTML = getNavHTML('cart');
@@ -186,7 +189,7 @@ function renderCartPage(){
     container.innerHTML = '<div class="cart-empty"><i class="fa-solid fa-cart-shopping"></i><h4>Your cart is empty</h4><p>Browse tutors and students, then click "Add to Cart" to contact them</p><a href="search.html" class="btn btn-accent-custom" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none"><i class="fa-solid fa-search"></i> Browse Profiles</a></div>';
     clearBtn.style.display = 'none';
     itemCount.textContent = '';
-    updatePriceSummary(0);
+    updatePriceSummary([]);
     document.getElementById('payBtn').disabled = true;
     return;
   }
@@ -210,21 +213,22 @@ function renderCartPage(){
         '</div>' +
       '</div>' +
       '<div class="ci-price">' +
-        '<div class="price-amount">₹99</div>' +
+        '<div class="price-amount">₹' + leadBasePrice(type) + '</div>' +
         '<div class="price-per">per lead</div>' +
       '</div>' +
       '<button class="ci-remove" onclick="removeItem(\'' + item.id + '\',\'' + item.type + '\')"><i class="fa-solid fa-trash"></i></button>' +
     '</div>';
   }).join('');
 
-  updatePriceSummary(cart.length);
+  updatePriceSummary(cart);
 }
 
-function updatePriceSummary(count){
-  var pricing = calculateSmartPrice(count);
+function updatePriceSummary(cart){
+  var count = Array.isArray(cart) ? cart.length : (Number(cart) || 0);
+  var pricing = calculateSmartPrice(cart);
   document.getElementById('psCount').textContent = count;
   document.getElementById('psTotal').textContent = '₹' + pricing.total;
-  document.getElementById('psPerLead').textContent = count > 0 ? '₹' + pricing.perLead + '/lead' : '₹99';
+  document.getElementById('psPerLead').textContent = count > 0 ? '₹' + pricing.perLead + '/lead avg' : '₹99';
 
   var savingsRow = document.getElementById('psSavingsRow');
   if(pricing.savings > 0){
@@ -238,13 +242,13 @@ function updatePriceSummary(count){
   if(pricing.breakdown.length > 1){
     breakdownEl.style.display = 'block';
     breakdownEl.innerHTML = pricing.breakdown.map(function(r){
-      return '<div class="pb-row"><span>' + r.desc + '</span><span>₹' + r.amount + '</span></div>';
+      var amt = r.amount < 0 ? '-₹' + Math.abs(r.amount) : '₹' + r.amount;
+      return '<div class="pb-row"><span>' + r.desc + '</span><span' + (r.amount < 0 ? ' style="color:var(--success)"' : '') + '>' + amt + '</span></div>';
     }).join('');
   } else {
     breakdownEl.style.display = 'none';
   }
 }
-
 function removeItem(id, type){
   removeProfileFromCart(id, type);
   var el = document.getElementById('ci_' + id + '_' + type);
@@ -291,7 +295,7 @@ function proceedToPayment(){
     Swal.fire({icon:'warning',title:'Cart Empty',text:'Add some profiles first'});
     return;
   }
-  var pricing = calculateSmartPrice(cart.length);
+  var pricing = calculateSmartPrice(cart);
   var profile = getProfile();
 
   // Collect contact info (email + mobile) required by the payment API

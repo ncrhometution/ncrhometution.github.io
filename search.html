@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -138,8 +138,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=6"></script>
-<script src="js/api.js?v=3"></script>
+<script src="js/auth.js?v=7"></script>
+<script src="js/api.js?v=8"></script>
 <script>try{initFirebase();}catch(e){}</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -256,7 +256,7 @@ function renderResults(items){
           ? '<a href="data.html?id='+item.id+'&type='+item.type+'&purchased=1" class="btn-view-profile disabled" onclick="return false"><i class="fa-solid fa-circle-check"></i> Purchased</a>'+
             '<button class="btn-add-cart in-cart" disabled><i class="fa-solid fa-circle-check"></i> Purchased</button>'
           : '<a href="data.html?id='+item.id+'&type='+item.type+'" class="btn-view-profile"><i class="fa-solid fa-eye"></i> View Profile</a>'+
-            '<button class="btn-add-cart '+(inCart?'in-cart':'')+'" id="cartBtn_'+item.id+'_'+item.type+'" onclick="toggleCart(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\',\''+(item.experience||"").replace(/'/g,"\\'")+'\',\''+(item.preferred_mode||"").replace(/'/g,"\\'")+'\',\''+(item.language||"").replace(/'/g,"\\'")+'\')">'+(inCart?'<i class="fa-solid fa-check"></i> In Cart':'<i class="fa-solid fa-cart-plus"></i> ₹99')+'</button>')+
+            '<button class="btn-add-cart '+(inCart?'in-cart':'')+'" id="cartBtn_'+item.id+'_'+item.type+'" onclick="toggleCart(this,\''+item.id+'\',\''+item.type+'\',\''+(item.name||"").replace(/'/g,"\\'")+'\',\''+(item.city||"").replace(/'/g,"\\'")+'\',\''+(item.course||"").replace(/'/g,"\\'")+'\',\''+(item.subject||"").replace(/'/g,"\\'")+'\',\''+(item.experience||"").replace(/'/g,"\\'")+'\',\''+(item.preferred_mode||"").replace(/'/g,"\\'")+'\',\''+(item.language||"").replace(/'/g,"\\'")+'\')">'+(inCart?'<i class="fa-solid fa-check"></i> In Cart':'<i class="fa-solid fa-cart-plus"></i> ₹'+leadBasePrice(item.type))+'</button>')+
       '</div></div>';
     box.appendChild(card);
   });
@@ -273,14 +273,14 @@ function toggleCart(btn,id,type,name,city,course,subject,experience,mode,languag
   if(isInCart(id,type)){
     removeProfileFromCart(id,type);
     btn.classList.remove("in-cart");
-    btn.innerHTML='<i class="fa-solid fa-cart-plus"></i> ₹99';
+    btn.innerHTML='<i class="fa-solid fa-cart-plus"></i> ₹'+leadBasePrice(type);
     Swal.fire({icon:"info",title:"Removed from Cart",timer:1000,showConfirmButton:false,toast:true,position:"top-end"});
   } else {
     addProfileToCart({id:id,type:type,name:name,city:city,course:course,subject:subject,experience:experience,preferred_mode:mode,language:language});
     btn.classList.add("in-cart");
     btn.innerHTML='<i class="fa-solid fa-check"></i> In Cart';
     var count=getCartCount();
-    var pricing=calculateSmartPrice(count);
+    var pricing=calculateSmartPrice(getCart());
     Swal.fire({icon:"success",title:name+" added to cart!",text:count+" profile"+(count>1?"s":"")+" in cart — Total: ₹"+pricing.total,
       timer:2000,showConfirmButton:false,toast:true,position:"top-end"});
   }
