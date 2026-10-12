@@ -10,6 +10,12 @@ var APIS = {
   home:            API_BASE,
   adminCreate:     API_BASE + "admin/create",
   adminLogin:      API_BASE + "admin/login",
+  otpRequest:      API_BASE + "auth/otp/request",
+  otpVerify:       API_BASE + "auth/otp/verify",
+  authMe:          API_BASE + "auth/me",
+  authCheck:       API_BASE + "auth/check",
+  authLogin:       API_BASE + "auth/login",
+  authSetPassword: API_BASE + "auth/set-password",
   student:         API_BASE + "student",
   tutor:           API_BASE + "tutor",
   students:        API_BASE + "students",
@@ -53,9 +59,10 @@ function getErrorMessage(err) {
   if (!err) return "Something went wrong. Please try again.";
   if (err instanceof APIError) {
     if (err.status === 0) return "Cannot reach the server. Check your internet connection and try again.";
-    if (err.status === 401) return "Unauthorized. Please check your credentials.";
-    if (err.status === 404) return "Not found. The record may have been removed.";
+    if (err.status === 401) return err.message || "Unauthorized. Please check your credentials.";
+    if (err.status === 404) return err.message || "Not found. The record may have been removed.";
     if (err.status === 400) return err.message || "Invalid request. Please check your input.";
+    if (err.status === 429) return err.message || "Too many attempts. Please wait and try again.";
     if (err.status >= 500) return "Server error. Please try again in a moment.";
     return err.message || "Request failed.";
   }
@@ -86,6 +93,10 @@ function api(path, opts) {
   if (opts.admin) {
     var token = getAdminToken();
     if (token) headers["X-Admin-Token"] = token;
+  }
+  if (opts.user) {
+    var utoken = getUserToken();
+    if (utoken) headers["X-User-Token"] = utoken;
   }
 
   return fetch(url, {
@@ -118,6 +129,45 @@ function clearAdminToken() {
   try { localStorage.removeItem("admin_token"); } catch (e) {}
 }
 function isAdminLoggedIn() { return !!getAdminToken(); }
+
+// ---- User session token helpers (mobile OTP login) ----
+function getUserToken() {
+  try { return localStorage.getItem("user_token") || ""; } catch (e) { return ""; }
+}
+function setUserToken(token) {
+  try { localStorage.setItem("user_token", token); } catch (e) {}
+}
+function clearUserToken() {
+  try { localStorage.removeItem("user_token"); } catch (e) {}
+}
+function isUserTokenValid() { return !!getUserToken(); }
+
+// ---- Mobile OTP login ----
+// requestOtp(mobile, purpose) - sends a 6-digit OTP via SMS.
+// purpose: "login" (default), "reset" (forgot password) or "signup".
+function requestOtp(mobile, purpose) {
+  return api(APIS.otpRequest, { method: "POST", body: { mobile: mobile, purpose: purpose || "login" } });
+}
+// verifyOtp(mobile, otp) - verifies the OTP, returns { session_token, expires_at, profile }
+function verifyOtp(mobile, otp) {
+  return api(APIS.otpVerify, { method: "POST", body: { mobile: mobile, otp: otp } });
+}
+// getAuthMe() - validate the stored user token and fetch the current profile
+function getAuthMe() {
+  return api(APIS.authMe, { user: true });
+}
+// checkUser(mobile) - returns { exists, has_password, role } for a mobile number
+function checkUser(mobile) {
+  return api(APIS.authCheck, { method: "POST", body: { mobile: mobile } });
+}
+// mobilePasswordLogin(mobile, password) - login with mobile + password
+function mobilePasswordLogin(mobile, password) {
+  return api(APIS.authLogin, { method: "POST", body: { mobile: mobile, password: password } });
+}
+// setPassword(password) - create/update password for the OTP-authenticated mobile
+function setPassword(password) {
+  return api(APIS.authSetPassword, { method: "POST", body: { password: password }, user: true });
+}
 
 // ---- Admin ----
 function adminLogin(username, password) {

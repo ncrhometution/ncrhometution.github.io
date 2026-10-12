@@ -23,18 +23,75 @@ function initFirebase() {
 }
 
 // ---- Profile helpers (localStorage) ----
+// Session lifetime: like Gmail, the user stays logged in across browser restarts
+// while active. A sliding 30-day expiry is refreshed on activity (see touchSession).
+var SESSION_DAYS = 30;
+var SESSION_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
+var SESSION_TOUCH_MS = 60 * 60 * 1000; // refresh at most once per hour
+
 function getProfile() {
   try { var r = localStorage.getItem("user_profile"); return r ? JSON.parse(r) : null; } catch(e) { return null; }
 }
-function saveProfile(p) { localStorage.setItem("user_profile", JSON.stringify(p)); }
+function saveProfile(p) {
+  if (p && typeof p === "object") {
+    if (!p.session_started) p.session_started = Date.now();
+    // Respect a server-provided expiry (OTP login); otherwise apply the sliding default.
+    if (!p.expires_at) p.expires_at = Date.now() + SESSION_MS;
+  }
+  try { localStorage.setItem("user_profile", JSON.stringify(p)); } catch(e) {}
+}
 function clearProfile() {
   localStorage.removeItem("user_profile");
   localStorage.removeItem("user_leads");
   localStorage.removeItem("user_cart");
   localStorage.removeItem("user_saved_profiles");
   localStorage.removeItem("user_purchased_leads");
+  try { localStorage.removeItem("user_token"); } catch(e) {}
 }
-function isLoggedIn() { return !!getProfile(); }
+// Gmail-like sliding session: extend the expiry on activity (throttled to once/hour).
+function touchSession() {
+  var p = getProfile();
+  if (!p) return;
+  var now = Date.now();
+  if (p.last_touch && (now - p.last_touch) < SESSION_TOUCH_MS) return;
+  p.last_touch = now;
+  p.expires_at = now + SESSION_MS;
+  try { localStorage.setItem("user_profile", JSON.stringify(p)); } catch(e) {}
+}
+// Returns true when the stored session has passed its expiry (and clears it).
+function sessionExpired() {
+  var p = getProfile();
+  if (!p) return false;
+  if (p.expires_at && Date.now() > p.expires_at) { clearProfile(); return true; }
+  return false;
+}
+// isLoggedIn() also enforces expiry, so an expired session behaves as logged out.
+function isLoggedIn() {
+  var p = getProfile();
+  if (!p) return false;
+  if (p.expires_at && Date.now() > p.expires_at) { clearProfile(); return false; }
+  return true;
+}
+// True when the current session was created by mobile OTP (no Firebase user).
+// Such sessions must NOT be cleared by Firebase's onAuthStateChanged(null) handler.
+function isOtpSession() {
+  var p = getProfile();
+  return !!(p && p.uid && String(p.uid).indexOf("ph_") === 0);
+}
+// Refresh the session expiry whenever the user interacts with the page.
+function bindSessionActivity() {
+  var events = ["click", "keydown", "touchstart", "scroll"];
+  events.forEach(function(ev) {
+    document.addEventListener(ev, function() { if (getProfile()) touchSession(); }, { passive: true });
+  });
+}
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bindSessionActivity);
+  } else {
+    bindSessionActivity();
+  }
+}
 
 // Current page name (for ?redirect= back-navigation after login/signup)
 function currentPageName() {
@@ -198,81 +255,62 @@ function isInCart(id, type) {
 function getCartCount() { return getCart().length; }
 
 // ============================================================
-// SMART PRICING - based on number of profiles (leads) in cart
-// 1-4 profiles = ₹99 each
-// 5 profiles   = ₹399 (save ₹96)
-// 6-9 profiles = ₹399 + extras at ₹99 each
-// 10 profiles  = ₹699 (save ₹291)
+// PRICING
+// Student leads = ₹99 each, Tutor (teacher) leads = ₹49 each.
+// Package discount (applies to BOTH rates):
+//   1-4 leads  = full price
+//   5-9 leads  = 20% off
+//   10+ leads  = 30% off
 // ============================================================
 
-function calculateSmartPrice(totalLeads) {
-  if (totalLeads <= 0) return { total: 0, perLead: 0, breakdown: [], savings: 0, originalTotal: 0 };
-  var originalTotal = totalLeads * 99;
+function leadBasePrice(type) {
+  return (String(type || "").toLowerCase() === "student") ? 99 : 49;
+}
 
-  if (totalLeads <= 4) {
-    return { total: originalTotal, perLead: 99, breakdown: [{ desc: totalLeads + ' × ₹99', amount: originalTotal }], savings: 0, originalTotal: originalTotal };
+function calculateSmartPrice(input) {
+  // Accepts an array of leads [{type}] or a number of leads (legacy: treated as tutors).
+  var leads = Array.isArray(input) ? input : [];
+  if (!Array.isArray(input)) {
+    var n = Math.max(0, Number(input) || 0);
+    for (var i = 0; i < n; i++) leads.push({ type: "tutor" });
   }
-  if (totalLeads === 5) {
-    return { total: 399, perLead: 80, breakdown: [{ desc: '5 Lead Package', amount: 399 }], savings: originalTotal - 399, originalTotal: originalTotal };
+  var count = leads.length;
+  if (count <= 0) return { total: 0, perLead: 0, breakdown: [], savings: 0, originalTotal: 0 };
+
+  var subtotal = leads.reduce(function(sum, l) { return sum + leadBasePrice(l && l.type); }, 0);
+
+  var rate = 0, label = "";
+  if (count >= 10) { rate = 0.30; label = "10+ Lead Package"; }
+  else if (count >= 5) { rate = 0.20; label = "5+ Lead Package"; }
+
+  var discount = Math.round(subtotal * rate);
+  var total = subtotal - discount;
+
+  var breakdown = [{ desc: "Subtotal (" + count + " lead" + (count > 1 ? "s" : "") + ")", amount: subtotal }];
+  if (discount > 0) {
+    breakdown.push({ desc: label + " (" + Math.round(rate * 100) + "% off)", amount: -discount });
   }
-  if (totalLeads < 10) {
-    var extra = totalLeads - 5;
-    var extraCost = extra * 99;
-    var total = 399 + extraCost;
-    return {
-      total: total, perLead: Math.round(total / totalLeads),
-      breakdown: [
-        { desc: '5 Lead Package', amount: 399 },
-        { desc: extra + ' × ₹99', amount: extraCost }
-      ],
-      savings: originalTotal - total, originalTotal: originalTotal
-    };
-  }
-  if (totalLeads === 10) {
-    return { total: 699, perLead: 70, breakdown: [{ desc: '10 Lead Package', amount: 699 }], savings: originalTotal - 699, originalTotal: originalTotal };
-  }
-  var packs = Math.floor(totalLeads / 10);
-  var remainder = totalLeads % 10;
-  var packCost = packs * 699;
-  if (remainder === 0) {
-    return { total: packCost, perLead: Math.round(packCost / totalLeads), breakdown: [{ desc: packs + ' × 10 Lead Package', amount: packCost }], savings: originalTotal - packCost, originalTotal: originalTotal };
-  }
-  if (remainder <= 4) {
-    var remCost = remainder * 99;
-    return {
-      total: packCost + remCost, perLead: Math.round((packCost + remCost) / totalLeads),
-      breakdown: [{ desc: packs + ' × 10 Lead Package', amount: packCost }, { desc: remainder + ' × ₹99', amount: remCost }],
-      savings: originalTotal - (packCost + remCost), originalTotal: originalTotal
-    };
-  }
-  if (remainder === 5) {
-    return {
-      total: packCost + 399, perLead: Math.round((packCost + 399) / totalLeads),
-      breakdown: [{ desc: packs + ' × 10 Lead Package', amount: packCost }, { desc: '5 Lead Package', amount: 399 }],
-      savings: originalTotal - (packCost + 399), originalTotal: originalTotal
-    };
-  }
-  var rem5pack = 399;
-  var remExtras = (remainder - 5) * 99;
-  var grandTotal = packCost + rem5pack + remExtras;
+
   return {
-    total: grandTotal, perLead: Math.round(grandTotal / totalLeads),
-    breakdown: [{ desc: packs + ' × 10 Lead Package', amount: packCost }, { desc: '5 Lead Package', amount: rem5pack }, { desc: (remainder - 5) + ' × ₹99', amount: remExtras }],
-    savings: originalTotal - grandTotal, originalTotal: originalTotal
+    total: total,
+    perLead: count > 0 ? Math.round(total / count) : 0,
+    breakdown: breakdown,
+    savings: discount,
+    originalTotal: subtotal
   };
 }
 
 // Get smart price for current cart
 function getCartPricing() {
-  var count = getCartCount();
-  return calculateSmartPrice(count);
+  return calculateSmartPrice(getCart());
 }
 
 // ---- Lead packages (info cards only, NOT cart items) ----
+// Discount tiers apply to both student (₹99) and tutor (₹49) leads.
 var LEAD_PACKAGES = [
-  { id: "lead_1",  leads: 1,  price: 99,  label: "1 Lead",   per: 99,  desc: "Try it out",                    savings: null,  color: "blue",   popular: false },
-  { id: "lead_5",  leads: 5,  price: 399, label: "5 Leads",  per: 80,  desc: "Best for getting started",      savings: "20%",  color: "orange", popular: true },
-  { id: "lead_10", leads: 10, price: 699, label: "10 Leads", per: 70,  desc: "Best value overall",            savings: "30%",  color: "green",  popular: false }
+  { id: "lead_1",  leads: 1,  label: "1-4 Leads",  savings: null, popular: false },
+  { id: "lead_5",  leads: 5,  label: "5+ Leads",   savings: "20%", popular: true },
+  { id: "lead_10", leads: 10, label: "10+ Leads",  savings: "30%", popular: false }
 ];
 
 // ============================================================
