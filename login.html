@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -33,6 +33,13 @@
     .admin-toggle a{font-size:13px;color:var(--text-muted);text-decoration:none;font-weight:500}
     .admin-toggle a:hover{color:var(--primary)}
     .admin-form{display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+    .method-tabs{display:flex;background:var(--bg);border-radius:var(--radius-md);padding:4px;margin-bottom:18px}
+    .method-tabs button{flex:1;height:38px;border:none;background:transparent;border-radius:var(--radius-sm);font-weight:600;font-size:13px;color:var(--text-muted);cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px}
+    .method-tabs button.active{background:var(--bg-white);color:var(--primary);box-shadow:var(--shadow-sm)}
+    .otp-section{display:none}
+    .btn-inline{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:34px;padding:0 14px;border:none;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--primary),#14b8a6);color:#fff;font-weight:600;font-size:12px;cursor:pointer;z-index:6}
+    .btn-inline:disabled{background:#cbd5d1;cursor:not-allowed}
+    .otp-hint{font-size:12px;color:var(--text-muted);text-align:center;margin:-4px 0 12px}
   </style>
 </head>
 <body>
@@ -50,25 +57,86 @@
       Login with Google
     </button>
 
-    <div class="divider-line"><span>or login with email</span></div>
+    <div class="divider-line"><span>or continue with</span></div>
 
-    <div class="input-group-modern">
-      <i class="fa-solid fa-envelope input-icon"></i>
-      <input type="email" id="loginEmail" class="form-control" placeholder="Email Address">
-    </div>
-    <div id="loginEmailError" class="error-text">Please enter your email</div>
+    <!-- Mobile check -> password (existing user) -->
+    <div id="mobileLoginSection">
+      <div class="input-group-modern">
+        <i class="fa-solid fa-phone input-icon"></i>
+        <input type="tel" id="mobileNo" class="form-control" placeholder="Mobile Number" maxlength="10" inputmode="numeric">
+      </div>
+      <div id="mobileNoError" class="error-text">Enter a valid 10-digit mobile number</div>
 
-    <div class="input-group-modern">
-      <i class="fa-solid fa-lock input-icon"></i>
-      <input type="password" id="loginPass" class="form-control" placeholder="Password">
+      <button class="btn-submit" id="checkMobileBtn" onclick="checkMobile()">
+        <i class="fa-solid fa-arrow-right"></i>&nbsp; Continue
+      </button>
+
+      <div id="passwordBlock" style="display:none;margin-top:16px">
+        <div class="input-group-modern">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input type="password" id="mobilePass" class="form-control" placeholder="Password">
+        </div>
+        <div id="mobilePassError" class="error-text">Enter your password</div>
+
+        <div style="text-align:right;margin:-6px 0 12px">
+          <a href="javascript:void(0)" onclick="startForgotPassword()" style="font-size:12px;font-weight:600;color:var(--primary)">Forgot password?</a>
+        </div>
+
+        <button class="btn-submit" id="mobileLoginBtn" onclick="loginWithMobilePassword()">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>&nbsp; Login
+        </button>
+        <div style="text-align:center;margin-top:10px">
+          <a href="javascript:void(0)" onclick="editMobile()" style="font-size:12px;font-weight:600;color:var(--text-muted)">Change mobile number</a>
+        </div>
+      </div>
+
+      <div class="otp-hint" style="margin-top:12px">New here? <a href="signup.html" style="font-weight:600;color:var(--primary)">Create an account</a></div>
     </div>
-    <div id="loginPassError" class="error-text">Please enter your password</div>
+
+    <!-- Forgot password: verify OTP then set new password -->
+    <div id="otpLoginSection" class="otp-section">
+      <div class="otp-hint" style="display:block"><i class="fa-solid fa-key"></i> Verify your mobile with OTP</div>
+      <div class="input-group-modern">
+        <i class="fa-solid fa-phone input-icon"></i>
+        <input type="tel" id="loginMobile" class="form-control" placeholder="Mobile Number" maxlength="10" inputmode="numeric" style="padding-right:118px">
+        <button type="button" id="sendOtpBtn" class="btn-inline" onclick="sendLoginOtp()">Send OTP</button>
+      </div>
+      <div id="loginMobileError" class="error-text">Enter a valid 10-digit mobile number</div>
+      <div class="otp-hint" id="otpHint" style="display:none"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> OTP sent to your mobile</div>
+
+      <div class="input-group-modern">
+        <i class="fa-solid fa-key input-icon"></i>
+        <input type="tel" id="loginOtp" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6" inputmode="numeric">
+      </div>
+      <div id="loginOtpError" class="error-text">Enter the 6-digit OTP</div>
+
+      <button class="btn-submit" id="verifyOtpBtn" onclick="verifyLoginOtp()">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>&nbsp; Verify OTP
+      </button>
+      <div style="text-align:center;margin-top:12px">
+        <a href="javascript:void(0)" onclick="switchLoginMethod('mobile')" style="font-size:12px;font-weight:600;color:var(--text-muted)">Back to login</a>
+      </div>
+    </div>
+
+    <!-- Set password (first login / forgot password) -->
+    <div id="setPasswordSection" class="otp-section">
+      <div class="otp-hint" id="setPassHint" style="display:block"><i class="fa-solid fa-shield-halved"></i> Create a password for your account</div>
+      <div class="input-group-modern">
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input type="password" id="newPass" class="form-control" placeholder="Create Password (min 6 characters)">
+      </div>
+      <div id="newPassError" class="error-text">Password must be at least 6 characters</div>
+      <div class="input-group-modern">
+        <i class="fa-solid fa-lock input-icon"></i>
+        <input type="password" id="newPass2" class="form-control" placeholder="Confirm Password">
+      </div>
+      <div id="newPass2Error" class="error-text">Passwords do not match</div>
+      <button class="btn-submit" id="setPassBtn" onclick="submitSetPassword()">
+        <i class="fa-solid fa-check"></i>&nbsp; Save &amp; Continue
+      </button>
+    </div>
 
     <div id="loginAuthError" class="error-text" style="text-align:center;margin-top:8px"></div>
-
-    <button class="btn-submit" onclick="loginWithEmail()">
-      <i class="fa-solid fa-arrow-right-to-bracket"></i>&nbsp; Login
-    </button>
 
     <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted)">
       Don't have an account? <a href="signup.html" style="font-weight:600">Sign Up Free</a>
@@ -97,11 +165,15 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/auth.js?v=6"></script>
+<script src="js/auth.js?v=7"></script>
+<script src="js/api.js?v=8"></script>
 <script>
-initFirebase();
-const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+var auth = null, googleProvider = null;
+try {
+  initFirebase();
+  auth = firebase.auth();
+  googleProvider = new firebase.auth.GoogleAuthProvider();
+} catch (e) { console.warn("Firebase init failed:", e); }
 
 // Where to go after login: 1) stage saved in localStorage (auth_return_to) by the
 // page the user was on, 2) ?redirect= URL param, 3) home page.
@@ -117,7 +189,7 @@ function afterLoginUrl() {
 }
 
 // Restore session from Firestore on page load
-auth.onAuthStateChanged(function(user) {
+if (auth) auth.onAuthStateChanged(function(user) {
   if (user && !isLoggedIn()) {
     // Firebase Auth has a user but localStorage is empty (new session / cleared cache)
     firebase.firestore().collection("users").doc(user.uid).get()
@@ -143,8 +215,8 @@ auth.onAuthStateChanged(function(user) {
         var profile = { uid: user.uid, displayName: user.displayName || "", email: user.email, mobile_no: "", role: "", emailVerified: user.emailVerified, leads: 0 };
         saveProfile(profile);
       });
-  } else if (!user && isLoggedIn()) {
-    // Auth signed out but localStorage still has profile
+  } else if (!user && isLoggedIn() && !isOtpSession()) {
+    // Auth signed out but localStorage still has a Firebase profile
     clearProfile();
   }
 });
@@ -160,6 +232,7 @@ function recordLoginEvent(u, method) {
 }
 
 function loginWithGoogle() {
+  if (!auth) { showLoginError("Google login is unavailable right now. Please use Mobile login."); return; }
   Swal.fire({ title: "Connecting to Google...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
   auth.signInWithPopup(googleProvider).then(function(result) {
     var u = result.user;
@@ -203,59 +276,228 @@ function loginWithGoogle() {
   });
 }
 
-function loginWithEmail() {
-  var email = document.getElementById("loginEmail").value.trim();
-  var pass = document.getElementById("loginPass").value;
-  if (!email) { showField("loginEmailError"); return; } else hideField("loginEmailError");
-  if (!pass) { showField("loginPassError"); return; } else hideField("loginPassError");
+// ---- Mobile password + OTP login ----
+var otpCooldownTimer = null;
+var resetMode = false;
+var otpPurpose = "reset";
+var pendingProfile = null;
 
-  Swal.fire({ title: "Logging in...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
-  auth.signInWithEmailAndPassword(email, pass).then(function(result) {
-    var u = result.user;
-    if (!u.emailVerified) {
+function switchLoginMethod(method) {
+  var mobileSec = document.getElementById("mobileLoginSection");
+  var otpSec = document.getElementById("otpLoginSection");
+  var setSec = document.getElementById("setPasswordSection");
+  clearLoginError();
+  mobileSec.style.display = "none";
+  otpSec.style.display = "none";
+  setSec.style.display = "none";
+  resetMode = (method === "otp-reset");
+  if (method === "otp" || method === "otp-reset" || method === "otp-signup") {
+    otpPurpose = (method === "otp-signup") ? "signup" : "reset";
+    otpSec.style.display = "block";
+  } else {
+    mobileSec.style.display = "block";
+    document.getElementById("checkMobileBtn").style.display = "block";
+    document.getElementById("passwordBlock").style.display = "none";
+  }
+}
+
+function validMobile(m) { return /^[6-9]\d{9}$/.test(m); }
+
+function editMobile() {
+  document.getElementById("checkMobileBtn").style.display = "block";
+  document.getElementById("passwordBlock").style.display = "none";
+  clearLoginError();
+}
+
+function checkMobile() {
+  var mobile = document.getElementById("mobileNo").value.trim();
+  if (!validMobile(mobile)) { showField("mobileNoError"); return; }
+  hideField("mobileNoError");
+  clearLoginError();
+  Swal.fire({ title: "Checking...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  checkUser(mobile).then(function(res) {
+    Swal.close();
+    if (res && res.exists) {
+      if (res.has_password) {
+        document.getElementById("checkMobileBtn").style.display = "none";
+        document.getElementById("passwordBlock").style.display = "block";
+        document.getElementById("mobilePass").focus();
+      } else {
+        switchLoginMethod("otp-reset");
+        document.getElementById("loginMobile").value = mobile;
+        sendLoginOtp();
+      }
+    } else {
       Swal.fire({
-        icon: "warning", title: "Email Not Verified",
-        text: "Please verify your email first. Check your inbox.",
-        confirmButtonColor: "#f59e0b",
-        showDenyButton: true, denyButtonText: "Resend", confirmButtonText: "OK"
+        icon: "info",
+        title: "User does not exist",
+        text: "This mobile number is not registered. Send an OTP to register?",
+        showCancelButton: true,
+        confirmButtonText: "Send OTP",
+        confirmButtonColor: "#0d9488"
       }).then(function(r) {
-        if (r.isDenied) { u.sendEmailVerification(); Swal.fire("Verification email sent!", "", "success"); }
+        if (r.isConfirmed) {
+          switchLoginMethod("otp-signup");
+          document.getElementById("loginMobile").value = mobile;
+          sendLoginOtp();
+        }
       });
-      return;
     }
-    // Read existing Firestore data FIRST so we don't overwrite signup info
-    firebase.firestore().collection("users").doc(u.uid).get().then(function(doc) {
-      var ex = doc.exists ? doc.data() : {};
-      var profile = {
-        uid: u.uid,
-        displayName: ex.displayName || u.displayName || "",
-        email: u.email,
-        mobile_no: ex.mobile_no || "",
-        role: ex.role || "",
-        emailVerified: true,
-        leads: typeof ex.leads === "number" ? ex.leads : 0
-      };
-      saveProfile(profile);
-      setLeads(profile.leads);
-      if (ex.cart) saveCart(ex.cart);
-      if (ex.savedProfiles) localStorage.setItem("user_saved_profiles", JSON.stringify(ex.savedProfiles));
-      syncProfileToFirestore();
-      recordLoginEvent(u, "email");
-      Swal.fire({ icon: "success", title: "Welcome back, " + (profile.displayName || "") + "!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
-    }).catch(function() {
-      // Firestore failed - save basic Auth profile only
-      var profile = { uid: u.uid, displayName: u.displayName || "", email: u.email, mobile_no: "", role: "", emailVerified: true, leads: 0 };
-      saveProfile(profile);
-      syncProfileToFirestore();
-      recordLoginEvent(u, "email");
-      Swal.fire({ icon: "success", title: "Welcome back!", timer: 1200, showConfirmButton: false }).then(function() { window.location.href = afterLoginUrl(); });
-    });
   }).catch(function(err) {
     Swal.close();
-    var msg = err.message;
-    if (err.code === "auth/user-not-found") msg = "No account found with this email. Please sign up first.";
-    if (err.code === "auth/wrong-password") msg = "Incorrect password. Please try again.";
-    showLoginError(msg);
+    showLoginError(getErrorMessage(err));
+  });
+}
+
+function startOtpCooldown(seconds) {
+  var btn = document.getElementById("sendOtpBtn");
+  var left = seconds;
+  btn.disabled = true;
+  btn.textContent = left + "s";
+  if (otpCooldownTimer) clearInterval(otpCooldownTimer);
+  otpCooldownTimer = setInterval(function() {
+    left--;
+    if (left <= 0) {
+      clearInterval(otpCooldownTimer);
+      otpCooldownTimer = null;
+      btn.disabled = false;
+      btn.textContent = "Resend OTP";
+    } else {
+      btn.textContent = left + "s";
+    }
+  }, 1000);
+}
+
+function sendLoginOtp() {
+  var mobile = document.getElementById("loginMobile").value.trim();
+  if (!validMobile(mobile)) { showField("loginMobileError"); return; }
+  hideField("loginMobileError");
+  clearLoginError();
+  Swal.fire({ title: "Sending OTP...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  requestOtp(mobile, otpPurpose).then(function() {
+    Swal.close();
+    document.getElementById("otpHint").style.display = "block";
+    startOtpCooldown(60);
+    document.getElementById("loginOtp").focus();
+  }).catch(function(err) {
+    Swal.close();
+    if (err && err.status === 409) {
+      Swal.fire({ icon: "info", title: "Already registered", text: "This mobile number already has an account. Please login with your password.", confirmButtonColor: "#0d9488" })
+        .then(function() { switchLoginMethod("mobile"); document.getElementById("mobileNo").value = mobile; });
+      return;
+    }
+    showLoginError(getErrorMessage(err));
+    if (err && err.status === 429) startOtpCooldown(60);
+  });
+}
+
+function buildPendingProfile(res, mobile, method) {
+  var sp = (res && res.profile) ? res.profile : {};
+  pendingProfile = {
+    uid: sp.id ? ("ph_" + sp.id) : ("ph_" + mobile),
+    displayName: sp.name || "",
+    email: sp.email || "",
+    mobile_no: sp.mobile_no || mobile,
+    role: sp.role || "student",
+    emailVerified: true,
+    leads: typeof sp.leads === "number" ? sp.leads : 0,
+    loginMethod: method || "otp"
+  };
+  if (res && res.expires_at) {
+    pendingProfile.expires_at = new Date(res.expires_at).getTime();
+    pendingProfile.session_started = Date.now();
+  }
+}
+
+function showSetPassword(msg) {
+  document.getElementById("mobileLoginSection").style.display = "none";
+  document.getElementById("otpLoginSection").style.display = "none";
+  document.getElementById("setPasswordSection").style.display = "block";
+  document.getElementById("setPassHint").innerHTML = '<i class="fa-solid fa-shield-halved"></i> ' + msg;
+  clearLoginError();
+  document.getElementById("newPass").focus();
+}
+
+function finishLogin() {
+  if (!pendingProfile) { showLoginError("Session expired. Please try again."); return; }
+  var profile = pendingProfile;
+  saveProfile(profile);
+  setLeads(profile.leads);
+  recordLoginEvent({ uid: profile.uid, email: profile.email, displayName: profile.displayName }, profile.loginMethod || "otp");
+  Swal.fire({ icon: "success", title: "Welcome, " + (profile.displayName || "there") + "!", timer: 1200, showConfirmButton: false })
+    .then(function() { window.location.href = afterLoginUrl(); });
+}
+
+function startForgotPassword() {
+  var m = document.getElementById("mobileNo").value.trim();
+  switchLoginMethod("otp-reset");
+  if (validMobile(m)) document.getElementById("loginMobile").value = m;
+  showLoginError("Enter your mobile number, verify the OTP, then set a new password.");
+}
+
+function verifyLoginOtp() {
+  var mobile = document.getElementById("loginMobile").value.trim();
+  var otp = document.getElementById("loginOtp").value.trim();
+  if (!validMobile(mobile)) { showField("loginMobileError"); return; }
+  if (!/^\d{6}$/.test(otp)) { showField("loginOtpError"); return; }
+  hideField("loginMobileError");
+  hideField("loginOtpError");
+  clearLoginError();
+  Swal.fire({ title: "Verifying...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  verifyOtp(mobile, otp).then(function(res) {
+    Swal.close();
+    if (otpCooldownTimer) { clearInterval(otpCooldownTimer); otpCooldownTimer = null; }
+    if (res && res.session_token) setUserToken(res.session_token);
+    buildPendingProfile(res, mobile, "otp");
+    if (resetMode || !res || res.has_password === false) {
+      showSetPassword(resetMode ? "Set a new password" : "Create a password for your account");
+    } else {
+      finishLogin();
+    }
+  }).catch(function(err) {
+    Swal.close();
+    showLoginError(getErrorMessage(err));
+  });
+}
+
+function submitSetPassword() {
+  var p1 = document.getElementById("newPass").value;
+  var p2 = document.getElementById("newPass2").value;
+  if (!p1 || p1.length < 6) { showField("newPassError"); return; } else hideField("newPassError");
+  if (p1 !== p2) { showField("newPass2Error"); return; } else hideField("newPass2Error");
+  clearLoginError();
+  Swal.fire({ title: "Saving...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  setPassword(p1).then(function() {
+    Swal.close();
+    finishLogin();
+  }).catch(function(err) {
+    Swal.close();
+    showLoginError(getErrorMessage(err));
+  });
+}
+
+function loginWithMobilePassword() {
+  var mobile = document.getElementById("mobileNo").value.trim();
+  var pass = document.getElementById("mobilePass").value;
+  if (!validMobile(mobile)) { showField("mobileNoError"); return; } else hideField("mobileNoError");
+  if (!pass) { showField("mobilePassError"); return; } else hideField("mobilePassError");
+  clearLoginError();
+  Swal.fire({ title: "Logging in...", allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+  mobilePasswordLogin(mobile, pass).then(function(res) {
+    Swal.close();
+    buildPendingProfile(res, mobile, "password");
+    finishLogin();
+  }).catch(function(err) {
+    Swal.close();
+    if (err && err.status === 404) {
+      Swal.fire({ icon: "info", title: "No password set", text: "This mobile number has no password yet. Use 'Forgot password?' to verify with OTP and create one.", confirmButtonColor: "#0d9488" })
+        .then(function() {
+          switchLoginMethod("otp-reset");
+          document.getElementById("loginMobile").value = mobile;
+        });
+      return;
+    }
+    showLoginError(getErrorMessage(err));
   });
 }
 
@@ -286,6 +528,7 @@ function toggleAdmin() {
   f.style.display = f.style.display === "none" ? "block" : "none";
 }
 function showLoginError(msg) { var el = document.getElementById("loginAuthError"); el.textContent = msg; el.style.display = "block"; }
+function clearLoginError() { var el = document.getElementById("loginAuthError"); el.textContent = ""; el.style.display = "none"; }
 function showField(id) { document.getElementById(id).style.display = "block"; }
 function hideField(id) { document.getElementById(id).style.display = "none"; }
 </script>
