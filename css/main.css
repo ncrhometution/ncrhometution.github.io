@@ -842,6 +842,24 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }
 
+/* Standalone quick CTA buttons (above search) */
+.cta-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px 0 4px;
+}
+.cta-btn-row .btn-banner { box-shadow: 0 6px 18px rgba(15,23,42,0.12); }
+.btn-banner-teal {
+  background: linear-gradient(135deg, #115e59 0%, #0f766e 55%, #14b8a6 100%) !important;
+  color: #fff !important;
+}
+.btn-banner-amber {
+  background: linear-gradient(135deg, #b45309 0%, #f59e0b 60%, #fbbf24 100%) !important;
+  color: #fff !important;
+}
+
 /* ---------- Feature Cards ---------- */
 .feature-card {
   text-align: center;
