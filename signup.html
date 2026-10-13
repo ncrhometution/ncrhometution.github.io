@@ -35,8 +35,10 @@
     .btn-submit { width:100%; height:50px; background:linear-gradient(135deg,var(--primary),#14b8a6); color:#fff; border:none; border-radius:var(--radius-md); font-weight:700; font-size:15px; transition:var(--transition); box-shadow:0 2px 10px rgba(15,118,110,0.3); cursor:pointer; }
     .btn-submit:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,118,110,0.4); color:#fff; }
     .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-    .btn-inline { position:absolute; right:8px; top:50%; transform:translateY(-50%); height:34px; padding:0 14px; border:none; border-radius:var(--radius-sm); background:linear-gradient(135deg,var(--primary),#14b8a6); color:#fff; font-weight:600; font-size:12px; cursor:pointer; z-index:6; }
+    .btn-inline { display:none; position:absolute; right:8px; top:50%; transform:translateY(-50%); height:34px; padding:0 14px; border:none; border-radius:var(--radius-sm); background:linear-gradient(135deg,var(--primary),#14b8a6); color:#fff; font-weight:600; font-size:12px; cursor:pointer; z-index:6; }
     .btn-inline:disabled { background:#cbd5d1; cursor:not-allowed; }
+    .input-group-modern .input-prefix { position:absolute; left:16px; top:50%; transform:translateY(-50%); font-weight:700; font-size:14px; color:var(--text-muted); z-index:5; pointer-events:none; }
+    .input-group-modern .form-control.mobile-input { padding-left:56px; padding-right:120px; letter-spacing:.5px; }
     .error-text { color:var(--danger); font-size:12px; margin-top:-8px; margin-bottom:10px; display:none; }
     .otp-hint { font-size:12px; color:var(--text-muted); text-align:center; margin:-4px 0 12px; }
     .otp-section { display:none; }
@@ -67,8 +69,8 @@
       <!-- Mobile + send OTP -->
       <div id="mobileSection">
         <div class="input-group-modern">
-          <i class="fa-solid fa-phone input-icon"></i>
-          <input type="tel" id="signupMobile" class="form-control" placeholder="Mobile Number" maxlength="10" inputmode="numeric" style="padding-right:118px">
+          <span class="input-prefix">+91</span>
+          <input type="tel" id="signupMobile" class="form-control mobile-input" placeholder="10-digit number" maxlength="10" inputmode="numeric">
           <button type="button" id="sendOtpBtn" class="btn-inline" onclick="sendSignupOtp()">Send OTP</button>
         </div>
         <div id="signupMobileError" class="error-text">Enter a valid 10-digit mobile number</div>
@@ -189,10 +191,24 @@ if (isLoggedIn()) window.location.href = "profile.html";
 
 function validMobile(m) { return /^[6-9]\d{9}$/.test(m); }
 
+function refreshSendOtp() {
+  var el = document.getElementById("signupMobile");
+  if (!el) return;
+  var v = (el.value || "").replace(/\D/g, "");
+  if (v !== el.value) el.value = v.slice(0, 10);
+  var btn = document.getElementById("sendOtpBtn");
+  if (btn) btn.style.display = (v.length === 10) ? "inline-flex" : "none";
+}
+(function () {
+  var el = document.getElementById("signupMobile");
+  if (el) el.addEventListener("input", refreshSendOtp);
+  refreshSendOtp();
+})();
+
 function showMobileStep() {
   document.getElementById("mobileSection").style.display = "block";
   document.getElementById("otpSection").style.display = "none";
-  clearAuthError();
+  refreshSendOtp();
 }
 function showOtpStep() {
   var mobile = document.getElementById("signupMobile").value.trim();
