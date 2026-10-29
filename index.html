@@ -489,6 +489,7 @@ function filterCities() {
   document.getElementById("cityEmpty").style.display = any ? "none" : "block";
 }
 
+
 function selectCity(btn) {
   document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) {
     o.classList.remove("selected");
@@ -496,19 +497,30 @@ function selectCity(btn) {
 
   btn.classList.add("selected");
 
-  // Keep the original city name for display and URL
+  // Keep the original city name for display
   var city = (btn.getAttribute("data-value") || "").trim();
 
   document.getElementById("citySelect").value = city;
   document.getElementById("cityLabel").textContent = city || "All Cities";
   document.getElementById("cityDropdown").classList.remove("open");
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function(e) {
+  var dd = document.getElementById("cityDropdown");
+  if (dd && !dd.contains(e.target)) {
+    dd.classList.remove("open");
+  }
 });
+
+// Close dropdown on Escape
 document.addEventListener("keydown", function(e) {
   if (e.key === "Escape") {
     var dd = document.getElementById("cityDropdown");
     if (dd) dd.classList.remove("open");
   }
 });
+
 
 // Load cities into the searchable dropdown
 document.addEventListener("DOMContentLoaded", function () {
