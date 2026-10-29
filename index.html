@@ -488,16 +488,20 @@ function filterCities() {
   });
   document.getElementById("cityEmpty").style.display = any ? "none" : "block";
 }
+
 function selectCity(btn) {
-  document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) { o.classList.remove("selected"); });
+  document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) {
+    o.classList.remove("selected");
+  });
+
   btn.classList.add("selected");
-  document.getElementById("citySelect").value = btn.getAttribute("data-value") || "";
-  document.getElementById("cityLabel").textContent = btn.getAttribute("data-value") || "All Cities";
+
+  // Keep the original city name for display and URL
+  var city = (btn.getAttribute("data-value") || "").trim();
+
+  document.getElementById("citySelect").value = city;
+  document.getElementById("cityLabel").textContent = city || "All Cities";
   document.getElementById("cityDropdown").classList.remove("open");
-}
-document.addEventListener("click", function(e) {
-  var dd = document.getElementById("cityDropdown");
-  if (dd && !dd.contains(e.target)) dd.classList.remove("open");
 });
 document.addEventListener("keydown", function(e) {
   if (e.key === "Escape") {
@@ -533,12 +537,24 @@ document.addEventListener("DOMContentLoaded", function () {
 function doSearch() {
   var city = document.getElementById("citySelect").value.trim();
   var q = document.getElementById("queryInput").value.trim();
-  var type = document.getElementById("typeSelect") ? document.getElementById("typeSelect").value : "tutor";
+
+  var type = document.getElementById("typeSelect")
+    ? document.getElementById("typeSelect").value
+    : "tutor";
+
   var params = new URLSearchParams();
-  if (city) params.append("city", city);
+
+  // Normalize city for case-insensitive matching
+  if (city) {
+    params.append("city", city.toLowerCase());
+  }
+
   if (q) params.append("q", q);
+
   params.append("type", type);
+
   window.location.href = "search.html?" + params.toString();
-}</script>
+}
+</script>
 </body>
 </html>
