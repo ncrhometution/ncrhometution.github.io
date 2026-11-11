@@ -663,27 +663,33 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(function(e) { console.error("Error loading cities:", e); });
 });
 
+
 function doSearch() {
-  var city = document.getElementById("citySelect").value.trim();
-  var q = document.getElementById("queryInput").value.trim();
+    const city = normalizeCity(
+        document.getElementById("citySelect").value
+    );
 
-  var type = document.getElementById("typeSelect")
-    ? document.getElementById("typeSelect").value
-    : "tutor";
+    const q = document.getElementById("queryInput").value.trim();
 
-  var params = new URLSearchParams();
+    const type = document.getElementById("typeSelect")
+        ? document.getElementById("typeSelect").value
+        : "tutor";
 
-  // Normalize city for case-insensitive matching
-  if (city) {
-    params.append("city", city.toLowerCase());
-  }
+    const params = new URLSearchParams();
 
-  if (q) params.append("q", q);
+    if (city) {
+        params.append("city", city);
+    }
 
-  params.append("type", type);
+    if (q) {
+        params.append("q", q);
+    }
 
-  window.location.href = "search.html?" + params.toString();
+    params.append("type", type);
+
+    window.location.href = "search.html?" + params.toString();
 }
+
 </script>
 </body>
 </html>
