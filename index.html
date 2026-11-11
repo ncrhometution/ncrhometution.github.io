@@ -466,63 +466,180 @@ checkWelcomeToast();
 loadFromFirestore().then(function() { renderAuthButtons("authButtons"); });
 
 // ---------- City searchable dropdown ----------
+
+
+
+
+
+// ---------- Unified City Searchable Dropdown ----------
+
+let ALL_CITIES = [];
+
+function normalizeCity(city) {
+    return String(city || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toUpperCase();
+}
+
 function toggleCityDD(e) {
-  if (e) e.stopPropagation();
-  var dd = document.getElementById("cityDropdown");
-  var opening = !dd.classList.contains("open");
-  document.querySelectorAll(".city-dropdown.open").forEach(function(d) { d.classList.remove("open"); });
-  if (opening) {
-    dd.classList.add("open");
-    var s = document.getElementById("citySearch");
-    if (s) { s.value = ""; filterCities(); s.focus(); }
-  }
+    if (e) e.stopPropagation();
+
+    const dd = document.getElementById("cityDropdown");
+    const opening = !dd.classList.contains("open");
+
+    document.querySelectorAll(".city-dropdown.open")
+        .forEach(d => d.classList.remove("open"));
+
+    if (opening) {
+        dd.classList.add("open");
+
+        const search = document.getElementById("citySearch");
+        if (search) {
+            search.value = "";
+            filterCities();
+            search.focus();
+        }
+    }
 }
+
+// Search cities without case sensitivity
 function filterCities() {
-  var q = (document.getElementById("citySearch").value || "").trim().toLowerCase();
-  var any = false;
-  document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) {
-    var v = (o.getAttribute("data-value") || "").toLowerCase();
-    var show = !q || v.indexOf(q) > -1;
-    o.style.display = show ? "" : "none";
-    if (show) any = true;
-  });
-  document.getElementById("cityEmpty").style.display = any ? "none" : "block";
+    const q = normalizeCity(
+        document.getElementById("citySearch").value
+    );
+
+    let any = false;
+
+    document.querySelectorAll("#cityListDiv .city-option")
+        .forEach(option => {
+
+            const city = normalizeCity(
+                option.getAttribute("data-value")
+            );
+
+            const show = !q || city.includes(q);
+
+            option.style.display = show ? "" : "none";
+
+            if (show) any = true;
+        });
+
+    document.getElementById("cityEmpty").style.display =
+        any ? "none" : "block";
 }
 
-
+// Select city in uppercase
 function selectCity(btn) {
-  document.querySelectorAll("#cityListDiv .city-option").forEach(function(o) {
-    o.classList.remove("selected");
-  });
+    document.querySelectorAll("#cityListDiv .city-option")
+        .forEach(option => option.classList.remove("selected"));
 
-  btn.classList.add("selected");
+    btn.classList.add("selected");
 
-  // Keep the original city name for display
-  var city = (btn.getAttribute("data-value") || "").trim();
+    const city = normalizeCity(
+        btn.getAttribute("data-value")
+    );
 
-  document.getElementById("citySelect").value = city;
-  document.getElementById("cityLabel").textContent = city || "All Cities";
-  document.getElementById("cityDropdown").classList.remove("open");
+    document.getElementById("citySelect").value = city;
+    document.getElementById("cityLabel").textContent =
+        city || "All Cities";
+
+    document.getElementById("cityDropdown")
+        .classList.remove("open");
 }
 
-// Close dropdown when clicking outside
+// Close dropdown outside click
 document.addEventListener("click", function(e) {
-  var dd = document.getElementById("cityDropdown");
-  if (dd && !dd.contains(e.target)) {
-    dd.classList.remove("open");
-  }
+    const dd = document.getElementById("cityDropdown");
+
+    if (dd && !dd.contains(e.target)) {
+        dd.classList.remove("open");
+    }
 });
 
-// Close dropdown on Escape
+// Close on Escape
 document.addEventListener("keydown", function(e) {
-  if (e.key === "Escape") {
-    var dd = document.getElementById("cityDropdown");
-    if (dd) dd.classList.remove("open");
-  }
+    if (e.key === "Escape") {
+        document.getElementById("cityDropdown")
+            ?.classList.remove("open");
+    }
+});
+
+// Load, normalize and remove duplicate cities
+document.addEventListener("DOMContentLoaded", function() {
+
+    fetch("https://ncrhomr.vercel.app/cities")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Unable to load cities");
+            }
+            return response.json();
+        })
+        .then(data => {
+
+            const list = document.getElementById("cityListDiv");
+            if (!list) return;
+
+            // Convert all cities to uppercase and remove duplicates
+            const uniqueCities = new Map();
+
+            (data.cities || []).forEach(city => {
+
+                const normalized = normalizeCity(city);
+
+                if (normalized) {
+                    uniqueCities.set(normalized, normalized);
+                }
+            });
+
+            // Sort alphabetically
+            ALL_CITIES = [...uniqueCities.values()].sort();
+
+            // Clear old city options
+            list.innerHTML = "";
+
+            // All Cities option
+            const allBtn = document.createElement("button");
+            allBtn.type = "button";
+            allBtn.className = "city-option selected";
+            allBtn.setAttribute("data-value", "");
+            allBtn.innerHTML = "<span>All Cities</span>";
+            allBtn.onclick = function() {
+                selectCity(allBtn);
+            };
+
+            list.appendChild(allBtn);
+
+            // Add unique uppercase cities
+            ALL_CITIES.forEach(city => {
+
+                const btn = document.createElement("button");
+
+                btn.type = "button";
+                btn.className = "city-option";
+                btn.setAttribute("data-value", city);
+
+                const span = document.createElement("span");
+                span.textContent = city;
+
+                btn.appendChild(span);
+
+                btn.onclick = function() {
+                    selectCity(btn);
+                };
+
+                list.appendChild(btn);
+            });
+
+        })
+        .catch(error => {
+            console.error("Error loading cities:", error);
+        });
 });
 
 
-// Load cities into the searchable dropdown
+
+
 document.addEventListener("DOMContentLoaded", function () {
   fetch("https://ncrhomr.vercel.app/cities")
     .then(function(r) { return r.json(); })
